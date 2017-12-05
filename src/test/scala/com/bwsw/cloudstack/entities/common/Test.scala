@@ -18,4 +18,7 @@
 */
 package com.bwsw.cloudstack.entities.common
 
-case class TestEntity(first: String, second: String)
+object Test {
+  case class TestEntity(first: String, second: String)
+  case class ParametrizedTestEntity[T](first: T, second: String)
+}

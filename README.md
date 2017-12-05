@@ -1,2 +1,2 @@
 # cs-entities
-Simple CloudStack ORM
+Simple CloudStack Entities Framework

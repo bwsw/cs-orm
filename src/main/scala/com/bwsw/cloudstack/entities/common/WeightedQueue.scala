@@ -25,11 +25,11 @@ import scala.util.Random
 
 /**
   * Class is responsible for obtaining a list item with a probability calculated by the formula:
-  * (length - indexOfElement)/sumOfAllNumbersOfList
+  * (length - i)/sum
   * where:
   * "length" - length of initialization list with elements
-  * "indexOfElement" - index of element in the list
-  * "sumOfAllNumbersOfList" - sum of numbers from 1 to "length"
+  * "i" - index of element in the list
+  * "sum" - sum of numbers from 1 to "length"
   */
 class WeightedQueue[T](private val elementList: List[T]) extends Queue[T]{
   protected val r = new Random

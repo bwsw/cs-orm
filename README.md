@@ -1,2 +1,2 @@
-# cs-orm
+# cs-entities
 Simple CloudStack ORM

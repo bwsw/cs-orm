@@ -25,16 +25,16 @@ class JsonMapperTestSuite extends FlatSpec with PrivateMethodTester {
   val firstValue = "1"
   val secondValue = "2"
 
-  "deserialize" should "deserialize json string to simple case class if setIgnoreUnknownProperties flag is true" +
-    "and Json string has equals fields with the class" in {
+  "deserialize" should "convert a json string to an entity if this string contains the same fields as the entity class " +
+    "and setIgnoreUnknownProperties flag is true" in {
     val testJson = "{\"first\":\"" + s"$firstValue" + "\",\"second\":\"" + s"$secondValue" + "\"}"
     val expectedEntity = Test.TestEntity(firstValue, secondValue)
     val jsonMapper = new JsonMapper(true)
     assert(jsonMapper.deserialize[Test.TestEntity](testJson) == expectedEntity)
   }
 
-  "deserialize" should "deserialize json string to simple case class if setIgnoreUnknownProperties flag is true" +
-    "and Json string has non equals fields with the class" in {
+  "deserialize" should "convert a json string to an entity if this string contains the fields that are different from the entity class " +
+    "and setIgnoreUnknownProperties flag is true" in {
     val testJson = "{\"first\":\"" + s"$firstValue" + "\",\"second\":\"" + s"$secondValue" + "\",\"third\":\"3\"}"
     val expectedEntity = Test.TestEntity(firstValue, secondValue)
     val jsonMapper = new JsonMapper(true)
@@ -42,8 +42,8 @@ class JsonMapperTestSuite extends FlatSpec with PrivateMethodTester {
     assert(jsonMapper.deserialize[Test.TestEntity](testJson) == expectedEntity)
   }
 
-  "deserialize" should "deserialize json string to simple case class if setIgnoreUnknownProperties flag is false" +
-    "and Json string has equals fields with the class" in {
+  "deserialize" should "convert a json string to an entity if this string contains the same fields as the entity class " +
+    "and setIgnoreUnknownProperties flag is false" in {
     val testJson = "{\"first\":\"" + s"$firstValue" + "\",\"second\":\"" + s"$secondValue" + "\"}"
     val expectedEntity = Test.TestEntity(firstValue, secondValue)
     val jsonMapper = new JsonMapper(false)
@@ -51,8 +51,8 @@ class JsonMapperTestSuite extends FlatSpec with PrivateMethodTester {
     assert(jsonMapper.deserialize[Test.TestEntity](testJson) == expectedEntity)
   }
 
-  "deserialize" should "deserialize json string to parametrized case class if setIgnoreUnknownProperties flag is false" +
-    "and Json string has equals fields with the class" in {
+  "deserialize" should "convert a json string to a parametrized entity if this string contains the same fields as the entity class " +
+    "and setIgnoreUnknownProperties flag is false" in {
     val testJson = "{\"first\":\"" + s"$firstValue" + "\",\"second\":\"" + s"$secondValue" + "\"}"
     val expectedEntity = Test.ParametrizedTestEntity[String](firstValue, secondValue)
     val jsonMapper = new JsonMapper(false)
@@ -60,8 +60,8 @@ class JsonMapperTestSuite extends FlatSpec with PrivateMethodTester {
     assert(jsonMapper.deserialize[Test.ParametrizedTestEntity[String]](testJson) == expectedEntity)
   }
 
-  "deserialize" should "throw JsonMappingException if setIgnoreUnknownProperties flag is false" +
-    "and Json string has non equals fields with the target entity" in {
+  "deserialize" should "throw JsonMappingException if input json string contains the fields that are different from the entity class " +
+    "and setIgnoreUnknownProperties flag is false" in {
     val testJson = "{\"first\":\"" + s"$firstValue" + "\",\"second\":\"" + s"$secondValue" + "\",\"third\":\"3\"}"
     val expectedEntity = Test.TestEntity(firstValue, secondValue)
     val jsonMapper = new JsonMapper(false)
@@ -69,14 +69,14 @@ class JsonMapperTestSuite extends FlatSpec with PrivateMethodTester {
     assertThrows[JsonMappingException](jsonMapper.deserialize[Test.TestEntity](testJson))
   }
 
-  "serialize" should "serialize entity to Json string" in {
+  "serialize" should "convert an entity to a json string" in {
     val testJson = "{\"first\":\"" + s"$firstValue" + "\",\"second\":\"" + s"$secondValue" + "\"}"
     val jsonMapper = new JsonMapper()
 
     assert(jsonMapper.serialize(Test.TestEntity(firstValue, secondValue)) == testJson)
   }
 
-  "getIgnoreUnknownPropertiesFlag" should "get value of IgnoreUnknownProperties flag" in {
+  "getIgnoreUnknownPropertiesFlag" should "return a value of IgnoreUnknownProperties flag" in {
     val flag = false
     val jsonMapper = new JsonMapper(flag)
     assert(jsonMapper.getIgnoreUnknownPropertiesFlag == flag)

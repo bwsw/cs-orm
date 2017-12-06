@@ -28,7 +28,9 @@ lazy val root = (project in file("."))
       "com.typesafe" % "config" % "1.3.0",
       "org.slf4j" % "slf4j-api" % "1.7.25",
       "org.scalatest" %% "scalatest" % "3.0.1" % "it,test",
-      "com.google.guava" % "guava" % "23.0"
+      "com.google.guava" % "guava" % "23.0",
+      "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.8",
+      "com.fasterxml.jackson.module" % "jackson-module-scala_2.12" % "2.8.8"
     ),
     pomIncludeRepository := { _ => false },
     licenses := Seq("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0")),

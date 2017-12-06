@@ -24,6 +24,7 @@ lazy val root = (project in file("."))
     version := "4.9.3",
     scalaVersion := "2.12.4",
     libraryDependencies ++= Seq(
+      "br.com.autonomiccs" % "apache-cloudstack-java-client" % "1.0.5",
       "com.typesafe" % "config" % "1.3.0",
       "org.slf4j" % "slf4j-api" % "1.7.25",
       "org.scalatest" %% "scalatest" % "3.0.1" % "it,test",

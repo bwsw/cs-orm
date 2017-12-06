@@ -18,7 +18,7 @@
 */
 package com.bwsw.cloudstack.entities.common
 
-import java.lang.reflect.{ParameterizedType, Type}
+import scala.reflect._
 
 import com.bwsw.cloudstack.entities.common.traits.Mapper
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -54,20 +54,7 @@ class JsonMapper extends Mapper[String] {
   }
 
   private def typeReference[T: Manifest] = new TypeReference[T] {
-    override def getType = typeFromManifest(manifest[T])
-  }
-
-  private def typeFromManifest(m: Manifest[_]): Type = {
-    if (m.typeArguments.isEmpty) {
-      m.runtimeClass
-    }
-    else new ParameterizedType {
-      def getRawType = m.runtimeClass
-
-      def getActualTypeArguments = m.typeArguments.map(typeFromManifest).toArray
-
-      def getOwnerType = null
-    }
+    override def getType = classTag[T].runtimeClass
   }
 
   def setIgnoreUnknownPropertiesFlag(ignoreUnknownProperties: Boolean): Unit = {

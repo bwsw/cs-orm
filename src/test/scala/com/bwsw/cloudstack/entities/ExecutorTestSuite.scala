@@ -51,7 +51,7 @@ class ExecutorTestSuite extends fixture.FlatSpec with PrivateMethodTester {
 
   "tryExecuteRequest" should "return response" in { fixture =>
     var checkedEndpoints = List.empty[String]
-    val expectedEndpoints = List(firstEndpoint, secondEndpoint)
+    val expectedEndpoints = List(firstEndpoint)
 
     val tryExecuteRequest = PrivateMethod[String]('tryExecuteRequest)
 
@@ -59,7 +59,8 @@ class ExecutorTestSuite extends fixture.FlatSpec with PrivateMethodTester {
       override val endpointQueue = fixture.queue
 
       override def createClient(endpoint: String): ApacheCloudStackClient = {
-        new ApacheCloudStackClient(firstEndpoint, apacheCloudStackUser) {
+        checkedEndpoints = checkedEndpoints ::: endpoint :: Nil
+        new ApacheCloudStackClient(endpoint, apacheCloudStackUser) {
             override def executeRequest(request: ApacheCloudStackRequest): String = {
               expectedResponse
           }
@@ -73,6 +74,7 @@ class ExecutorTestSuite extends fixture.FlatSpec with PrivateMethodTester {
     def tryExecuteRequestTest(): String = executor invokePrivate tryExecuteRequest(expectedRequest)
 
     assert(tryExecuteRequestTest == expectedResponse)
+    assert(checkedEndpoints == expectedEndpoints)
   }
 
   "tryExecuteRequest" should "change apacheCloudStackClient after NoRouteToHostException" in { fixture =>
@@ -85,16 +87,15 @@ class ExecutorTestSuite extends fixture.FlatSpec with PrivateMethodTester {
       override val endpointQueue = fixture.queue
 
       override def createClient(endpoint: String): ApacheCloudStackClient = {
+        checkedEndpoints = checkedEndpoints ::: endpoint :: Nil
         endpoint match {
           case `firstEndpoint` => new ApacheCloudStackClient(firstEndpoint, apacheCloudStackUser) {
             override def executeRequest(request: ApacheCloudStackRequest): String = {
-              checkedEndpoints = checkedEndpoints ::: firstEndpoint :: Nil
               throw new ApacheCloudStackClientRuntimeException(new NoRouteToHostException)
             }
           }
           case `secondEndpoint` => new ApacheCloudStackClient(secondEndpoint, apacheCloudStackUser) {
             override def executeRequest(request: ApacheCloudStackRequest): String = {
-              checkedEndpoints = checkedEndpoints ::: secondEndpoint :: Nil
               expectedResponse
             }
           }
@@ -119,16 +120,10 @@ class ExecutorTestSuite extends fixture.FlatSpec with PrivateMethodTester {
       override val endpointQueue = fixture.queue
 
       override def createClient(endpoint: String): ApacheCloudStackClient = {
-        endpoint match {
-          case `firstEndpoint` => new ApacheCloudStackClient(firstEndpoint, apacheCloudStackUser) {
-            override def executeRequest(request: ApacheCloudStackRequest): String = {
-              throw new Exception
-            }
-          }
-          case `secondEndpoint` => new ApacheCloudStackClient(secondEndpoint, apacheCloudStackUser) {
-            override def executeRequest(request: ApacheCloudStackRequest): String = {
-              expectedResponse
-            }
+        assert(endpoint == endpointQueue.getElement)
+        new ApacheCloudStackClient(endpoint, apacheCloudStackUser) {
+          override def executeRequest(request: ApacheCloudStackRequest): String = {
+            throw new Exception
           }
         }
       }

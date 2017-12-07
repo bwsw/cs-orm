@@ -21,16 +21,16 @@ package com.bwsw.cloudstack.entities.requests
 import java.util.{TimeZone, UUID}
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
+import com.bwsw.cloudstack.entities.requests.util.Constants.Comands
 import com.bwsw.cloudstack.entities.requests.util.Constants.Parameters._
 import com.bwsw.cloudstack.entities.requests.traits.Request
-import com.bwsw.cloudstack.entities.requests.util.Constants.Comands
 
 /**
-  * Class is responsible for building ApacheCloudStackRequest with specified parameters for creating user with new account
+  * Class is responsible for building ApacheCloudStackRequest with specified parameters for creating an account with a new user
   *
   * @param settings required parameters for account creation, more info see AccountCreateRequest.Settings
-  *                 NOTE: account type and role ID not include in settings, but at least one of it must be defined with
-  *                       help of withType or withRole methods
+  *                 NOTE: account type and role ID are not included in settings, but at least one of them must be defined using
+  *                       withType or withRole methods.
   */
 class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Request {
 
@@ -43,7 +43,7 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
     .addParameter(USER_NAME, settings.username)
 
   /**
-    * Add domain id parameter to a request.
+    * Add a domain id parameter to a request.
     */
   def withDomain(id: UUID): AccountCreateRequest = {
     request.addParameter(DOMAIN_ID, id)
@@ -51,7 +51,7 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
   }
 
   /**
-    * Add time zone parameter to a request.
+    * Add a time zone parameter to a request.
     */
   def withTimeZone(timeZone: TimeZone): AccountCreateRequest ={
     request.addParameter(TIMEZONE, timeZone.toZoneId)
@@ -59,7 +59,7 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
   }
 
   /**
-    * Add account id parameter to a request,
+    * Add an account id parameter to a request,
     * required for adding account from external provisioning system.
     */
   def withId(id: UUID): AccountCreateRequest = {
@@ -68,7 +68,7 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
   }
 
   /**
-    * Add account name parameter to a request.
+    * Add an account name parameter to a request.
     * If it isn't specified, a username will be used as an account name.
     */
   def withName(name: String): AccountCreateRequest = {
@@ -77,7 +77,7 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
   }
 
   /**
-    * Add type of account parameter to a request.
+    * Add an account type parameter to a request.
     * Specify 0 for user, 1 for root admin, and 2 for domain admin.
     */
   def withType(accountType: Int): AccountCreateRequest = {
@@ -86,7 +86,7 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
   }
 
   /**
-    * Add network domain parameter for the account's networks to a request.
+    * Add a network domain parameter for the account's networks to a request.
     */
   def withNetworkDomain(domain: String): AccountCreateRequest = {
     request.addParameter(NETWORK_DOMAIN, domain)
@@ -94,8 +94,8 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
   }
 
   /**
-    * Add role parameter to create account under the specified role networks to a request.
-    * Can be "1" for "admin", "2" for "recource admin", "3" for "domain admin", "4" for "user".
+    * Add an account role parameter to a request.
+    * Can be "1" for "admin", "2" for "recourse admin", "3" for "domain admin", "4" for "user".
     */
   def withRole(role: Int): AccountCreateRequest = {
     request.addParameter(ROLE_ID, role)
@@ -103,7 +103,7 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
   }
 
   /**
-    * Add user id parameter to a request.
+    * Add an user id parameter to a request.
     * required for adding account from external provisioning system
     */
   def withUserId(id: UUID): AccountCreateRequest = {
@@ -114,7 +114,7 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
 
 object AccountCreateRequest {
   /**
-    * Class is responsible to provide account creation settings.
+    * Class is responsible for providing account creation settings.
     *
     * @param email user email
     * @param firstName user first name

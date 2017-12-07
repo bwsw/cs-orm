@@ -34,7 +34,7 @@ class AccountFindRequest extends Request {
     .addParameter(LIST_ALL, true)
 
   /**
-    * Add account id parameter to a request.
+    * Add an account id parameter to a request.
     */
   def withId(id: UUID): AccountFindRequest = {
     request.addParameter(ID, id)
@@ -42,7 +42,7 @@ class AccountFindRequest extends Request {
   }
 
   /**
-    * Add account name parameter to a request.
+    * Add an account name parameter to a request.
     */
   def withName(name: String): AccountFindRequest = {
     request.addParameter(NAME, name)
@@ -50,7 +50,7 @@ class AccountFindRequest extends Request {
   }
 
   /**
-    * Add domain id parameter to a request.
+    * Add a domain id parameter to a request.
     */
   def withDomain(id: UUID): AccountFindRequest = {
     request.addParameter(DOMAIN_ID, id)

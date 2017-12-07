@@ -95,7 +95,7 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
 
   /**
     * Add an account role parameter to a request.
-    * Can be "1" for "admin", "2" for "recourse admin", "3" for "domain admin", "4" for "user".
+    * Specify 1 for admin, 2 for resource admin, 3 for domain admin, 4 for user.
     */
   def withRole(role: Int): AccountCreateRequest = {
     request.addParameter(ROLE_ID, role)

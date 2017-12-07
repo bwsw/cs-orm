@@ -21,21 +21,23 @@ package com.bwsw.cloudstack.entities.requests
 import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
+import com.bwsw.cloudstack.entities.requests.util.Constants.Comands
+import com.bwsw.cloudstack.entities.requests.util.Constants.Parameters._
 import com.bwsw.cloudstack.entities.requests.traits.Request
 
 /**
   * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving user list
   */
 class UserFindRequest extends Request {
-  override val request = new ApacheCloudStackRequest("listUsers")
-    .addParameter("response","json")
-    .addParameter("listAll", true)
+  override val request = new ApacheCloudStackRequest(Comands.LIST_USERS)
+    .addParameter(RESPONSE,"json")
+    .addParameter(LIST_ALL, true)
 
   /**
     * Add user id parameter to a request
     */
   def withId(id: UUID): UserFindRequest = {
-    request.addParameter("id", id)
+    request.addParameter(ID, id)
     this
   }
 
@@ -43,7 +45,7 @@ class UserFindRequest extends Request {
     * Add account name parameter to a request.
     */
   def withAccountName(account: String): UserFindRequest = {
-    request.addParameter("account", account)
+    request.addParameter(ACCOUNT, account)
     this
   }
 
@@ -51,7 +53,7 @@ class UserFindRequest extends Request {
     * Add domain id parameter to a request.
     */
   def withDomain(id: UUID): UserFindRequest = {
-    request.addParameter("domainid", id)
+    request.addParameter(DOMAIN_ID, id)
     this
   }
 
@@ -59,7 +61,7 @@ class UserFindRequest extends Request {
     * Add user name parameter to a request.
     */
   def withName(name: String): UserFindRequest = {
-    request.addParameter("username", name)
+    request.addParameter(USER_NAME, name)
     this
   }
 }

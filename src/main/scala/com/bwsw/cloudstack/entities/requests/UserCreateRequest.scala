@@ -21,6 +21,8 @@ package com.bwsw.cloudstack.entities.requests
 import java.util.{TimeZone, UUID}
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
+import com.bwsw.cloudstack.entities.requests.util.Constants.Comands
+import com.bwsw.cloudstack.entities.requests.util.Constants.Parameters._
 import com.bwsw.cloudstack.entities.requests.traits.Request
 
 /**
@@ -29,21 +31,21 @@ import com.bwsw.cloudstack.entities.requests.traits.Request
   * @param settings required parameters for user creation, more info see UserCreateRequest.Settings
   */
 class UserCreateRequest(settings: UserCreateRequest.Settings) extends Request {
-  override val request = new ApacheCloudStackRequest("createUser")
-    .addParameter("response","json")
-    .addParameter("account", settings.accountName)
-    .addParameter("email", settings.email)
-    .addParameter("firstname", settings.firstName)
-    .addParameter("lastname", settings.lastName)
-    .addParameter("password", settings.password)
-    .addParameter("username", settings.username)
+  override val request = new ApacheCloudStackRequest(Comands.CREATE_USER)
+    .addParameter(RESPONSE,"json")
+    .addParameter(ACCOUNT, settings.accountName)
+    .addParameter(EMAIL, settings.email)
+    .addParameter(FIRST_NAME, settings.firstName)
+    .addParameter(LAST_NAME, settings.lastName)
+    .addParameter(PASSWORD, settings.password)
+    .addParameter(USER_NAME, settings.username)
 
   /**
     * Add domain id parameter to a request.
     * Has to be accompanied with the account parameter.
     */
   def withDomain(id: UUID): UserCreateRequest = {
-    request.addParameter("domainid", id)
+    request.addParameter(DOMAIN_ID, id)
     this
   }
 
@@ -51,7 +53,7 @@ class UserCreateRequest(settings: UserCreateRequest.Settings) extends Request {
     * Add time zone parameter to a request
     */
   def withTimeZone(timeZone: TimeZone): UserCreateRequest ={
-    request.addParameter("timezone", timeZone.toZoneId)
+    request.addParameter(TIMEZONE, timeZone.toZoneId)
     this
   }
 
@@ -60,7 +62,7 @@ class UserCreateRequest(settings: UserCreateRequest.Settings) extends Request {
     * Required for adding account from external provisioning system
     */
   def withId(id: UUID): UserCreateRequest = {
-    request.addParameter("userid", id)
+    request.addParameter(USER_ID, id)
     this
   }
 }

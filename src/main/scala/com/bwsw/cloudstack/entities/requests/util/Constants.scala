@@ -41,7 +41,9 @@ object Constants {
 
   object Comands {
     val CREATE_ACCOUNT = "createAccount"
+    val CREATE_USER = "createUser"
     val LIST_ACCOUNTS = "listAccounts"
+    val LIST_USERS = "listUsers"
   }
 
 }

@@ -23,6 +23,8 @@ import java.util.{TimeZone, UUID}
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackApiCommandParameter
 import org.scalatest.FlatSpec
 
+import com.bwsw.cloudstack.entities.requests.util.Constants.Parameters._
+
 import scala.collection.JavaConverters._
 
 class UserCreateRequestTestSuite extends FlatSpec {
@@ -36,13 +38,13 @@ class UserCreateRequestTestSuite extends FlatSpec {
   )
 
   val defaultParameters = Set[ApacheCloudStackApiCommandParameter](
-    new ApacheCloudStackApiCommandParameter("response","json"),
-    new ApacheCloudStackApiCommandParameter("account", settings.accountName),
-    new ApacheCloudStackApiCommandParameter("email", settings.email),
-    new ApacheCloudStackApiCommandParameter("firstname", settings.firstName),
-    new ApacheCloudStackApiCommandParameter("lastname", settings.lastName),
-    new ApacheCloudStackApiCommandParameter("password", settings.password),
-    new ApacheCloudStackApiCommandParameter("username", settings.username)
+    new ApacheCloudStackApiCommandParameter(RESPONSE,"json"),
+    new ApacheCloudStackApiCommandParameter(ACCOUNT, settings.accountName),
+    new ApacheCloudStackApiCommandParameter(EMAIL, settings.email),
+    new ApacheCloudStackApiCommandParameter(FIRST_NAME, settings.firstName),
+    new ApacheCloudStackApiCommandParameter(LAST_NAME, settings.lastName),
+    new ApacheCloudStackApiCommandParameter(PASSWORD, settings.password),
+    new ApacheCloudStackApiCommandParameter(USER_NAME, settings.username)
   )
 
   it should "create a request with predefined and specified (via constructor) parameters" in {
@@ -53,7 +55,7 @@ class UserCreateRequestTestSuite extends FlatSpec {
 
   "withId" should "add id parameter to a request" in {
     val userId = UUID.randomUUID()
-    val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter("userid", userId.toString))
+    val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(USER_ID, userId.toString))
     val request = new UserCreateRequest(settings)
 
     assert(request.withId(userId).request.getParameters.asScala.toSet == expectedParameters)
@@ -61,7 +63,7 @@ class UserCreateRequestTestSuite extends FlatSpec {
 
   "withAccountName" should "add account name parameter to a request" in {
     val timezone = "GMT+0700"
-    val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter("timezone", timezone))
+    val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(TIMEZONE, timezone))
     val request = new UserCreateRequest(settings)
 
     assert(request.withTimeZone(TimeZone.getTimeZone(timezone)).request.getParameters.asScala.toSet == expectedParameters)
@@ -69,7 +71,7 @@ class UserCreateRequestTestSuite extends FlatSpec {
 
   "withDomain" should "add account name parameter to a request" in {
     val domainId = UUID.randomUUID()
-    val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter("domainid", domainId))
+    val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(DOMAIN_ID, domainId))
     val request = new UserCreateRequest(settings)
 
     assert(request.withDomain(domainId).request.getParameters.asScala.toSet == expectedParameters)

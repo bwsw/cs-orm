@@ -27,6 +27,9 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.slf4j.LoggerFactory
 
+/**
+  * Class is responsible for conversion from entities to json string and from json string to entities
+  */
 class JsonMapper extends Mapper[String] {
   def this(ignoreUnknownProperties: Boolean) = {
     this()
@@ -39,6 +42,11 @@ class JsonMapper extends Mapper[String] {
   mapper.registerModule(DefaultScalaModule)
   mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
 
+  /**
+    * Converts from entity to json string.
+    *
+    * @param value entity for conversion
+    */
   def serialize(value: Any): String = {
     import java.io.StringWriter
 
@@ -48,6 +56,11 @@ class JsonMapper extends Mapper[String] {
     writer.toString
   }
 
+  /**
+    * Converts from json string to entity.
+    *
+    * @param value json string for conversion
+    */
   def deserialize[T: Manifest](value: String): T = {
     logger.debug(s"Deserialize a value: '$value' to object")
     mapper.readValue(value, typeReference[T])

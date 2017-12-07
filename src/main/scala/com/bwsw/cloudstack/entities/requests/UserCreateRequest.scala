@@ -24,13 +24,13 @@ import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import com.bwsw.cloudstack.entities.requests.traits.Request
 
 /**
-  * Class is responsible to create ApacheCloudStackRequest with specified parameters for creating user
+  * Class is responsible for building ApacheCloudStackRequest with specified parameters for creating user
   *
-  * @param settings mandatory parameters for user creation, more info see UserCreateRequest.Settings
+  * @param settings required parameters for user creation, more info see UserCreateRequest.Settings
   */
 class UserCreateRequest(settings: UserCreateRequest.Settings) extends Request {
   override val request = new ApacheCloudStackRequest("createUser")
-    .addParameter("response","json")//toZoneId
+    .addParameter("response","json")
     .addParameter("account", settings.accountName)
     .addParameter("email", settings.email)
     .addParameter("firstname", settings.firstName)
@@ -39,7 +39,7 @@ class UserCreateRequest(settings: UserCreateRequest.Settings) extends Request {
     .addParameter("username", settings.username)
 
   /**
-    * Add domain id parameter into request.
+    * Add domain id parameter to a request.
     * Has to be accompanied with the account parameter.
     */
   def withDomain(id: UUID): UserCreateRequest = {
@@ -48,7 +48,7 @@ class UserCreateRequest(settings: UserCreateRequest.Settings) extends Request {
   }
 
   /**
-    * Add time zone parameter into request
+    * Add time zone parameter to a request
     */
   def withTimeZone(timeZone: TimeZone): UserCreateRequest ={
     request.addParameter("timezone", timeZone.toZoneId)
@@ -56,7 +56,7 @@ class UserCreateRequest(settings: UserCreateRequest.Settings) extends Request {
   }
 
   /**
-    * Add user id parameter into request.
+    * Add user id parameter to a request.
     * Required for adding account from external provisioning system
     */
   def withId(id: UUID): UserCreateRequest = {
@@ -69,8 +69,8 @@ object UserCreateRequest {
   /**
     * Class is responsible to provide user creation settings
     *
-    * @param accountName provides to create the user under the specified account.
-    *                    If no account is specified, the username will be used as the account name.
+    * @param accountName user account name.
+    *                    If it isn't specified, a username will be used as an account name.
     * @param email user email
     * @param firstName user first name
     * @param lastName user last name

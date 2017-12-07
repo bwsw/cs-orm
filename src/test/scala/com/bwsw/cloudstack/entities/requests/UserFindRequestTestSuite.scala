@@ -31,13 +31,13 @@ class UserFindRequestTestSuite extends FlatSpec {
     new ApacheCloudStackApiCommandParameter("listAll","true")
   )
 
-  "Instance creation" should "create request with 'response' and 'listAll' default parameters" in {
+  it should "create a request with predefined parameters" in {
     val request = new UserFindRequest
 
     assert(request.request.getParameters.asScala.toSet == defaultParameters)
   }
 
-  "withId" should "add id parameter into request" in {
+  "withId" should "add id parameter to a request" in {
     val userId = UUID.randomUUID()
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter("id", userId.toString))
     val request = new UserFindRequest
@@ -45,7 +45,7 @@ class UserFindRequestTestSuite extends FlatSpec {
     assert(request.withId(userId).request.getParameters.asScala.toSet == expectedParameters)
   }
 
-  "withAccountName" should "add account name parameter into request" in {
+  "withAccountName" should "add account name parameter to a request" in {
     val accountName = "test"
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter("account", accountName))
     val request = new UserFindRequest
@@ -53,7 +53,7 @@ class UserFindRequestTestSuite extends FlatSpec {
     assert(request.withAccountName(accountName).request.getParameters.asScala.toSet == expectedParameters)
   }
 
-  "withDomain" should "add account name parameter into request" in {
+  "withDomain" should "add account name parameter to a request" in {
     val domainId = UUID.randomUUID()
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter("domainid", domainId))
     val request = new UserFindRequest
@@ -61,7 +61,7 @@ class UserFindRequestTestSuite extends FlatSpec {
     assert(request.withDomain(domainId).request.getParameters.asScala.toSet == expectedParameters)
   }
 
-  "withName" should "add user name parameter into request" in {
+  "withName" should "add user name parameter to a request" in {
     val userName = "userNameTest"
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter("username", userName))
     val request = new UserFindRequest

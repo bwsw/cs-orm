@@ -55,7 +55,7 @@ class UserFindRequestTestSuite extends FlatSpec {
     assert(request.withAccountName(accountName).request.getParameters.asScala.toSet == expectedParameters)
   }
 
-  "withDomain" should "add account name parameter to a request" in {
+  "withDomain" should "add domain id parameter to a request" in {
     val domainId = UUID.randomUUID()
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(DOMAIN_ID, domainId))
     val request = new UserFindRequest

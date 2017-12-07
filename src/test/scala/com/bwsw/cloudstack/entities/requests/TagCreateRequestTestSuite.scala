@@ -48,7 +48,7 @@ class TagCreateRequestTestSuite extends FlatSpec {
     new ApacheCloudStackApiCommandParameter("tags[0].key", key1),
     new ApacheCloudStackApiCommandParameter("tags[0].value", value1),
     new ApacheCloudStackApiCommandParameter("tags[1].key", key2),
-    new ApacheCloudStackApiCommandParameter("tags[1].value", value2),
+    new ApacheCloudStackApiCommandParameter("tags[1].value", value2)
   )
 
   it should "create a request with predefined parameters" in {

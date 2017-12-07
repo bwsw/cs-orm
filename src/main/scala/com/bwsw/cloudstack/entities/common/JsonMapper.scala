@@ -28,7 +28,7 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.slf4j.LoggerFactory
 
 /**
-  * Class is responsible for conversion from entities to json string and from json string to entities
+  * This mapper provides functionality to convert your model objects (classes and structs) to and from json string.
   */
 class JsonMapper extends Mapper[String] {
   def this(ignoreUnknownProperties: Boolean) = {

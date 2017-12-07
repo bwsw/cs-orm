@@ -29,6 +29,13 @@ import org.slf4j.LoggerFactory
 
 import scala.util.{Failure, Success, Try}
 
+/**
+  * Class provides functionality to interact with CloudStack
+  *
+  * @param settings see: Executor.Settings
+  * @param waitIfServerUnavailable If true and the server is unavailable, sends requests until the server has become available.
+  *                                If false, throw an exception.
+  */
 class Executor(settings: Executor.Settings,
                waitIfServerUnavailable: Boolean = true){
   private val logger = LoggerFactory.getLogger(this.getClass)
@@ -36,6 +43,11 @@ class Executor(settings: Executor.Settings,
   protected val apacheCloudStackUser = new ApacheCloudStackUser(settings.secretKey, settings.apiKey)
   protected val endpointQueue: Queue[String] = new WeightedQueue[String](settings.endpoints.toList)
 
+  /**
+    * Executes the given ApacheCloudStackRequest.
+    *
+    * @return the response as a String
+    */
   def executeRequest(request: ApacheCloudStackRequest): String = {
     logger.trace(s"executeRequest(request: $request)")
 
@@ -72,5 +84,13 @@ class Executor(settings: Executor.Settings,
 }
 
 object Executor {
+  /**
+    * Class is responsible for providing settings for interaction with CloudStack
+    *
+    * @param endpoints array of endpoints of CloudStack server
+    * @param secretKey secret key of user for authorization on CloudStack server
+    * @param apiKey api key of user for authorization on CloudStack server
+    * @param retryDelay delay between request sending if CloudStack server is unavailable and waitIfServerUnavailable flag is true
+    */
   case class Settings(endpoints: Array[String], secretKey: String, apiKey: String, retryDelay: Int)
 }

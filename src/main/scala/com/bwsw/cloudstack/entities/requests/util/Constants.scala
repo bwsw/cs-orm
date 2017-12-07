@@ -45,7 +45,9 @@ object Constants {
 
   object Commands {
     val CREATE_ACCOUNT = "createAccount"
+    val CREATE_USER = "createUser"
     val LIST_ACCOUNTS = "listAccounts"
+    val LIST_USERS = "listUsers"
     val DEPLOY_VIRTUAL_MACHINE = "deployVirtualMachine"
   }
 

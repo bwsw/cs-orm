@@ -32,6 +32,8 @@ object Constants {
     val NAME = "name"
     val NETWORK_DOMAIN = "networkdomain"
     val PASSWORD = "password"
+    val RESOURCE_TYPE = "resourcetype"
+    val RESOURCE_IDS = "resourceids"
     val RESPONSE = "response"
     val ROLE_ID = "roleid"
     val TIMEZONE = "timezone"
@@ -39,8 +41,9 @@ object Constants {
     val USER_NAME = "username"
   }
 
-  object Comands {
+  object Commands {
     val CREATE_ACCOUNT = "createAccount"
+    val CREATE_TAGS = "createTags"
     val LIST_ACCOUNTS = "listAccounts"
   }
 

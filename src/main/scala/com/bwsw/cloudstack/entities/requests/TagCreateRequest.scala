@@ -27,6 +27,11 @@ import com.bwsw.cloudstack.entities.requests.traits.Request
 import com.bwsw.cloudstack.entities.requests.util.traits.TagType
 import com.bwsw.cloudstack.entities.responses.Tag
 
+/**
+  * Class is responsible for building ApacheCloudStackRequest with specified parameters for creating tags
+  *
+  * @param settings required parameters for tag list creation, more info see AccountCreateRequest.Settings
+  */
 class TagCreateRequest(settings: TagCreateRequest.Settings) extends Request {
   override val request = new ApacheCloudStackRequest(Commands.CREATE_TAGS)
     .addParameter(RESPONSE,"json")
@@ -42,5 +47,12 @@ class TagCreateRequest(settings: TagCreateRequest.Settings) extends Request {
 }
 
 object TagCreateRequest {
+  /**
+    * Class is responsible for providing tags creation settings.
+    *
+    * @param resourceType type of creating tags
+    * @param resourceIds a set with UUID of resources within which tags will be created
+    * @param tags tag list for creation
+    */
   case class Settings(resourceType: TagType, resourceIds: Set[UUID], tags: List[Tag])
 }

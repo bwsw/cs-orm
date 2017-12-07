@@ -27,18 +27,21 @@ object Constants {
     val EMAIL = "email"
     val FIRST_NAME = "firstname"
     val ID = "id"
+    val KEY = "key"
     val LAST_NAME = "lastname"
     val LIST_ALL = "listAll"
     val NAME = "name"
     val NETWORK_DOMAIN = "networkdomain"
     val PASSWORD = "password"
     val RESOURCE_TYPE = "resourcetype"
+    val RESOURCE_ID = "resourceid"
     val RESOURCE_IDS = "resourceids"
     val RESPONSE = "response"
     val ROLE_ID = "roleid"
     val TIMEZONE = "timezone"
     val USER_ID = "userid"
     val USER_NAME = "username"
+    val VALUE = "value"
   }
 
   object Commands {

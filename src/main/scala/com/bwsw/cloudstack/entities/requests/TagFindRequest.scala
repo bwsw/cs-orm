@@ -18,6 +18,64 @@
 */
 package com.bwsw.cloudstack.entities.requests
 
-class TagFindRequest {
+import java.util.UUID
 
+import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
+import com.bwsw.cloudstack.entities.requests.traits.Request
+import com.bwsw.cloudstack.entities.requests.util.Constants.Commands
+import com.bwsw.cloudstack.entities.requests.util.Constants.Parameters._
+import com.bwsw.cloudstack.entities.requests.util.traits.TagType
+
+class TagFindRequest extends Request {
+  override val request = new ApacheCloudStackRequest(Commands.LIST_ACCOUNTS)
+    .addParameter(RESPONSE,"json")
+    .addParameter(LIST_ALL, true)
+
+  /**
+    * Add an account name parameter to a request.
+    */
+  def withAccountName(name: String): TagFindRequest = {
+    request.addParameter(ACCOUNT, name)
+    this
+  }
+
+  /**
+    * Add a domain id parameter to a request.
+    */
+  def withDomain(id: UUID): TagFindRequest = {
+    request.addParameter(DOMAIN_ID, id)
+    this
+  }
+
+  /**
+    * Add a tag key parameter to a request.
+    */
+  def withKey(key: String): TagFindRequest = {
+    request.addParameter(KEY, key)
+    this
+  }
+
+  /**
+    * Add a resource id parameter to a request.
+    */
+  def withResource(id: UUID): TagFindRequest = {
+    request.addParameter(RESOURCE_ID, id)
+    this
+  }
+
+  /**
+    * Add a resource type parameter to a request.
+    */
+  def withResourceType(resourceType: TagType): TagFindRequest = {
+    request.addParameter(RESOURCE_TYPE, resourceType.toString)
+    this
+  }
+
+  /**
+    * Add a tag value parameter to a request.
+    */
+  def withValue(value: String): TagFindRequest = {
+    request.addParameter(VALUE, value)
+    this
+  }
 }

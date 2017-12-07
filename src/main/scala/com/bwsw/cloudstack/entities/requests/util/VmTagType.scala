@@ -20,6 +20,6 @@ package com.bwsw.cloudstack.entities.requests.util
 
 import com.bwsw.cloudstack.entities.requests.util.traits.TagType
 
-class UserVmTagType extends TagType {
+class VmTagType extends TagType {
   override def toString: String = "UserVM"
 }

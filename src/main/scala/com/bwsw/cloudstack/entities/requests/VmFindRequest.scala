@@ -21,22 +21,22 @@ package com.bwsw.cloudstack.entities.requests
 import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
-import com.bwsw.cloudstack.entities.requests.util.Constants.Parameters._
-import com.bwsw.cloudstack.entities.requests.util.Constants.Commands
 import com.bwsw.cloudstack.entities.requests.traits.Request
+import com.bwsw.cloudstack.entities.requests.util.Constants.Commands
+import com.bwsw.cloudstack.entities.requests.util.Constants.Parameters._
 
 /**
-  * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving account list
+  * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving vm list
   */
-class AccountFindRequest extends Request {
+class VmFindRequest extends Request {
   override val request = new ApacheCloudStackRequest(Commands.LIST_ACCOUNTS)
     .addParameter(RESPONSE,"json")
     .addParameter(LIST_ALL, true)
 
   /**
-    * Add an account id parameter to a request.
+    * Add a vm id parameter to a request.
     */
-  def withId(id: UUID): AccountFindRequest = {
+  def withId(id: UUID): VmFindRequest = {
     request.addParameter(ID, id)
     this
   }
@@ -44,16 +44,40 @@ class AccountFindRequest extends Request {
   /**
     * Add an account name parameter to a request.
     */
-  def withName(name: String): AccountFindRequest = {
-    request.addParameter(NAME, name)
+  def withAccountName(name: String): VmFindRequest = {
+    request.addParameter(ACCOUNT, name)
     this
   }
 
   /**
     * Add a domain id parameter to a request.
     */
-  def withDomain(id: UUID): AccountFindRequest = {
+  def withDomain(id: UUID): VmFindRequest = {
     request.addParameter(DOMAIN_ID, id)
+    this
+  }
+
+  /**
+    * Add a group id parameter to a request.
+    */
+  def withGroup(id: UUID): VmFindRequest = {
+    request.addParameter(GROUP_ID, id)
+    this
+  }
+
+  /**
+    * Add a user id parameter to a request.
+    */
+  def withUser(id: UUID): VmFindRequest = {
+    request.addParameter(USER_ID, id)
+    this
+  }
+
+  /**
+    * Add a zone id parameter to a request.
+    */
+  def withZone(id: UUID): VmFindRequest = {
+    request.addParameter(ZONE_ID, id)
     this
   }
 }

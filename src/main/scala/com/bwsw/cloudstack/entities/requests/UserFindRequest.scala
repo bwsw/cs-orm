@@ -21,7 +21,7 @@ package com.bwsw.cloudstack.entities.requests
 import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
-import com.bwsw.cloudstack.entities.requests.util.Constants.Comands
+import com.bwsw.cloudstack.entities.requests.util.Constants.Commands
 import com.bwsw.cloudstack.entities.requests.util.Constants.Parameters._
 import com.bwsw.cloudstack.entities.requests.traits.Request
 
@@ -29,7 +29,7 @@ import com.bwsw.cloudstack.entities.requests.traits.Request
   * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving user list
   */
 class UserFindRequest extends Request {
-  override val request = new ApacheCloudStackRequest(Comands.LIST_USERS)
+  override val request = new ApacheCloudStackRequest(Commands.LIST_USERS)
     .addParameter(RESPONSE,"json")
     .addParameter(LIST_ALL, true)
 

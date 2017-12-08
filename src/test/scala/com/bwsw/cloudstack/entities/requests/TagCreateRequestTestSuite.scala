@@ -51,7 +51,7 @@ class TagCreateRequestTestSuite extends FlatSpec {
     new ApacheCloudStackApiCommandParameter("tags[1].value", value2)
   )
 
-  it should "create a request with predefined parameters" in {
+  it should "create a request with predefined and specified (via constructor) parameters" in {
     val request = new TagCreateRequest(TagCreateRequest.Settings(tagType, resourceIds, tagList))
 
     assert(request.request.getParameters.asScala.toSet == defaultParameters)

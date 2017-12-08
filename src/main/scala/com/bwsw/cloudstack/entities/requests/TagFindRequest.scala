@@ -26,6 +26,9 @@ import com.bwsw.cloudstack.entities.requests.util.Constants.Commands
 import com.bwsw.cloudstack.entities.requests.util.Constants.Parameters._
 import com.bwsw.cloudstack.entities.requests.util.traits.TagType
 
+/**
+  * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving tag list
+  */
 class TagFindRequest extends Request {
   override val request = new ApacheCloudStackRequest(Commands.LIST_ACCOUNTS)
     .addParameter(RESPONSE,"json")

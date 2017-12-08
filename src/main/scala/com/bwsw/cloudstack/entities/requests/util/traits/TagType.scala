@@ -18,6 +18,10 @@
 */
 package com.bwsw.cloudstack.entities.requests.util.traits
 
+/**
+  * Common trait is used to create a tag of specified type
+  * (see: https://cwiki.apache.org/confluence/display/CLOUDSTACK/Resource+Tags)
+  */
 trait TagType {
   def toString: String
 }

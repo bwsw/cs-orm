@@ -51,7 +51,7 @@ object TagCreateRequest {
     * Class is responsible for providing tags creation settings.
     *
     * @param resourceType type of creating tags
-    * @param resourceIds a set with UUID of resources within which tags will be created
+    * @param resourceIds a set of resource's UUIDs for which tags will be created
     * @param tags tag list for creation
     */
   case class Settings(resourceType: TagType, resourceIds: Set[UUID], tags: List[Tag])

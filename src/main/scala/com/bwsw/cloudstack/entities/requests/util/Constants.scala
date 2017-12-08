@@ -26,6 +26,7 @@ object Constants {
     val DOMAIN_ID = "domainid"
     val EMAIL = "email"
     val FIRST_NAME = "firstname"
+    val GROUP_ID = "groupid"
     val ID = "id"
     val KEY = "key"
     val LAST_NAME = "lastname"
@@ -38,10 +39,13 @@ object Constants {
     val RESOURCE_IDS = "resourceids"
     val RESPONSE = "response"
     val ROLE_ID = "roleid"
+    val SERVICE_OFFERING_ID = "serviceofferingid"
+    val TEMPLATE_ID = "templateid"
     val TIMEZONE = "timezone"
     val USER_ID = "userid"
     val USER_NAME = "username"
     val VALUE = "value"
+    val ZONE_ID = "zoneid"
   }
 
   object Commands {
@@ -50,6 +54,7 @@ object Constants {
     val CREATE_USER = "createUser"
     val LIST_ACCOUNTS = "listAccounts"
     val LIST_USERS = "listUsers"
+    val DEPLOY_VIRTUAL_MACHINE = "deployVirtualMachine"
   }
 
 }

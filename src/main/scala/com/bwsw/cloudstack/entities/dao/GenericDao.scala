@@ -16,17 +16,20 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities.dao
 
-import java.util.UUID
+import com.bwsw.cloudstack.entities.Executor
+import com.bwsw.cloudstack.entities.common.traits.Mapper
+import com.bwsw.cloudstack.entities.requests.Request
+import com.bwsw.cloudstack.entities.responses.Entity
 
-import com.fasterxml.jackson.annotation.JsonProperty
+abstract class GenericDao[T <: Entity, D](protected val executor: Executor, protected val mapper: Mapper[D]) {
+  protected type F <: Request
+  protected type C <: Request
 
-case class VirtualMachinesResponse(@JsonProperty("listvirtualmachinesresponse")  entityList: VirtualMachineList)
-  extends EntityResponse(entityList)
+  def create(request: C): Unit = {
+    executor.executeRequest(request.request)
+  }
 
-case class VirtualMachineList(@JsonProperty("virtualmachine") entities: Option[List[VirtualMachine]])
-  extends EntityList(entities)
-
-case class VirtualMachine(id: UUID, @JsonProperty("account") accountName: String, @JsonProperty("domainid") domainId: UUID)
-  extends Entity
+  def find(request: F): Iterable[T]
+}

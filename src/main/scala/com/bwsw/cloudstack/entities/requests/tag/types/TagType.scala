@@ -16,17 +16,12 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities.requests.tag.types
 
-import java.util.UUID
-
-import com.fasterxml.jackson.annotation.JsonProperty
-
-case class VirtualMachinesResponse(@JsonProperty("listvirtualmachinesresponse")  entityList: VirtualMachineList)
-  extends EntityResponse(entityList)
-
-case class VirtualMachineList(@JsonProperty("virtualmachine") entities: Option[List[VirtualMachine]])
-  extends EntityList(entities)
-
-case class VirtualMachine(id: UUID, @JsonProperty("account") accountName: String, @JsonProperty("domainid") domainId: UUID)
-  extends Entity
+/**
+  * Common trait is used to create a tag of specified type
+  * (see: https://cwiki.apache.org/confluence/display/CLOUDSTACK/Resource+Tags)
+  */
+trait TagType {
+  def toString: String
+}

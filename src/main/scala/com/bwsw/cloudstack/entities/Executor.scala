@@ -23,6 +23,7 @@ import java.net.NoRouteToHostException
 import br.com.autonomiccs.apacheCloudStack.client.{ApacheCloudStackClient, ApacheCloudStackRequest}
 import br.com.autonomiccs.apacheCloudStack.client.beans.ApacheCloudStackUser
 import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRuntimeException
+import com.bwsw.cloudstack.ClientCreator
 import com.bwsw.cloudstack.entities.common.WeightedQueue
 import com.bwsw.cloudstack.entities.common.traits.Queue
 import org.slf4j.LoggerFactory
@@ -37,10 +38,10 @@ import scala.util.{Failure, Success, Try}
   *                                If false, throw an exception.
   */
 class Executor(settings: Executor.Settings,
+               clientCreator: ClientCreator,
                waitIfServerUnavailable: Boolean = true){
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  protected val apacheCloudStackUser = new ApacheCloudStackUser(settings.secretKey, settings.apiKey)
   protected val endpointQueue: Queue[String] = new WeightedQueue[String](settings.endpoints.toList)
 
   /**
@@ -54,19 +55,15 @@ class Executor(settings: Executor.Settings,
     if (waitIfServerUnavailable) {
       tryExecuteRequest(request)
     } else {
-      val client = createClient(endpointQueue.getElement)
+      val client = clientCreator.createClient(endpointQueue.getElement)
       client.executeRequest(request)
     }
-  }
-
-  protected def createClient(endpoint: String): ApacheCloudStackClient = {
-    new ApacheCloudStackClient(endpoint, apacheCloudStackUser)
   }
 
   protected def tryExecuteRequest(request: ApacheCloudStackRequest): String = {
     logger.trace(s"tryExecuteRequest(request: $request)")
     val endpoint = endpointQueue.getElement
-    val client = createClient(endpoint)
+    val client = clientCreator.createClient(endpoint)
     Try {
       client.executeRequest(request)
     } match {
@@ -88,9 +85,7 @@ object Executor {
     * Class is responsible for providing settings for interaction with CloudStack
     *
     * @param endpoints array of endpoints of CloudStack server
-    * @param secretKey secret key of user for authorization on CloudStack server
-    * @param apiKey api key of user for authorization on CloudStack server
     * @param retryDelay delay between request sending if CloudStack server is unavailable and waitIfServerUnavailable flag is true
     */
-  case class Settings(endpoints: Array[String], secretKey: String, apiKey: String, retryDelay: Int)
+  case class Settings(endpoints: Array[String], retryDelay: Int)
 }

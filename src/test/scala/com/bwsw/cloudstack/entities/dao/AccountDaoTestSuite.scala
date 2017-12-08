@@ -16,17 +16,10 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities.dao
 
-import java.util.UUID
+import org.scalatest.FlatSpec
 
-import com.fasterxml.jackson.annotation.JsonProperty
+class AccountDaoTestSuite extends FlatSpec {
 
-case class VirtualMachinesResponse(@JsonProperty("listvirtualmachinesresponse")  entityList: VirtualMachineList)
-  extends EntityResponse(entityList)
-
-case class VirtualMachineList(@JsonProperty("virtualmachine") entities: Option[List[VirtualMachine]])
-  extends EntityList(entities)
-
-case class VirtualMachine(id: UUID, @JsonProperty("account") accountName: String, @JsonProperty("domainid") domainId: UUID)
-  extends Entity
+}

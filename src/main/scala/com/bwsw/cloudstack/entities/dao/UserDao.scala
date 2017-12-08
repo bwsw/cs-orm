@@ -16,17 +16,21 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities.dao
 
-import java.util.UUID
+import com.bwsw.cloudstack.entities.Executor
+import com.bwsw.cloudstack.entities.common.JsonMapper
+import com.bwsw.cloudstack.entities.requests.user.{UserCreateRequest, UserFindRequest}
+import com.bwsw.cloudstack.entities.responses.{User, UserResponse}
 
-import com.fasterxml.jackson.annotation.JsonProperty
+class UserDao(executor: Executor, mapper: JsonMapper) extends GenericDao[User, String](executor, mapper) {
+  override protected type F = UserFindRequest
+  override protected type C = UserCreateRequest
 
-case class VirtualMachinesResponse(@JsonProperty("listvirtualmachinesresponse")  entityList: VirtualMachineList)
-  extends EntityResponse(entityList)
+  override def create(request: C): Unit = super.create(request)
 
-case class VirtualMachineList(@JsonProperty("virtualmachine") entities: Option[List[VirtualMachine]])
-  extends EntityList(entities)
-
-case class VirtualMachine(id: UUID, @JsonProperty("account") accountName: String, @JsonProperty("domainid") domainId: UUID)
-  extends Entity
+  override def find(request: F): List[User] = {
+    val response = executor.executeRequest(request.request)
+    mapper.deserialize[UserResponse](response).entityList.entities.getOrElse(List.empty[User])
+  }
+}

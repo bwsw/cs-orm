@@ -18,19 +18,61 @@
 */
 package com.bwsw.cloudstack.entities.dao
 
+import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.JsonMapper
 import com.bwsw.cloudstack.entities.requests.tag.{TagCreateRequest, TagFindRequest}
 import com.bwsw.cloudstack.entities.responses.{Tag, TagResponse}
 
+import scala.util.{Failure, Success, Try}
+
+/**
+  * Class is responsible for creating and reading ApacheCloudStack tags
+  *
+  * @param executor see: [[Executor]]
+  * @param mapper see: [[JsonMapper]]
+  */
 class TagDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Tag, String](executor, mapper) {
   override protected type F = TagFindRequest
   override protected type C = TagCreateRequest
 
-  override def create(request: C): Unit = super.create(request)
+  /**
+    * Create one or more tags
+    *
+    * @param request see: [[TagCreateRequest]]
+    */
+  override def create(request: C): Unit = {
+    Try {
+      super.create(request)
+    } match {
+      case Success(x) =>
+        logger.debug(s"Tags were created by request: $request")
+      case Failure(e: Throwable) =>
+        logger.error(s"Can not to create tags, exception: $e was thrown")
+    }
+  }
 
+  /**
+    * Retrieve tags
+    *
+    * @param request see: [[TagFindRequest]]
+    */
   override def find(request: F): Set[Tag] = {
-    val response = executor.executeRequest(request.request)
-    mapper.deserialize[TagResponse](response).entityList.entities.getOrElse(Set.empty[Tag])
+    logger.trace(s"find(request: $request)")
+    val tags = Try {
+      val response = executor.executeRequest(request.request)
+      mapper.deserialize[TagResponse](response).entityList.entities.getOrElse(Set.empty[Tag])
+    } match {
+      case Success(x) =>
+        logger.debug(s"Tags were retrieved: $x")
+        x
+      case Failure(e: ApacheCloudStackClientRequestRuntimeException) if e.getStatusCode == ENTITY_DOES_NOT_EXIST =>
+        logger.warn(s"No tags found on request: $request")
+        Set.empty[Tag]
+      case Failure(e: Throwable) =>
+        logger.error(s"Can not to find tags, an exception: $e was thrown")
+        throw e
+    }
+    tags
   }
 }

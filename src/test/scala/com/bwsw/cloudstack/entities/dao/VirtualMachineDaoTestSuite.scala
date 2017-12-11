@@ -18,8 +18,112 @@
 */
 package com.bwsw.cloudstack.entities.dao
 
+import java.util.UUID
+
+import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
+import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
+import com.bwsw.cloudstack.entities.Executor
+import com.bwsw.cloudstack.entities.requests.vm.{VmCreateRequest, VmFindRequest}
+import com.bwsw.cloudstack.entities.responses.VirtualMachine
 import org.scalatest.FlatSpec
 
-class VirtualMachineDaoTestSuite extends FlatSpec {
+class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
+  val findRequest = new VmFindRequest
 
+  "find" should "return an entity list if response json string contains data" in {
+    val vmId = UUID.randomUUID()
+    val accountName = "test"
+    val domainId = UUID.randomUUID()
+    val expectedVmList = List(VirtualMachine(vmId, accountName, domainId))
+
+    val executor = new Executor(executorSettings, clientCreator){
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(findRequest.request == request)
+        Response.getVmResponseJson(vmId.toString, accountName, domainId.toString)
+      }
+    }
+
+    val vmDao = new VirtualMachineDao(executor, jsonMapper)
+
+    assert(vmDao.find(findRequest) == expectedVmList)
+  }
+
+  "find" should "return an empty entity list if response json string does not contain data" in {
+    val executor = new Executor(executorSettings, clientCreator){
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(findRequest.request == request)
+        Response.getResponseWithEmptyVmList
+      }
+    }
+
+    val vmDao = new VirtualMachineDao(executor, jsonMapper)
+
+    assert(vmDao.find(findRequest) == List.empty[VirtualMachine])
+  }
+
+  "find" should "return an empty entity list if Executor throws ApacheCloudStackClientRequestRuntimeException" +
+    " with status code 431" in {
+    val statusCode = 431
+    val executor = new Executor(executorSettings, clientCreator){
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(findRequest.request == request)
+        throw new ApacheCloudStackClientRequestRuntimeException(statusCode, "", "")
+      }
+    }
+
+    val vmDao = new VirtualMachineDao(executor, jsonMapper)
+
+    assert(vmDao.find(findRequest) == List.empty[VirtualMachine])
+  }
+
+  "find" should "not swallow non-ApacheCloudStackClientRequestRuntimeException" in {
+    val executor = new Executor(executorSettings, clientCreator){
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(findRequest.request == request)
+        throw new Exception
+      }
+    }
+
+    val vmDao = new VirtualMachineDao(executor, jsonMapper)
+
+    assertThrows[Exception](vmDao.find(findRequest))
+  }
+
+  "find" should "not swallow ApacheCloudStackClientRequestRuntimeException with status other than 431" in {
+    val statusCode = 400
+    val executor = new Executor(executorSettings, clientCreator) {
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(findRequest.request == request)
+        throw new ApacheCloudStackClientRequestRuntimeException(statusCode, "", "")
+      }
+    }
+
+    val vmDao = new VirtualMachineDao(executor, jsonMapper)
+
+    assertThrows[ApacheCloudStackClientRequestRuntimeException](vmDao.find(findRequest))
+  }
+
+
+  "create" should "submit request to Executor" in {
+    var actualRequests = List.empty[ApacheCloudStackRequest]
+    val createRequest = new VmCreateRequest(VmCreateRequest.Settings(
+      serviceOfferingId = UUID.randomUUID(),
+      templateId = UUID.randomUUID(),
+      zoneId = UUID.randomUUID()
+    ))
+
+    val expectedRequests = List(createRequest.request)
+
+    val executor = new Executor(executorSettings, clientCreator) {
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        actualRequests = actualRequests ::: request :: Nil
+        ""
+      }
+    }
+
+    val vmDao = new VirtualMachineDao(executor, jsonMapper)
+
+    assert(vmDao.create(createRequest).isInstanceOf[Unit])
+    assert(actualRequests == expectedRequests)
+  }
 }

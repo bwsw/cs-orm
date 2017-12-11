@@ -20,8 +20,7 @@ package com.bwsw.cloudstack.entities
 
 import java.net.NoRouteToHostException
 
-import br.com.autonomiccs.apacheCloudStack.client.{ApacheCloudStackClient, ApacheCloudStackRequest}
-import br.com.autonomiccs.apacheCloudStack.client.beans.ApacheCloudStackUser
+import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRuntimeException
 import com.bwsw.cloudstack.ClientCreator
 import com.bwsw.cloudstack.entities.common.WeightedQueue

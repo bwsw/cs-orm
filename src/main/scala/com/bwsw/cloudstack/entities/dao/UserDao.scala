@@ -18,19 +18,61 @@
 */
 package com.bwsw.cloudstack.entities.dao
 
+import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.JsonMapper
 import com.bwsw.cloudstack.entities.requests.user.{UserCreateRequest, UserFindRequest}
 import com.bwsw.cloudstack.entities.responses.{User, UserResponse}
 
+import scala.util.{Failure, Success, Try}
+
+/**
+  * Class is responsible for creating and reading ApacheCloudStack users
+  *
+  * @param executor see: [[Executor]]
+  * @param mapper see: [[JsonMapper]]
+  */
 class UserDao(executor: Executor, mapper: JsonMapper) extends GenericDao[User, String](executor, mapper) {
   override protected type F = UserFindRequest
   override protected type C = UserCreateRequest
 
-  override def create(request: C): Unit = super.create(request)
+  /**
+    * Create user
+    *
+    * @param request see: [[UserCreateRequest]]
+    */
+  override def create(request: C): Unit = {
+    Try {
+      super.create(request)
+    } match {
+      case Success(x) =>
+        logger.debug(s"User was created by request: $request")
+      case Failure(e: Throwable) =>
+        logger.error(s"Can not to create user, exception: $e was thrown")
+    }
+  }
 
+  /**
+    * Retrieve users
+    *
+    * @param request see: [[UserFindRequest]]
+    */
   override def find(request: F): List[User] = {
-    val response = executor.executeRequest(request.request)
-    mapper.deserialize[UserResponse](response).entityList.entities.getOrElse(List.empty[User])
+    logger.trace(s"find(request: $request)")
+    val users = Try {
+      val response = executor.executeRequest(request.request)
+      mapper.deserialize[UserResponse](response).entityList.entities.getOrElse(List.empty[User])
+    } match {
+      case Success(x) =>
+        logger.debug(s"Users were retrieved: $x")
+        x
+      case Failure(e: ApacheCloudStackClientRequestRuntimeException) if e.getStatusCode == ENTITY_DOES_NOT_EXIST =>
+        logger.warn(s"No users found on request: $request")
+        List.empty[User]
+      case Failure(e: Throwable) =>
+        logger.error(s"Can not to find users, an exception: $e was thrown")
+        throw e
+    }
+    users
   }
 }

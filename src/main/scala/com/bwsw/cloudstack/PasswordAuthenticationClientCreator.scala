@@ -20,6 +20,7 @@ package com.bwsw.cloudstack
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackClient
 import br.com.autonomiccs.apacheCloudStack.client.beans.ApacheCloudStackUser
+import org.slf4j.LoggerFactory
 
 /**
   * Class is responsible for ApacheCloudStackClient creation
@@ -27,9 +28,11 @@ import br.com.autonomiccs.apacheCloudStack.client.beans.ApacheCloudStackUser
   * @param settings see: PasswordAuthenticationClientCreator.Settings
   */
 class PasswordAuthenticationClientCreator(settings: PasswordAuthenticationClientCreator.Settings) extends ClientCreator {
+  private val logger = LoggerFactory.getLogger(this.getClass)
   private[cloudstack] val apacheCloudStackUser = new ApacheCloudStackUser(settings.username, settings.password, settings.domain)
 
   override def createClient(endpoint: String): ApacheCloudStackClient = {
+    logger.trace(s"createClient(endpoint: $endpoint)")
     new ApacheCloudStackClient(endpoint, apacheCloudStackUser)
   }
 }

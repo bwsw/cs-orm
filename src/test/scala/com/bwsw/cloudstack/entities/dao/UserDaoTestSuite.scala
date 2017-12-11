@@ -18,8 +18,113 @@
 */
 package com.bwsw.cloudstack.entities.dao
 
+import java.util.UUID
+
+import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
+import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
+import com.bwsw.cloudstack.entities.Executor
+import com.bwsw.cloudstack.entities.requests.user.{UserCreateRequest, UserFindRequest}
+import com.bwsw.cloudstack.entities.responses.User
 import org.scalatest.FlatSpec
 
-class UserDaoTestSuite extends FlatSpec {
+class UserDaoTestSuite extends FlatSpec with TestData {
+  val findRequest = new UserFindRequest
 
+  "find" should "return an entity list if response json string contains data" in {
+    val userId = UUID.randomUUID()
+    val accountId = UUID.randomUUID()
+    val expectedUserList = List(User(userId, accountId))
+
+    val executor = new Executor(executorSettings, clientCreator){
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(findRequest.request == request)
+        Response.getUserResponseJson(userId.toString, accountId.toString)
+      }
+    }
+
+    val userDao = new UserDao(executor, jsonMapper)
+
+    assert(userDao.find(findRequest) == expectedUserList)
+  }
+
+  "find" should "return an empty entity list if response json string does not contain data" in {
+    val executor = new Executor(executorSettings, clientCreator){
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(findRequest.request == request)
+        Response.getResponseWithEmptyUserList
+      }
+    }
+
+    val userDao = new UserDao(executor, jsonMapper)
+
+    assert(userDao.find(findRequest) == List.empty[User])
+  }
+
+  "find" should "return an empty entity list if Executor throws ApacheCloudStackClientRequestRuntimeException" +
+    " with status code 431" in {
+    val statusCode = 431
+    val executor = new Executor(executorSettings, clientCreator){
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(findRequest.request == request)
+        throw new ApacheCloudStackClientRequestRuntimeException(statusCode, "", "")
+      }
+    }
+
+    val userDao = new UserDao(executor, jsonMapper)
+
+    assert(userDao.find(findRequest) == List.empty[User])
+  }
+
+  "find" should "not swallow non-ApacheCloudStackClientRequestRuntimeException" in {
+    val executor = new Executor(executorSettings, clientCreator){
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(findRequest.request == request)
+        throw new Exception
+      }
+    }
+
+    val userDao = new UserDao(executor, jsonMapper)
+
+    assertThrows[Exception](userDao.find(findRequest))
+  }
+
+  "find" should "not swallow ApacheCloudStackClientRequestRuntimeException with status other than 431" in {
+    val statusCode = 400
+    val executor = new Executor(executorSettings, clientCreator) {
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(findRequest.request == request)
+        throw new ApacheCloudStackClientRequestRuntimeException(statusCode, "", "")
+      }
+    }
+
+    val userDao = new UserDao(executor, jsonMapper)
+
+    assertThrows[ApacheCloudStackClientRequestRuntimeException](userDao.find(findRequest))
+  }
+
+  "create" should "submit request to Executor" in {
+    var actualRequests = List.empty[ApacheCloudStackRequest]
+    val createRequest = new UserCreateRequest(UserCreateRequest.Settings(
+      accountName = "account",
+      email = "e@e",
+      firstName = "fn",
+      lastName = "ln",
+      password = "passw",
+      username = "user"
+    ))
+
+    val expectedRequests = List(createRequest.request)
+
+    val executor = new Executor(executorSettings, clientCreator) {
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        actualRequests = actualRequests ::: request :: Nil
+        ""
+      }
+    }
+
+    val userDao = new UserDao(executor, jsonMapper)
+
+    assert(userDao.create(createRequest).isInstanceOf[Unit])
+    assert(actualRequests == expectedRequests)
+  }
 }

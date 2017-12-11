@@ -22,12 +22,16 @@ import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.traits.Mapper
 import com.bwsw.cloudstack.entities.requests.Request
 import com.bwsw.cloudstack.entities.responses.Entity
+import org.slf4j.LoggerFactory
 
 abstract class GenericDao[T <: Entity, D](protected val executor: Executor, protected val mapper: Mapper[D]) {
+  protected val logger = LoggerFactory.getLogger(this.getClass)
+  protected val ENTITY_DOES_NOT_EXIST = 431
   protected type F <: Request
   protected type C <: Request
 
   def create(request: C): Unit = {
+    logger.trace(s"create(request: $request)")
     executor.executeRequest(request.request)
   }
 

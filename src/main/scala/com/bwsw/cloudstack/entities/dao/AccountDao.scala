@@ -18,19 +18,61 @@
 */
 package com.bwsw.cloudstack.entities.dao
 
+import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.JsonMapper
 import com.bwsw.cloudstack.entities.requests.account.{AccountCreateRequest, AccountFindRequest}
 import com.bwsw.cloudstack.entities.responses.{Account, AccountResponse}
 
+import scala.util.{Failure, Success, Try}
+
+/**
+  * Class is responsible for creating and reading ApacheCloudStack accounts
+  *
+  * @param executor see: [[Executor]]
+  * @param mapper see: [[JsonMapper]]
+  */
 class AccountDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Account, String](executor, mapper) {
   override protected type F = AccountFindRequest
   override protected type C = AccountCreateRequest
 
-  override def create(request: C): Unit = super.create(request)
+  /**
+    * Create an account
+    *
+    * @param request see: [[AccountCreateRequest]]
+    */
+  override def create(request: C): Unit = {
+    Try {
+      super.create(request)
+    } match {
+      case Success(x) =>
+        logger.debug(s"Account was created by request: $request")
+      case Failure(e: Throwable) =>
+        logger.error(s"Can not to create account, exception: $e was thrown")
+    }
+  }
 
+  /**
+    * Retrieve accounts
+    *
+    * @param request see: [[AccountFindRequest]]
+    */
   override def find(request: F): List[Account] = {
-    val response = executor.executeRequest(request.request)
-    mapper.deserialize[AccountResponse](response).entityList.entities.getOrElse(List.empty[Account])
+    logger.trace(s"find(request: $request)")
+    val accounts = Try {
+      val response = executor.executeRequest(request.request)
+      mapper.deserialize[AccountResponse](response).entityList.entities.getOrElse(List.empty[Account])
+    } match {
+      case Success(x) =>
+        logger.debug(s"Accounts were retrieved: $x")
+        x
+      case Failure(e: ApacheCloudStackClientRequestRuntimeException) if e.getStatusCode == ENTITY_DOES_NOT_EXIST =>
+        logger.warn(s"No accounts found on request: $request")
+        List.empty[Account]
+      case Failure(e: Throwable) =>
+        logger.error(s"Can not to find accounts, an exception: $e was thrown")
+        throw e
+    }
+    accounts
   }
 }

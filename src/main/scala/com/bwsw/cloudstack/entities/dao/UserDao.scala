@@ -27,7 +27,7 @@ import com.bwsw.cloudstack.entities.responses.{User, UserResponse}
 import scala.util.{Failure, Success, Try}
 
 /**
-  * Class is responsible for creating and reading ApacheCloudStack users
+  * Class is responsible for creating and retrieving ApacheCloudStack users
   *
   * @param executor see: [[Executor]]
   * @param mapper see: [[JsonMapper]]
@@ -48,7 +48,7 @@ class UserDao(executor: Executor, mapper: JsonMapper) extends GenericDao[User, S
       case Success(x) =>
         logger.debug(s"User was created by request: $request")
       case Failure(e: Throwable) =>
-        logger.error(s"Can not to create user, exception: $e was thrown")
+        logger.error(s"Can't create a user, exception: $e was thrown")
     }
   }
 
@@ -67,10 +67,10 @@ class UserDao(executor: Executor, mapper: JsonMapper) extends GenericDao[User, S
         logger.debug(s"Users were retrieved: $x")
         x
       case Failure(e: ApacheCloudStackClientRequestRuntimeException) if e.getStatusCode == ENTITY_DOES_NOT_EXIST =>
-        logger.warn(s"No users found on request: $request")
+        logger.warn(s"No users were found on request: $request")
         List.empty[User]
       case Failure(e: Throwable) =>
-        logger.error(s"Can not to find users, an exception: $e was thrown")
+        logger.error(s"Can't find any users by request: $request, exception: $e was thrown")
         throw e
     }
     users

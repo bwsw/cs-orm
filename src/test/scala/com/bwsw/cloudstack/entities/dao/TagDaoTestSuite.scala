@@ -31,7 +31,7 @@ import org.scalatest.FlatSpec
 class TagDaoTestSuite extends FlatSpec with TestData {
   val findRequest = new TagFindRequest
 
-  "find" should "return an entity set if response json string contains data" in {
+  "find" should "return non-empty entity set if a response json string contains the relevant data" in {
     val key = "key"
     val value = "value"
     val expectedTagSet = Set(Tag(key, value))
@@ -48,7 +48,7 @@ class TagDaoTestSuite extends FlatSpec with TestData {
     assert(tagDao.find(findRequest) == expectedTagSet)
   }
 
-  "find" should "return an empty entity set if response json string does not contain data" in {
+  "find" should "return an empty entity set if a response json string does not contain the relevant data" in {
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
         assert(findRequest.request == request)
@@ -61,8 +61,8 @@ class TagDaoTestSuite extends FlatSpec with TestData {
     assert(tagDao.find(findRequest) == Set.empty[Tag])
   }
 
-  "find" should "return an empty entity list if Executor throws ApacheCloudStackClientRequestRuntimeException" +
-    " with status code 431" in {
+  "find" should "return an empty entity set if Executor throws ApacheCloudStackClientRequestRuntimeException" +
+    " with a status 431" in {
     val statusCode = 431
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
@@ -89,7 +89,7 @@ class TagDaoTestSuite extends FlatSpec with TestData {
     assertThrows[Exception](tagDao.find(findRequest))
   }
 
-  "find" should "not swallow ApacheCloudStackClientRequestRuntimeException with status other than 431" in {
+  "find" should "not swallow ApacheCloudStackClientRequestRuntimeException with a status different from 431" in {
     val statusCode = 400
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {

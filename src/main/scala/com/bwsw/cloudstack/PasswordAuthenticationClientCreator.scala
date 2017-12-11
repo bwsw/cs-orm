@@ -23,7 +23,7 @@ import br.com.autonomiccs.apacheCloudStack.client.beans.ApacheCloudStackUser
 import org.slf4j.LoggerFactory
 
 /**
-  * Class is responsible for ApacheCloudStackClient creation
+  * Class is responsible for ApacheCloudStackClient creation using login/password authentication mechanism
   *
   * @param settings see: PasswordAuthenticationClientCreator.Settings
   */
@@ -39,7 +39,7 @@ class PasswordAuthenticationClientCreator(settings: PasswordAuthenticationClient
 
 object PasswordAuthenticationClientCreator {
   /**
-    * Class is responsible for providing settings for ApacheCloudStackClient creation
+    * Class is responsible for providing 'login/password' authentication settings for ApacheCloudStackClient creation
     *
     * @param username username for authorization on CloudStack server
     * @param password password for authorization on CloudStack server

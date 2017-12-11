@@ -27,7 +27,7 @@ import com.bwsw.cloudstack.entities.responses.{Tag, TagResponse}
 import scala.util.{Failure, Success, Try}
 
 /**
-  * Class is responsible for creating and reading ApacheCloudStack tags
+  * Class is responsible for creating and retrieving ApacheCloudStack tags
   *
   * @param executor see: [[Executor]]
   * @param mapper see: [[JsonMapper]]
@@ -48,7 +48,7 @@ class TagDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Tag, Str
       case Success(x) =>
         logger.debug(s"Tags were created by request: $request")
       case Failure(e: Throwable) =>
-        logger.error(s"Can not to create tags, exception: $e was thrown")
+        logger.error(s"Can't create tags, exception: $e was thrown")
     }
   }
 
@@ -67,10 +67,10 @@ class TagDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Tag, Str
         logger.debug(s"Tags were retrieved: $x")
         x
       case Failure(e: ApacheCloudStackClientRequestRuntimeException) if e.getStatusCode == ENTITY_DOES_NOT_EXIST =>
-        logger.warn(s"No tags found on request: $request")
+        logger.warn(s"No tags were found on request: $request")
         Set.empty[Tag]
       case Failure(e: Throwable) =>
-        logger.error(s"Can not to find tags, an exception: $e was thrown")
+        logger.error(s"Can't find any tags by request: $request, exception: $e was thrown")
         throw e
     }
     tags

@@ -24,7 +24,7 @@ import org.scalatest.FlatSpec
 
 class PasswordAuthenticationClientCreatorTestSuite extends FlatSpec {
 
-  "createClient" should "create ApacheCloudStackClient which include ApacheCloudStackUser authenticated by keys" in {
+  "createClient" should "create ApacheCloudStackClient which contains ApacheCloudStackUser authenticated by login/password" in {
     val clientClass = classOf[ApacheCloudStackClient]
 
     val user = clientClass.getDeclaredField("apacheCloudStackUser")

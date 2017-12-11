@@ -30,7 +30,7 @@ import org.scalatest.FlatSpec
 class AccountDaoTestSuite extends FlatSpec with TestData {
   val findRequest = new AccountFindRequest
 
-  "find" should "return an entity list if response json string contains data" in {
+  "find" should "return non-empty entity list if a response json string contains the relevant data" in {
     val accountId = UUID.randomUUID()
     val userId = UUID.randomUUID()
     val expectedAccountList = List(Account(accountId, List(User(userId, accountId))))
@@ -47,7 +47,7 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
     assert(accountDao.find(findRequest) == expectedAccountList)
   }
 
-  "find" should "return an empty entity list if response json string does not contain data" in {
+  "find" should "return an empty entity list if a response json string does not contain the relevant data" in {
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
         assert(findRequest.request == request)
@@ -61,7 +61,7 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
   }
 
   "find" should "return an empty entity list if Executor throws ApacheCloudStackClientRequestRuntimeException" +
-    " with status code 431" in {
+    " with a status 431" in {
     val statusCode = 431
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
@@ -88,7 +88,7 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
     assertThrows[Exception](accountDao.find(findRequest))
   }
 
-  "find" should "not swallow ApacheCloudStackClientRequestRuntimeException with status other than 431" in {
+  "find" should "not swallow ApacheCloudStackClientRequestRuntimeException with a status different from 431" in {
     val statusCode = 400
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {

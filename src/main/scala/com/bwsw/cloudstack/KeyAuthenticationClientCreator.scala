@@ -23,7 +23,7 @@ import br.com.autonomiccs.apacheCloudStack.client.beans.ApacheCloudStackUser
 import org.slf4j.LoggerFactory
 
 /**
-  * Class is responsible for ApacheCloudStackClient creation
+  * Class is responsible for ApacheCloudStackClient creation using the key authentication mechanism
   *
   * @param settings see: KeyAuthenticationClientCreator.Settings
   */
@@ -39,7 +39,7 @@ class KeyAuthenticationClientCreator(settings: KeyAuthenticationClientCreator.Se
 
 object KeyAuthenticationClientCreator {
   /**
-    * Class is responsible for providing settings for ApacheCloudStackClient creation
+    * Class is responsible for providing authentication keys settings for ApacheCloudStackClient creation
     *
     * @param secretKey secret key of user for authorization on CloudStack server
     * @param apiKey api key of user for authorization on CloudStack server

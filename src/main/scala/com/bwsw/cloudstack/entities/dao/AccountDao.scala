@@ -27,7 +27,7 @@ import com.bwsw.cloudstack.entities.responses.{Account, AccountResponse}
 import scala.util.{Failure, Success, Try}
 
 /**
-  * Class is responsible for creating and reading ApacheCloudStack accounts
+  * Class is responsible for creating and retrieving ApacheCloudStack accounts
   *
   * @param executor see: [[Executor]]
   * @param mapper see: [[JsonMapper]]
@@ -48,7 +48,7 @@ class AccountDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Acco
       case Success(x) =>
         logger.debug(s"Account was created by request: $request")
       case Failure(e: Throwable) =>
-        logger.error(s"Can not to create account, exception: $e was thrown")
+        logger.error(s"Can't create an account, exception: $e was thrown")
     }
   }
 
@@ -67,10 +67,10 @@ class AccountDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Acco
         logger.debug(s"Accounts were retrieved: $x")
         x
       case Failure(e: ApacheCloudStackClientRequestRuntimeException) if e.getStatusCode == ENTITY_DOES_NOT_EXIST =>
-        logger.warn(s"No accounts found on request: $request")
+        logger.warn(s"No accounts were found on request: $request")
         List.empty[Account]
       case Failure(e: Throwable) =>
-        logger.error(s"Can not to find accounts, an exception: $e was thrown")
+        logger.error(s"Can't find any accounts by request: $request, exception: $e was thrown")
         throw e
     }
     accounts

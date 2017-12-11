@@ -27,13 +27,12 @@ import com.bwsw.cloudstack.entities.responses.{VirtualMachine, VirtualMachinesRe
 import scala.util.{Failure, Success, Try}
 
 /**
-  * Class is responsible for creating and reading ApacheCloudStack virtual machines
+  * Class is responsible for creating and retrieving ApacheCloudStack virtual machines
   *
   * @param executor see: [[Executor]]
   * @param mapper see: [[JsonMapper]]
   */
 class VirtualMachineDao(executor: Executor, mapper: JsonMapper) extends GenericDao[VirtualMachine, String](executor, mapper) {
-
   override protected type F = VmFindRequest
   override protected type C = VmCreateRequest
 
@@ -49,7 +48,7 @@ class VirtualMachineDao(executor: Executor, mapper: JsonMapper) extends GenericD
       case Success(x) =>
         logger.debug(s"Virtual machine was created by request: $request")
       case Failure(e: Throwable) =>
-        logger.error(s"Can not to create virtual machine, exception: $e was thrown")
+        logger.error(s"Can't create a virtual machine, exception: $e was thrown")
     }
   }
 
@@ -68,10 +67,10 @@ class VirtualMachineDao(executor: Executor, mapper: JsonMapper) extends GenericD
         logger.debug(s"Virtual machines were retrieved: $x")
         x
       case Failure(e: ApacheCloudStackClientRequestRuntimeException) if e.getStatusCode == ENTITY_DOES_NOT_EXIST =>
-        logger.warn(s"No virtual machines found on request: $request")
+        logger.warn(s"No virtual machines were found on request: $request")
         List.empty[VirtualMachine]
       case Failure(e: Throwable) =>
-        logger.error(s"Can not to find virtual machines, exception: $e was thrown")
+        logger.error(s"Can't find any virtual machines by request: $request, exception: $e was thrown")
         throw e
     }
     virtualMachines

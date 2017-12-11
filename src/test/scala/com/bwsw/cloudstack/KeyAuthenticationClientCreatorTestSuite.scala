@@ -27,7 +27,7 @@ import com.bwsw.cloudstack.entities.requests.user.{UserCreateRequest, UserFindRe
 import org.scalatest.FlatSpec
 
 class KeyAuthenticationClientCreatorTestSuite extends FlatSpec {
-  "createClient" should "create ApacheCloudStackClient which include ApacheCloudStackUser authenticated by keys" in {
+  "createClient" should "create ApacheCloudStackClient which contains ApacheCloudStackUser authenticated by keys" in {
     val clientClass = classOf[ApacheCloudStackClient]
 
     val user = clientClass.getDeclaredField("apacheCloudStackUser")

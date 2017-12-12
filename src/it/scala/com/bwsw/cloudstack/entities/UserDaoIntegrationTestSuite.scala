@@ -18,6 +18,57 @@
 */
 package com.bwsw.cloudstack.entities
 
-class UserDaoIntegrationTestSuite {
+import java.util.UUID
 
+import com.bwsw.cloudstack.entities.dao.UserDao
+import com.bwsw.cloudstack.entities.requests.user.{UserCreateRequest, UserFindRequest}
+import org.scalatest.FlatSpec
+
+class UserDaoIntegrationTestSuite extends FlatSpec with TestEntities {
+  val userDao = new UserDao(executor, mapper)
+  val firstUserId = UUID.randomUUID()
+  val secondUserId = UUID.randomUUID()
+
+  it should "retrieve empty user list" in {
+    val userFindRequest = new UserFindRequest().withId(firstUserId)
+    val initUsers = userDao.find(userFindRequest)
+
+    assert(initUsers.isEmpty)
+  }
+
+  it should "retrieve user after it creation" in {
+    val firstUserCreationSettings = UserCreateRequest.Settings(
+      accountName="admin",
+      email = "e@e",
+      firstName = "first",
+      lastName = "last",
+      password = "passwd",
+      username = s"username $firstUserId"
+    )
+    val firstUserCreateRequest = new UserCreateRequest(firstUserCreationSettings).withId(firstUserId)
+    userDao.create(firstUserCreateRequest)
+
+    val userFindRequest = new UserFindRequest().withId(firstUserId)
+    val updatedUsers = userDao.find(userFindRequest)
+    assert(updatedUsers.size == 1 && updatedUsers.head.id == firstUserId)
+  }
+
+  it should "retrieve all created users" in {
+    val secondUserCreationSettings = UserCreateRequest.Settings(
+      accountName="admin",
+      email = "e@e",
+      firstName = "first",
+      lastName = "last",
+      password = "passwd",
+      username = s"username $secondUserId"
+    )
+
+    val secondUserCreateRequest = new UserCreateRequest(secondUserCreationSettings).withId(secondUserId)
+
+    userDao.create(secondUserCreateRequest)
+
+    val allUserIds = userDao.find(new UserFindRequest).map(_.id)
+
+    assert(allUserIds.contains(firstUserId) && allUserIds.contains(secondUserId))
+  }
 }

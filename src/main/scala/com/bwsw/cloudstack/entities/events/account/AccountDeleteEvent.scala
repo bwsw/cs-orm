@@ -23,4 +23,4 @@ import com.bwsw.cloudstack.entities.events.CloudStackEvent
 import com.bwsw.cloudstack.entities.events.Constants.Events
 
 case class AccountDeleteEvent(override val status: Option[String], override val entityuuid: Option[UUID])
-  extends CloudStackEvent(status, Some(Events.ACCOUNT_DELETE), entityuuid)
+  extends CloudStackEvent(status, entityuuid, Some(Events.ACCOUNT_DELETE))

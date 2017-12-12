@@ -24,4 +24,4 @@ import com.bwsw.cloudstack.entities.events.CloudStackEvent
 import com.bwsw.cloudstack.entities.events.Constants.Events
 
 case class VirtualMachineCreateEvent(override val status: Option[String], override val entityuuid: Option[UUID])
-  extends CloudStackEvent(status, Some(Events.VM_CREATE), entityuuid)
+  extends CloudStackEvent(status, entityuuid, Some(Events.VM_CREATE))

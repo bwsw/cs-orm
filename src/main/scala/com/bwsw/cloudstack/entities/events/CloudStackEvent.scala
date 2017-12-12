@@ -25,18 +25,19 @@ import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInf
 import com.bwsw.cloudstack.entities.events.account.{AccountCreateEvent, AccountDeleteEvent}
 import com.bwsw.cloudstack.entities.events.user.UserCreateEvent
 import com.bwsw.cloudstack.entities.events.vm.{VirtualMachineCreateEvent, VirtualMachineDestroyEvent}
+import com.bwsw.cloudstack.entities.events.Constants._
 
 /**
   * A base structure of Apache CloudStack event.
   */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "event", defaultImpl = classOf[CloudStackEvent], visible = true, include = JsonTypeInfo.As.EXISTING_PROPERTY)
 @JsonSubTypes(Array(
-  new Type(value = classOf[UserCreateEvent], name = "USER.CREATE"),
-  new Type(value = classOf[AccountCreateEvent], name = "ACCOUNT.CREATE"),
-  new Type(value = classOf[AccountDeleteEvent], name = "ACCOUNT.DELETE"),
-  new Type(value = classOf[VirtualMachineCreateEvent], name = "VM.CREATE"),
-  new Type(value = classOf[VirtualMachineDestroyEvent], name = "VM.DESTROY")
+  new Type(value = classOf[UserCreateEvent], name = Events.USER_CREATE),
+  new Type(value = classOf[AccountCreateEvent], name = Events.ACCOUNT_CREATE),
+  new Type(value = classOf[AccountDeleteEvent], name = Events.ACCOUNT_DELETE),
+  new Type(value = classOf[VirtualMachineCreateEvent], name = Events.VM_CREATE),
+  new Type(value = classOf[VirtualMachineDestroyEvent], name = Events.VM_DESTROY)
 ))
 class CloudStackEvent(val status: Option[String],
-                      @JsonProperty("event") val action: Option[String],
-                      val entityuuid: Option[UUID])
+                      val entityuuid: Option[UUID],
+                      @JsonProperty("event") val action: Option[String])

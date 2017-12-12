@@ -21,11 +21,11 @@ package com.bwsw.cloudstack.entities.events
 object Constants {
 
   object Events {
-    val USER_CREATE = "USER.CREATE"
-    val ACCOUNT_CREATE = "ACCOUNT.CREATE"
-    val ACCOUNT_DELETE = "ACCOUNT.DELETE"
-    val VM_CREATE = "VM.CREATE"
-    val VM_DESTROY = "VM.DESTROY"
+    final val USER_CREATE = "USER.CREATE"
+    final val ACCOUNT_CREATE = "ACCOUNT.CREATE"
+    final val ACCOUNT_DELETE = "ACCOUNT.DELETE"
+    final val VM_CREATE = "VM.CREATE"
+    final val VM_DESTROY = "VM.DESTROY"
   }
 
   object Statuses {

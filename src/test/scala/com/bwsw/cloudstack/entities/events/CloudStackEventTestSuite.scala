@@ -30,7 +30,7 @@ import org.scalatest.FlatSpec
 class CloudStackEventTestSuite extends FlatSpec {
   val status = Statuses.COMPLETE
 
-  it should "be deserialized to the UserCreateEvent if event is USER.CREATE" in {
+  it should s"be deserialized to the UserCreateEvent if event is ${Events.USER_CREATE}" in {
     val userId = UUID.randomUUID()
     val userCreateEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.USER_CREATE}" + "\",\"entityuuid\":\"" + s"$userId" + "\"}"
 
@@ -40,7 +40,7 @@ class CloudStackEventTestSuite extends FlatSpec {
     assert(mapper.deserialize[CloudStackEvent](userCreateEventJson) == expectedEvent)
   }
 
-  it should "be deserialized to the AccoutCreateEvent if event is ACCOUNT.CREATE" in {
+  it should s"be deserialized to the AccoutCreateEvent if event is ${Events.ACCOUNT_CREATE}" in {
     val accountId = UUID.randomUUID()
     val accountCreateEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.ACCOUNT_CREATE}" + "\",\"entityuuid\":\"" + s"$accountId" + "\"}"
 
@@ -50,7 +50,7 @@ class CloudStackEventTestSuite extends FlatSpec {
     assert(mapper.deserialize[CloudStackEvent](accountCreateEventJson) == expectedEvent)
   }
 
-  it should "be deserialized to the AccoutDeleteEvent if event is ACCOUNT.DELETE" in {
+  it should s"be deserialized to the AccoutDeleteEvent if event is ${Events.ACCOUNT_DELETE}" in {
     val accountId = UUID.randomUUID()
     val accountDeleteEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.ACCOUNT_DELETE}" + "\",\"entityuuid\":\"" + s"$accountId" + "\"}"
 
@@ -60,7 +60,7 @@ class CloudStackEventTestSuite extends FlatSpec {
     assert(mapper.deserialize[CloudStackEvent](accountDeleteEventJson) == expectedEvent)
   }
 
-  it should "be deserialized to the VirtualMachineCreateEvent if event is VM.CREATE" in {
+  it should s"be deserialized to the VirtualMachineCreateEvent if event is ${Events.VM_CREATE}" in {
     val vmId = UUID.randomUUID()
     val vmCreateEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.VM_CREATE}" + "\",\"entityuuid\":\"" + s"$vmId" + "\"}"
 
@@ -70,7 +70,7 @@ class CloudStackEventTestSuite extends FlatSpec {
     assert(mapper.deserialize[CloudStackEvent](vmCreateEventJson) == expectedEvent)
   }
 
-  it should "be deserialized to the VirtualMachineDestroyEvent if event is VM.DESTROY" in {
+  it should s"be deserialized to the VirtualMachineDestroyEvent if event is ${Events.VM_DESTROY}" in {
     val vmId = UUID.randomUUID()
     val vmDestroyEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.VM_DESTROY}" + "\",\"entityuuid\":\"" + s"$vmId" + "\"}"
 
@@ -86,7 +86,7 @@ class CloudStackEventTestSuite extends FlatSpec {
     val event = UUID.randomUUID().toString
     val eventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"$event" + "\",\"entityuuid\":\"" + s"$entityId" + "\"}"
 
-    val expectedEvent = new CloudStackEvent(Some(status), Some(event), Some(entityId))
+    val expectedEvent = new CloudStackEvent(Some(status), Some(entityId), Some(event))
     val mapper = new JsonMapper(true)
 
     assert(mapper.deserialize[CloudStackEvent](eventJson).getClass == expectedEvent.getClass)

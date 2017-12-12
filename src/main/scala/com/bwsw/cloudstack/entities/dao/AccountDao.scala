@@ -32,7 +32,7 @@ import scala.util.{Failure, Success, Try}
   * @param executor see: [[Executor]]
   * @param mapper see: [[JsonMapper]]
   */
-class AccountDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Account, String](executor, mapper) {
+class AccountDao(executor: Executor, mapper: JsonMapper) extends GenericDao[AccountResponse, Account](executor, mapper) {
   override protected type F = AccountFindRequest
   override protected type C = AccountCreateRequest
 
@@ -57,11 +57,10 @@ class AccountDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Acco
     *
     * @param request see: [[AccountFindRequest]]
     */
-  override def find(request: F): List[Account] = {
+  override def find(request: F)(implicit m: Manifest[AccountResponse]): List[Account] = {
     logger.trace(s"find(request: $request)")
     val accounts = Try {
-      val response = executor.executeRequest(request.request)
-      mapper.deserialize[AccountResponse](response).entityList.entities.getOrElse(List.empty[Account])
+      super.find(request).toList
     } match {
       case Success(x) =>
         logger.debug(s"Accounts were retrieved: $x")

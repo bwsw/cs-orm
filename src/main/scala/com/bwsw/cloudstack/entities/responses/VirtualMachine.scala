@@ -22,10 +22,10 @@ import java.util.UUID
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-case class VirtualMachinesResponse(@JsonProperty("listvirtualmachinesresponse")  entityList: VirtualMachineList)
+case class VirtualMachinesResponse(@JsonProperty("listvirtualmachinesresponse") override val entityList: VirtualMachineList)
   extends EntityResponse(entityList)
 
-case class VirtualMachineList(@JsonProperty("virtualmachine") entities: Option[List[VirtualMachine]])
+case class VirtualMachineList(@JsonProperty("virtualmachine") override val entities: Option[List[VirtualMachine]])
   extends EntityList(entities)
 
 case class VirtualMachine(id: UUID, @JsonProperty("account") accountName: String, @JsonProperty("domainid") domainId: UUID)

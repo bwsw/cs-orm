@@ -21,10 +21,10 @@ package com.bwsw.cloudstack.entities.dao
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.traits.Mapper
 import com.bwsw.cloudstack.entities.requests.Request
-import com.bwsw.cloudstack.entities.responses.Entity
+import com.bwsw.cloudstack.entities.responses.{Entity, EntityResponse}
 import org.slf4j.LoggerFactory
 
-abstract class GenericDao[T <: Entity, D](protected val executor: Executor, protected val mapper: Mapper[D]) {
+abstract class GenericDao[A <: EntityResponse, T <: Entity](protected val executor: Executor, protected val mapper: Mapper[String]) {
   protected val logger = LoggerFactory.getLogger(this.getClass)
   protected val ENTITY_DOES_NOT_EXIST = 431
   protected type F <: Request
@@ -35,5 +35,9 @@ abstract class GenericDao[T <: Entity, D](protected val executor: Executor, prot
     executor.executeRequest(request.request)
   }
 
-  def find(request: F): Iterable[T]
+  def find(request: F)(implicit m: Manifest[A]): Iterable[T] = {
+    logger.trace(s"find(request: $request)")
+    val response = executor.executeRequest(request.request)
+    mapper.deserialize[A](response).entityList.entities.getOrElse(List.empty[T]).asInstanceOf[Iterable[T]]
+  }
 }

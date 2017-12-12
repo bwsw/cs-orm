@@ -32,7 +32,7 @@ import scala.util.{Failure, Success, Try}
   * @param executor see: [[Executor]]
   * @param mapper see: [[JsonMapper]]
   */
-class TagDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Tag, String](executor, mapper) {
+class TagDao(executor: Executor, mapper: JsonMapper) extends GenericDao[TagResponse, Tag](executor, mapper) {
   override protected type F = TagFindRequest
   override protected type C = TagCreateRequest
 
@@ -57,11 +57,10 @@ class TagDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Tag, Str
     *
     * @param request see: [[TagFindRequest]]
     */
-  override def find(request: F): Set[Tag] = {
+  override def find(request: F)(implicit m: Manifest[TagResponse]): Set[Tag] = {
     logger.trace(s"find(request: $request)")
     val tags = Try {
-      val response = executor.executeRequest(request.request)
-      mapper.deserialize[TagResponse](response).entityList.entities.getOrElse(Set.empty[Tag])
+      super.find(request).toSet
     } match {
       case Success(x) =>
         logger.debug(s"Tags were retrieved: $x")

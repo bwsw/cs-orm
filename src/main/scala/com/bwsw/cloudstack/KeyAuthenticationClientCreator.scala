@@ -39,7 +39,7 @@ class KeyAuthenticationClientCreator(settings: KeyAuthenticationClientCreator.Se
 
 object KeyAuthenticationClientCreator {
   /**
-    * Class is responsible for providing authentication keys settings for ApacheCloudStackClient creation
+    * Class is responsible for providing authentication keys for ApacheCloudStackClient creation
     *
     * @param secretKey secret key of user for authorization on CloudStack server
     * @param apiKey api key of user for authorization on CloudStack server

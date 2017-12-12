@@ -39,7 +39,7 @@ class PasswordAuthenticationClientCreator(settings: PasswordAuthenticationClient
 
 object PasswordAuthenticationClientCreator {
   /**
-    * Class is responsible for providing 'login/password' authentication settings for ApacheCloudStackClient creation
+    * Class is responsible for providing a login and a password for ApacheCloudStackClient creation
     *
     * @param username username for authorization on CloudStack server
     * @param password password for authorization on CloudStack server

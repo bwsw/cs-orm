@@ -22,4 +22,8 @@ import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 
 trait Request {
   protected[entities] val request: ApacheCloudStackRequest
+
+  override def toString: String = {
+    request.toString
+  }
 }

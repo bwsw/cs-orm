@@ -32,7 +32,7 @@ import scala.util.{Failure, Success, Try}
   * @param executor see: [[Executor]]
   * @param mapper see: [[JsonMapper]]
   */
-class UserDao(executor: Executor, mapper: JsonMapper) extends GenericDao[User, String](executor, mapper) {
+class UserDao(executor: Executor, mapper: JsonMapper) extends GenericDao[UserResponse, User](executor, mapper) {
   override protected type F = UserFindRequest
   override protected type C = UserCreateRequest
 
@@ -57,11 +57,10 @@ class UserDao(executor: Executor, mapper: JsonMapper) extends GenericDao[User, S
     *
     * @param request see: [[UserFindRequest]]
     */
-  override def find(request: F): List[User] = {
+  override def find(request: F)(implicit m: Manifest[UserResponse]): List[User] = {
     logger.trace(s"find(request: $request)")
     val users = Try {
-      val response = executor.executeRequest(request.request)
-      mapper.deserialize[UserResponse](response).entityList.entities.getOrElse(List.empty[User])
+      super.find(request).toList
     } match {
       case Success(x) =>
         logger.debug(s"Users were retrieved: $x")

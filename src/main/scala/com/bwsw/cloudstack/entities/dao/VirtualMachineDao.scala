@@ -32,7 +32,9 @@ import scala.util.{Failure, Success, Try}
   * @param executor see: [[Executor]]
   * @param mapper see: [[JsonMapper]]
   */
-class VirtualMachineDao(executor: Executor, mapper: JsonMapper) extends GenericDao[VirtualMachine, String](executor, mapper) {
+class VirtualMachineDao(executor: Executor, mapper: JsonMapper)
+  extends GenericDao[VirtualMachinesResponse, VirtualMachine](executor, mapper) {
+
   override protected type F = VmFindRequest
   override protected type C = VmCreateRequest
 
@@ -57,11 +59,10 @@ class VirtualMachineDao(executor: Executor, mapper: JsonMapper) extends GenericD
     *
     * @param request see: [[VmFindRequest]]
     */
-  override def find(request: F): List[VirtualMachine] = {
+  override def find(request: F)(implicit m: Manifest[VirtualMachinesResponse]): List[VirtualMachine] = {
     logger.trace(s"find(request: $request)")
     val virtualMachines = Try {
-      val response = executor.executeRequest(request.request)
-      mapper.deserialize[VirtualMachinesResponse](response).entityList.entities.getOrElse(List.empty[VirtualMachine])
+      super.find(request).toList
     } match {
       case Success(x) =>
         logger.debug(s"Virtual machines were retrieved: $x")

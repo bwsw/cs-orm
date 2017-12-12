@@ -51,6 +51,7 @@ class VirtualMachineDao(executor: Executor, mapper: JsonMapper)
         logger.debug(s"Virtual machine was created by request: $request")
       case Failure(e: Throwable) =>
         logger.error(s"Can't create a virtual machine, exception: $e was thrown")
+        throw e
     }
   }
 

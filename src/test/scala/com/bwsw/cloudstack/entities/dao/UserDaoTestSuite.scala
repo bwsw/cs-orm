@@ -127,4 +127,30 @@ class UserDaoTestSuite extends FlatSpec with TestData {
     assert(userDao.create(createRequest).isInstanceOf[Unit])
     assert(actualRequests == expectedRequests)
   }
+
+  "create" should "not swallow an exception" in {
+    var actualRequests = List.empty[ApacheCloudStackRequest]
+    val createRequest = new UserCreateRequest(UserCreateRequest.Settings(
+      accountName = "account",
+      email = "e@e",
+      firstName = "fn",
+      lastName = "ln",
+      password = "passw",
+      username = "user"
+    ))
+
+    val expectedRequests = List(createRequest.request)
+
+    val executor = new Executor(executorSettings, clientCreator) {
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        actualRequests = actualRequests ::: request :: Nil
+        throw new Exception
+      }
+    }
+
+    val userDao = new UserDao(executor, jsonMapper)
+
+    assertThrows[Exception](userDao.create(createRequest).isInstanceOf[Unit])
+    assert(actualRequests == expectedRequests)
+  }
 }

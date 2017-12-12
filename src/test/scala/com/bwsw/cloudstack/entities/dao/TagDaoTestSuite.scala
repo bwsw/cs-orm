@@ -125,4 +125,27 @@ class TagDaoTestSuite extends FlatSpec with TestData {
     assert(tagDao.create(createRequest).isInstanceOf[Unit])
     assert(actualRequests == expectedRequests)
   }
+
+  "create" should "not swallow an exception" in {
+    var actualRequests = List.empty[ApacheCloudStackRequest]
+    val createRequest = new TagCreateRequest(TagCreateRequest.Settings(
+      resourceType = new UserTagType,
+      resourceIds = Set(UUID.randomUUID(), UUID.randomUUID()),
+      tags = List(Tag("key", "value"), Tag("key1", "value1"))
+    ))
+
+    val expectedRequests = List(createRequest.request)
+
+    val executor = new Executor(executorSettings, clientCreator) {
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        actualRequests = actualRequests ::: request :: Nil
+        throw new Exception
+      }
+    }
+
+    val tagDao = new TagDao(executor, jsonMapper)
+
+    assertThrows[Exception](tagDao.create(createRequest).isInstanceOf[Unit])
+    assert(actualRequests == expectedRequests)
+  }
 }

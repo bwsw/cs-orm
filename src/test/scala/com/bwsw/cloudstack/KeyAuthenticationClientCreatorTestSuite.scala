@@ -20,10 +20,6 @@ package com.bwsw.cloudstack
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackClient
 import br.com.autonomiccs.apacheCloudStack.client.beans.ApacheCloudStackUser
-import com.bwsw.cloudstack.entities.Executor
-import com.bwsw.cloudstack.entities.common.JsonMapper
-import com.bwsw.cloudstack.entities.dao.UserDao
-import com.bwsw.cloudstack.entities.requests.user.{UserCreateRequest, UserFindRequest}
 import org.scalatest.FlatSpec
 
 class KeyAuthenticationClientCreatorTestSuite extends FlatSpec {

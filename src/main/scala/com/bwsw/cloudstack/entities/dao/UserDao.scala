@@ -49,6 +49,7 @@ class UserDao(executor: Executor, mapper: JsonMapper) extends GenericDao[UserRes
         logger.debug(s"User was created by request: $request")
       case Failure(e: Throwable) =>
         logger.error(s"Can't create a user, exception: $e was thrown")
+        throw e
     }
   }
 

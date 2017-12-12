@@ -126,4 +126,27 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
     assert(vmDao.create(createRequest).isInstanceOf[Unit])
     assert(actualRequests == expectedRequests)
   }
+
+  "create" should "not swallow an exception" in {
+    var actualRequests = List.empty[ApacheCloudStackRequest]
+    val createRequest = new VmCreateRequest(VmCreateRequest.Settings(
+      serviceOfferingId = UUID.randomUUID(),
+      templateId = UUID.randomUUID(),
+      zoneId = UUID.randomUUID()
+    ))
+
+    val expectedRequests = List(createRequest.request)
+
+    val executor = new Executor(executorSettings, clientCreator) {
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        actualRequests = actualRequests ::: request :: Nil
+        throw new Exception
+      }
+    }
+
+    val vmDao = new VirtualMachineDao(executor, jsonMapper)
+
+    assertThrows[Exception](vmDao.create(createRequest).isInstanceOf[Unit])
+    assert(actualRequests == expectedRequests)
+  }
 }

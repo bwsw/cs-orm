@@ -49,6 +49,7 @@ class AccountDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Acco
         logger.debug(s"Account was created by request: $request")
       case Failure(e: Throwable) =>
         logger.error(s"Can't create an account, exception: $e was thrown")
+        throw e
     }
   }
 

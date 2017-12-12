@@ -49,6 +49,7 @@ class TagDao(executor: Executor, mapper: JsonMapper) extends GenericDao[TagRespo
         logger.debug(s"Tags were created by request: $request")
       case Failure(e: Throwable) =>
         logger.error(s"Can't create tags, exception: $e was thrown")
+        throw e
     }
   }
 

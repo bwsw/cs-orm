@@ -22,8 +22,8 @@ package com.bwsw.cloudstack.entities.responses
   * A base structure of Apache CloudStack json response.
   * To add a custom entity to the library, you should implement each of these classes.
   */
-class EntityResponse(entityList: EntityList)
+class EntityResponse(val entityList: EntityList)
 
-class EntityList(entities: Option[Iterable[Entity]])
+class EntityList(val entities: Option[Iterable[Entity]])
 
 class Entity

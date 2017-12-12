@@ -16,12 +16,12 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities.events.vm
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.UUID
 
-case class TagResponse(@JsonProperty("listtagsresponse") override val entityList: TagSet) extends EntityResponse(entityList)
+import com.bwsw.cloudstack.entities.events.CloudStackEvent
+import com.bwsw.cloudstack.entities.events.Constants.Events
 
-case class TagSet(@JsonProperty("tag") override val entities: Option[Set[Tag]]) extends EntityList(entities)
-
-case class Tag(key: String, value: String) extends Entity
+case class VirtualMachineCreateEvent(override val status: Option[String], override val entityuuid: Option[UUID])
+  extends CloudStackEvent(status, entityuuid, Some(Events.VM_CREATE))

@@ -22,8 +22,8 @@ import java.util.UUID
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-case class AccountResponse(@JsonProperty("listaccountsresponse") entityList: AccountList) extends EntityResponse(entityList)
+case class AccountResponse(@JsonProperty("listaccountsresponse") override val entityList: AccountList) extends EntityResponse(entityList)
 
-case class AccountList(@JsonProperty("account") entities: Option[List[Account]]) extends EntityList(entities)
+case class AccountList(@JsonProperty("account") override val entities: Option[List[Account]]) extends EntityList(entities)
 
 case class Account(id: UUID, @JsonProperty("user") users: List[User]) extends Entity

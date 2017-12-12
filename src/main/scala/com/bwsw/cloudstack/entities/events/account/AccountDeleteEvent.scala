@@ -16,12 +16,11 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities.events.account
+import java.util.UUID
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.bwsw.cloudstack.entities.events.CloudStackEvent
+import com.bwsw.cloudstack.entities.events.Constants.Events
 
-case class TagResponse(@JsonProperty("listtagsresponse") override val entityList: TagSet) extends EntityResponse(entityList)
-
-case class TagSet(@JsonProperty("tag") override val entities: Option[Set[Tag]]) extends EntityList(entities)
-
-case class Tag(key: String, value: String) extends Entity
+case class AccountDeleteEvent(override val status: Option[String], override val entityuuid: Option[UUID])
+  extends CloudStackEvent(status, entityuuid, Some(Events.ACCOUNT_DELETE))

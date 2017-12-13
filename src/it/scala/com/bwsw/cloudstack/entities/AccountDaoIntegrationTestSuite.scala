@@ -62,8 +62,8 @@ class AccountDaoIntegrationTestSuite extends FlatSpec with TestEntities {
 
     accountDao.create(secondAccountCreateRequest)
 
-    val allUserIds = accountDao.find(new AccountFindRequest).map(_.id)
+    val allAccountIds = accountDao.find(new AccountFindRequest).map(_.id)
 
-    assert(allUserIds.contains(firstAccountId) && allUserIds.contains(secondAccountId))
+    assert(allAccountIds.contains(firstAccountId) && allAccountIds.contains(secondAccountId))
   }
 }

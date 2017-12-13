@@ -21,22 +21,24 @@ package com.bwsw.cloudstack.entities.requests.tag
 import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackApiCommandParameter
+import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
 import com.bwsw.cloudstack.entities.requests.tag.types.VmTagType
-import com.bwsw.cloudstack.entities.requests.Constants.Parameters._
+import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
 
 class TagFindRequestTestSuite extends FlatSpec {
   val defaultParameters = Set[ApacheCloudStackApiCommandParameter](
-    new ApacheCloudStackApiCommandParameter(RESPONSE,"json"),
-    new ApacheCloudStackApiCommandParameter(LIST_ALL,"true")
+    new ApacheCloudStackApiCommandParameter(RESPONSE, ParameterValues.JSON),
+    new ApacheCloudStackApiCommandParameter(LIST_ALL, true)
   )
 
   it should "create a request with predefined parameters" in {
     val request = new TagFindRequest
 
     assert(request.request.getParameters.asScala.toSet == defaultParameters)
+    assert(request.request.getCommand == Commands.LIST_TAGS)
   }
 
   "withAccountName" should "add an account name parameter to a request" in {

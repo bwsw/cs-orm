@@ -13,8 +13,17 @@ TODO: "libraryDependencies += "
 ```
 ## Getting Started      
 
+The diagram below is a simple illustration of how the library's classes should be used. \
+![Sequence](docs/diagrams/cs_entities_user_sequence.png)
+
+Implement your GenericDao, Request, and Response hierarchy for working with another entities \
+
 ## Example Usage
 
+The example below shows how to create new user entity in CloudStack server and then retrieve it:
+```scala
+
+```
 ## Testing
 
 ### Unit tests

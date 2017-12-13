@@ -21,8 +21,8 @@ package com.bwsw.cloudstack.entities.requests.user
 import java.util.{TimeZone, UUID}
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
-import com.bwsw.cloudstack.entities.requests.Constants.Commands
-import com.bwsw.cloudstack.entities.requests.Constants.Parameters._
+import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
+import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
 import com.bwsw.cloudstack.entities.requests.Request
 
 /**
@@ -32,7 +32,7 @@ import com.bwsw.cloudstack.entities.requests.Request
   */
 class UserCreateRequest(settings: UserCreateRequest.Settings) extends Request {
   override protected[entities] val request = new ApacheCloudStackRequest(Commands.CREATE_USER)
-    .addParameter(RESPONSE, "json")
+    .addParameter(RESPONSE, ParameterValues.JSON)
     .addParameter(ACCOUNT, settings.accountName)
     .addParameter(EMAIL, settings.email)
     .addParameter(FIRST_NAME, settings.firstName)

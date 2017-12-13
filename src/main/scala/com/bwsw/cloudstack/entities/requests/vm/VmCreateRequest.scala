@@ -21,8 +21,8 @@ package com.bwsw.cloudstack.entities.requests.vm
 import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
-import com.bwsw.cloudstack.entities.requests.Constants.Commands
-import com.bwsw.cloudstack.entities.requests.Constants.Parameters._
+import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
+import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
 import com.bwsw.cloudstack.entities.requests.Request
 
 /**
@@ -33,13 +33,14 @@ import com.bwsw.cloudstack.entities.requests.Request
 class VmCreateRequest(settings: VmCreateRequest.Settings) extends Request {
 
   override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.DEPLOY_VIRTUAL_MACHINE)
-    .addParameter(RESPONSE, "json")
+    .addParameter(RESPONSE, ParameterValues.JSON)
     .addParameter(SERVICE_OFFERING_ID, settings.serviceOfferingId)
     .addParameter(TEMPLATE_ID, settings.templateId)
     .addParameter(ZONE_ID, settings.zoneId)
 
   /**
     * Add an account name parameter to a request.
+    * Must be used with domain id.
     */
   def withAccountName(name: String): VmCreateRequest = {
     request.addParameter(ACCOUNT, name)
@@ -48,6 +49,7 @@ class VmCreateRequest(settings: VmCreateRequest.Settings) extends Request {
 
   /**
     * Add a domain id parameter to a request.
+    * If the account name parameter is used, domain id must also be used.
     */
   def withDomain(id: UUID): VmCreateRequest = {
     request.addParameter(DOMAIN_ID, id)

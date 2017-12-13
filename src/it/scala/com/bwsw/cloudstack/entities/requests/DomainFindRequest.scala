@@ -16,12 +16,13 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities.requests
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
+import com.bwsw.cloudstack.entities.requests.TestConstants.{Commands, ParameterKeys, ParameterValues}
 
-case class TagResponse(@JsonProperty("listtagsresponse") override val entityList: TagSet) extends EntityResponse(entityList)
-
-case class TagSet(@JsonProperty("tag") override val entities: Option[Set[Tag]]) extends EntityList(entities)
-
-case class Tag(key: String, value: String) extends Entity
+class DomainFindRequest extends Request {
+  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_DOMAINS)
+    .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
+    .addParameter(ParameterKeys.LIST_ALL, true)
+}

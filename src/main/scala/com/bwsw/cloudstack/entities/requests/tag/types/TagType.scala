@@ -16,12 +16,12 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities.requests.tag.types
 
-import com.fasterxml.jackson.annotation.JsonProperty
-
-case class TagResponse(@JsonProperty("listtagsresponse") override val entityList: TagSet) extends EntityResponse(entityList)
-
-case class TagSet(@JsonProperty("tag") override val entities: Option[Set[Tag]]) extends EntityList(entities)
-
-case class Tag(key: String, value: String) extends Entity
+/**
+  * Common trait is used to create a tag of specified type
+  * (see: https://cwiki.apache.org/confluence/display/CLOUDSTACK/Resource+Tags)
+  */
+trait TagType {
+  def toString: String
+}

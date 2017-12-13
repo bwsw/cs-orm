@@ -16,12 +16,17 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.bwsw.cloudstack.PasswordAuthenticationClientCreator
+import com.bwsw.cloudstack.entities.common.JsonMapper
 
-case class TagResponse(@JsonProperty("listtagsresponse") override val entityList: TagSet) extends EntityResponse(entityList)
-
-case class TagSet(@JsonProperty("tag") override val entities: Option[Set[Tag]]) extends EntityList(entities)
-
-case class Tag(key: String, value: String) extends Entity
+trait TestEntities {
+  private val csHost = ApplicationConfig.getRequiredString("app.cloudstack.host")
+  private val csPort = ApplicationConfig.getRequiredString("app.cloudstack.port")
+  val creatorSettings = PasswordAuthenticationClientCreator.Settings("admin","password","/")
+  val executorSettings = Executor.Settings(Array(s"http://$csHost:$csPort/client/api"), retryDelay = 1000)
+  val creator = new PasswordAuthenticationClientCreator(creatorSettings)
+  val executor = new Executor(executorSettings, creator, true)
+  val mapper = new JsonMapper(true)
+}

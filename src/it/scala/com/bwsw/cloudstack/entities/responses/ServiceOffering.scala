@@ -18,10 +18,12 @@
 */
 package com.bwsw.cloudstack.entities.responses
 
+import java.util.UUID
+
 import com.fasterxml.jackson.annotation.JsonProperty
 
-case class TagResponse(@JsonProperty("listtagsresponse") override val entityList: TagSet) extends EntityResponse(entityList)
+case class ServiceOfferingResponse(@JsonProperty("listserviceofferingsresponse") override val entityList: ServiceOfferingList) extends EntityResponse(entityList)
 
-case class TagSet(@JsonProperty("tag") override val entities: Option[Set[Tag]]) extends EntityList(entities)
+case class ServiceOfferingList(@JsonProperty("serviceoffering") override val entities: Option[List[ServiceOffering]]) extends EntityList(entities)
 
-case class Tag(key: String, value: String) extends Entity
+case class ServiceOffering(id: UUID) extends Entity

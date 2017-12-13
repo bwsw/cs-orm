@@ -23,6 +23,7 @@ import java.util.Random
 
 import br.com.autonomiccs.apacheCloudStack.client.{ApacheCloudStackClient, ApacheCloudStackRequest}
 import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRuntimeException
+import com.bwsw.cloudstack.KeyAuthenticationClientCreator
 import com.bwsw.cloudstack.entities.common.WeightedQueue
 import org.scalatest.{Outcome, PrivateMethodTester, fixture}
 
@@ -34,7 +35,7 @@ class ExecutorTestSuite extends fixture.FlatSpec with PrivateMethodTester {
   val expectedRequest = new ApacheCloudStackRequest("test")
   val expectedResponse = "response"
 
-  val settings = Executor.Settings(Array(firstEndpoint, secondEndpoint), "secretKey", "apiKey", retryDelay = 100)
+  val settings = Executor.Settings(Array(firstEndpoint, secondEndpoint), retryDelay = 100)
 
   case class FixtureParam(queue: WeightedQueue[String])
 
@@ -53,19 +54,21 @@ class ExecutorTestSuite extends fixture.FlatSpec with PrivateMethodTester {
     var checkedEndpoints = List.empty[String]
     val expectedEndpoints = List(firstEndpoint)
 
-    val tryExecuteRequest = PrivateMethod[String]('tryExecuteRequest)
-
-    val executor = new Executor(settings, waitIfServerUnavailable = true) {
-      override val endpointQueue = fixture.queue
-
+    val clientCreator = new KeyAuthenticationClientCreator(KeyAuthenticationClientCreator.Settings("secretKey","apiKey")){
       override def createClient(endpoint: String): ApacheCloudStackClient = {
         checkedEndpoints = checkedEndpoints ::: endpoint :: Nil
         new ApacheCloudStackClient(endpoint, apacheCloudStackUser) {
-            override def executeRequest(request: ApacheCloudStackRequest): String = {
-              expectedResponse
+          override def executeRequest(request: ApacheCloudStackRequest): String = {
+            expectedResponse
           }
         }
       }
+    }
+
+    val tryExecuteRequest = PrivateMethod[String]('tryExecuteRequest)
+
+    val executor = new Executor(settings, clientCreator, waitIfServerUnavailable = true) {
+      override val endpointQueue = fixture.queue
 
       override def tryExecuteRequest(request: ApacheCloudStackRequest): String =
         super.tryExecuteRequest(request)
@@ -81,11 +84,7 @@ class ExecutorTestSuite extends fixture.FlatSpec with PrivateMethodTester {
     var checkedEndpoints = List.empty[String]
     val expectedEndpoints = List(firstEndpoint, secondEndpoint)
 
-    val tryExecuteRequest = PrivateMethod[String]('tryExecuteRequest)
-
-    val executor = new Executor(settings, waitIfServerUnavailable = true) {
-      override val endpointQueue = fixture.queue
-
+    val clientCreator = new KeyAuthenticationClientCreator(KeyAuthenticationClientCreator.Settings("secretKey","apiKey")) {
       override def createClient(endpoint: String): ApacheCloudStackClient = {
         checkedEndpoints = checkedEndpoints ::: endpoint :: Nil
         endpoint match {
@@ -101,6 +100,12 @@ class ExecutorTestSuite extends fixture.FlatSpec with PrivateMethodTester {
           }
         }
       }
+    }
+
+    val tryExecuteRequest = PrivateMethod[String]('tryExecuteRequest)
+
+    val executor = new Executor(settings, clientCreator, waitIfServerUnavailable = true) {
+      override val endpointQueue = fixture.queue
 
       override def tryExecuteRequest(request: ApacheCloudStackRequest): String =
         super.tryExecuteRequest(request)
@@ -114,19 +119,23 @@ class ExecutorTestSuite extends fixture.FlatSpec with PrivateMethodTester {
   }
 
   "tryExecuteRequest" should "not swallow non-NoRouteToHostException" in { fixture =>
+    var checkedEndpoints = List.empty[String]
+    val expectedEndpoints = List(firstEndpoint)
     val tryExecuteRequest = PrivateMethod[String]('tryExecuteRequest)
 
-    val executor = new Executor(settings, waitIfServerUnavailable = true) {
-      override val endpointQueue = fixture.queue
-
+    val clientCreator = new KeyAuthenticationClientCreator(KeyAuthenticationClientCreator.Settings("secretKey","apiKey")) {
       override def createClient(endpoint: String): ApacheCloudStackClient = {
-        assert(endpoint == endpointQueue.getElement)
+        checkedEndpoints = checkedEndpoints ::: endpoint :: Nil
         new ApacheCloudStackClient(endpoint, apacheCloudStackUser) {
           override def executeRequest(request: ApacheCloudStackRequest): String = {
             throw new Exception
           }
         }
       }
+    }
+
+    val executor = new Executor(settings, clientCreator, waitIfServerUnavailable = true) {
+      override val endpointQueue = fixture.queue
 
       override def tryExecuteRequest(request: ApacheCloudStackRequest): String =
         super.tryExecuteRequest(request)
@@ -137,66 +146,84 @@ class ExecutorTestSuite extends fixture.FlatSpec with PrivateMethodTester {
     assertThrows[Exception]{
       tryExecuteRequestTest()
     }
+
+    assert(checkedEndpoints == expectedEndpoints)
   }
 
   "executeRequest" should "return response if waitIfServerUnavailable flag is true" in { fixture =>
-    val executor = {
-      new Executor(settings, waitIfServerUnavailable = true) {
-        override val endpointQueue = fixture.queue
+    var checkedEndpoints = List.empty[String]
+    val expectedEndpoints = List(firstEndpoint)
 
-        override def createClient(endpoint: String): ApacheCloudStackClient = {
-          assert(endpoint == endpointQueue.getElement)
-          new ApacheCloudStackClient(endpoint, apacheCloudStackUser) {
-            override def executeRequest(request: ApacheCloudStackRequest): String = {
-              assert(request.toString == expectedRequest.toString, "request is wrong")
-              expectedResponse
-            }
+    val clientCreator = new KeyAuthenticationClientCreator(KeyAuthenticationClientCreator.Settings("secretKey","apiKey")) {
+      override def createClient(endpoint: String): ApacheCloudStackClient = {
+        checkedEndpoints = checkedEndpoints ::: endpoint :: Nil
+        new ApacheCloudStackClient(endpoint, apacheCloudStackUser) {
+          override def executeRequest(request: ApacheCloudStackRequest): String = {
+            assert(request.toString == expectedRequest.toString, "request is wrong")
+            expectedResponse
           }
         }
       }
     }
 
+    val executor = {
+      new Executor(settings, clientCreator, waitIfServerUnavailable = true) {
+        override val endpointQueue = fixture.queue
+      }
+    }
+
     assert(executor.executeRequest(expectedRequest) == expectedResponse)
+    assert(checkedEndpoints == expectedEndpoints)
   }
 
   "executeRequest" should "return response if waitIfServerUnavailable flag is false" in { fixture =>
-    val executor = {
-      new Executor(settings, waitIfServerUnavailable = false) {
-        override val endpointQueue = fixture.queue
+    var checkedEndpoints = List.empty[String]
+    val expectedEndpoints = List(firstEndpoint)
 
-        override def createClient(endpoint: String): ApacheCloudStackClient = {
-          assert(endpoint == endpointQueue.getElement)
-          new ApacheCloudStackClient(endpoint, apacheCloudStackUser) {
-            override def executeRequest(request: ApacheCloudStackRequest): String = {
-              assert(request.toString == expectedRequest.toString, "request is wrong")
-              expectedResponse
-            }
+    val clientCreator = new KeyAuthenticationClientCreator(KeyAuthenticationClientCreator.Settings("secretKey","apiKey")) {
+      override def createClient(endpoint: String): ApacheCloudStackClient = {
+        checkedEndpoints = checkedEndpoints ::: endpoint :: Nil
+        new ApacheCloudStackClient(endpoint, apacheCloudStackUser) {
+          override def executeRequest(request: ApacheCloudStackRequest): String = {
+            assert(request.toString == expectedRequest.toString, "request is wrong")
+            expectedResponse
           }
         }
       }
     }
 
+    val executor = {
+      new Executor(settings, clientCreator, waitIfServerUnavailable = false) {
+        override val endpointQueue = fixture.queue
+      }
+    }
+
     assert(executor.executeRequest(expectedRequest) == expectedResponse)
+    assert(checkedEndpoints == expectedEndpoints)
   }
 
   "executeRequest" should "throw ApacheCloudStackClientRuntimeException(NoRouteToHostException) " +
     "if CloudStack server is unavailable and waitIfServerUnavailable flag is false" in { fixture =>
     val expectedRequest = new ApacheCloudStackRequest("test")
     val expectedResponse = "response"
+    var checkedEndpoints = List.empty[String]
+    val expectedEndpoints = List(firstEndpoint)
 
-    val executor = {
-      new Executor(settings, waitIfServerUnavailable = false) {
-        override val endpointQueue = fixture.queue
-
-        override def createClient(endpoint: String): ApacheCloudStackClient = {
-          assert(endpoint == endpointQueue.getElement)
-          new ApacheCloudStackClient(endpoint, apacheCloudStackUser) {
-            override def executeRequest(request: ApacheCloudStackRequest): String = {
-              assert(request.toString == expectedRequest.toString, "request is wrong")
-              throw new ApacheCloudStackClientRuntimeException(new NoRouteToHostException)
-            }
+    val clientCreator = new KeyAuthenticationClientCreator(KeyAuthenticationClientCreator.Settings("secretKey","apiKey")) {
+      override def createClient(endpoint: String): ApacheCloudStackClient = {
+        checkedEndpoints = checkedEndpoints ::: endpoint :: Nil
+        new ApacheCloudStackClient(endpoint, apacheCloudStackUser) {
+          override def executeRequest(request: ApacheCloudStackRequest): String = {
+            assert(request.toString == expectedRequest.toString, "request is wrong")
+            throw new ApacheCloudStackClientRuntimeException(new NoRouteToHostException)
           }
         }
+      }
+    }
+
+    val executor = {
+      new Executor(settings, clientCreator, waitIfServerUnavailable = false) {
+        override val endpointQueue = fixture.queue
       }
     }
 

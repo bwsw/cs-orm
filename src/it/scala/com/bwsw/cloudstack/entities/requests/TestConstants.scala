@@ -16,12 +16,25 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities.requests
 
-import com.fasterxml.jackson.annotation.JsonProperty
+object TestConstants {
+  object ParameterKeys {
+    val RESPONSE = "response"
+    val LIST_ALL = "listAll"
+    val TEMPLATE_FILTER = "templatefilter"
+    val AVAILABLE = "available"
+  }
 
-case class TagResponse(@JsonProperty("listtagsresponse") override val entityList: TagSet) extends EntityResponse(entityList)
+  object ParameterValues {
+    val JSON = "json"
+    val FEATURED = "featured"
+  }
 
-case class TagSet(@JsonProperty("tag") override val entities: Option[Set[Tag]]) extends EntityList(entities)
-
-case class Tag(key: String, value: String) extends Entity
+  object Commands {
+    val LIST_SERVICE_OFFERINGS = "listServiceOfferings"
+    val LIST_TEMPLATES = "listTemplates"
+    val LIST_ZONES = "listZones"
+    val LIST_DOMAINS = "listDomains"
+  }
+}

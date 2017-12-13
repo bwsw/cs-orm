@@ -43,6 +43,7 @@ class UserFindRequest extends Request {
 
   /**
     * Add account name parameter to a request.
+    * The client domain will be used if another domain is not specified
     */
   def withAccountName(account: String): UserFindRequest = {
     request.addParameter(ACCOUNT, account)

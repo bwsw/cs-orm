@@ -22,7 +22,8 @@ import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackApiCommandParameter
 import com.bwsw.cloudstack.entities.requests.tag.types.UserTagType
-import com.bwsw.cloudstack.entities.requests.Constants.Parameters._
+import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
+import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
 import com.bwsw.cloudstack.entities.responses.Tag
 import org.scalatest.FlatSpec
 
@@ -42,7 +43,7 @@ class TagCreateRequestTestSuite extends FlatSpec {
   val tagType = new UserTagType()
 
   val defaultParameters = Set[ApacheCloudStackApiCommandParameter](
-    new ApacheCloudStackApiCommandParameter(RESPONSE,"json"),
+    new ApacheCloudStackApiCommandParameter(RESPONSE,ParameterValues.JSON),
     new ApacheCloudStackApiCommandParameter(RESOURCE_TYPE, tagType.toString),
     new ApacheCloudStackApiCommandParameter(RESOURCE_IDS, resourceIds.mkString(",")),
     new ApacheCloudStackApiCommandParameter("tags[0].key", key1),
@@ -55,5 +56,6 @@ class TagCreateRequestTestSuite extends FlatSpec {
     val request = new TagCreateRequest(TagCreateRequest.Settings(tagType, resourceIds, tagList))
 
     assert(request.request.getParameters.asScala.toSet == defaultParameters)
+    assert(request.request.getCommand == Commands.CREATE_TAGS)
   }
 }

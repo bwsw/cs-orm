@@ -19,7 +19,7 @@
 package com.bwsw.cloudstack.entities.requests
 
 object Constants {
-  object Parameters {
+  object ParameterKeys {
     val ACCOUNT = "account"
     val ACCOUNT_ID = "accountid"
     val ACCOUNT_TYPE = "accounttype"
@@ -48,12 +48,18 @@ object Constants {
     val ZONE_ID = "zoneid"
   }
 
+  object ParameterValues {
+    val JSON = "json"
+  }
+
   object Commands {
     val CREATE_ACCOUNT = "createAccount"
     val CREATE_TAGS = "createTags"
     val CREATE_USER = "createUser"
     val LIST_ACCOUNTS = "listAccounts"
+    val LIST_TAGS = "listTags"
     val LIST_USERS = "listUsers"
+    val LIST_VMS = "listVirtualMachines"
     val DEPLOY_VIRTUAL_MACHINE = "deployVirtualMachine"
   }
 

@@ -21,7 +21,8 @@ package com.bwsw.cloudstack.entities.requests.user
 import java.util.{TimeZone, UUID}
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackApiCommandParameter
-import com.bwsw.cloudstack.entities.requests.Constants.Parameters._
+import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
+import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
@@ -37,7 +38,7 @@ class UserCreateRequestTestSuite extends FlatSpec {
   )
 
   val defaultParameters = Set[ApacheCloudStackApiCommandParameter](
-    new ApacheCloudStackApiCommandParameter(RESPONSE,"json"),
+    new ApacheCloudStackApiCommandParameter(RESPONSE, ParameterValues.JSON),
     new ApacheCloudStackApiCommandParameter(ACCOUNT, settings.accountName),
     new ApacheCloudStackApiCommandParameter(EMAIL, settings.email),
     new ApacheCloudStackApiCommandParameter(FIRST_NAME, settings.firstName),
@@ -50,6 +51,7 @@ class UserCreateRequestTestSuite extends FlatSpec {
     val request = new UserCreateRequest(settings)
 
     assert(request.request.getParameters.asScala.toSet == defaultParameters)
+    assert(request.request.getCommand == Commands.CREATE_USER)
   }
 
   "withId" should "add id parameter to a request" in {

@@ -21,8 +21,8 @@ package com.bwsw.cloudstack.entities.requests.account
 import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
-import com.bwsw.cloudstack.entities.requests.Constants.Commands
-import com.bwsw.cloudstack.entities.requests.Constants.Parameters._
+import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
+import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
 import com.bwsw.cloudstack.entities.requests.Request
 
 /**
@@ -30,7 +30,7 @@ import com.bwsw.cloudstack.entities.requests.Request
   */
 class AccountFindRequest extends Request {
   override protected[entities] val request = new ApacheCloudStackRequest(Commands.LIST_ACCOUNTS)
-    .addParameter(RESPONSE, "json")
+    .addParameter(RESPONSE, ParameterValues.JSON)
     .addParameter(LIST_ALL, true)
 
   /**

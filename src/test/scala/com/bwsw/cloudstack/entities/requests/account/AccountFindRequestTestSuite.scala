@@ -21,21 +21,23 @@ package com.bwsw.cloudstack.entities.requests.account
 import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackApiCommandParameter
-import com.bwsw.cloudstack.entities.requests.Constants.Parameters._
+import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
+import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
 
 class AccountFindRequestTestSuite extends FlatSpec {
   val defaultParameters = Set[ApacheCloudStackApiCommandParameter](
-    new ApacheCloudStackApiCommandParameter(RESPONSE,"json"),
-    new ApacheCloudStackApiCommandParameter(LIST_ALL,"true")
+    new ApacheCloudStackApiCommandParameter(RESPONSE, ParameterValues.JSON),
+    new ApacheCloudStackApiCommandParameter(LIST_ALL, true)
   )
 
   it should "create a request with predefined parameters" in {
     val request = new AccountFindRequest
 
     assert(request.request.getParameters.asScala.toSet == defaultParameters)
+    assert(request.request.getCommand == Commands.LIST_ACCOUNTS)
   }
 
   "withId" should "add id parameter to a request" in {

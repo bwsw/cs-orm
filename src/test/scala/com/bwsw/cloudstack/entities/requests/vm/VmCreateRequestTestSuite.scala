@@ -21,7 +21,8 @@ package com.bwsw.cloudstack.entities.requests.vm
 import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackApiCommandParameter
-import com.bwsw.cloudstack.entities.requests.Constants.Parameters._
+import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
+import com.bwsw.cloudstack.entities.requests.Constants.{ParameterValues, Commands}
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
@@ -35,7 +36,7 @@ class VmCreateRequestTestSuite extends FlatSpec {
   )
 
   val defaultParameters = Set[ApacheCloudStackApiCommandParameter](
-    new ApacheCloudStackApiCommandParameter(RESPONSE,"json"),
+    new ApacheCloudStackApiCommandParameter(RESPONSE, ParameterValues.JSON),
     new ApacheCloudStackApiCommandParameter(SERVICE_OFFERING_ID, settings.serviceOfferingId),
     new ApacheCloudStackApiCommandParameter(TEMPLATE_ID, settings.templateId),
     new ApacheCloudStackApiCommandParameter(ZONE_ID, settings.zoneId)
@@ -45,6 +46,7 @@ class VmCreateRequestTestSuite extends FlatSpec {
     val request = new VmCreateRequest(settings)
 
     assert(request.request.getParameters.asScala.toSet == defaultParameters)
+    assert(request.request.getCommand == Commands.DEPLOY_VIRTUAL_MACHINE)
   }
 
   "withDomain" should "add a domain id parameter to a request" in {

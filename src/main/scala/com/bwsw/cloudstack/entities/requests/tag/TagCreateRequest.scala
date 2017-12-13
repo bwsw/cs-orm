@@ -22,8 +22,8 @@ import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import com.bwsw.cloudstack.entities.requests.tag.types.TagType
-import com.bwsw.cloudstack.entities.requests.Constants.Commands
-import com.bwsw.cloudstack.entities.requests.Constants.Parameters._
+import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
+import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
 import com.bwsw.cloudstack.entities.requests.Request
 import com.bwsw.cloudstack.entities.responses.Tag
 
@@ -34,7 +34,7 @@ import com.bwsw.cloudstack.entities.responses.Tag
   */
 class TagCreateRequest(settings: TagCreateRequest.Settings) extends Request {
   override protected[entities] val request = new ApacheCloudStackRequest(Commands.CREATE_TAGS)
-    .addParameter(RESPONSE, "json")
+    .addParameter(RESPONSE, ParameterValues.JSON)
     .addParameter(RESOURCE_TYPE, settings.resourceType.toString)
     .addParameter(RESOURCE_IDS, settings.resourceIds.mkString(","))
 

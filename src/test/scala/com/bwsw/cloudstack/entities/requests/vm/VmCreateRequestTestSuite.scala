@@ -66,6 +66,6 @@ class VmCreateRequestTestSuite extends FlatSpec {
     )
     val request = new VmCreateRequest(settings)
 
-    assert(request.withAccountName(accountName, domainId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withDomainAccount(accountName, domainId).request.getParameters.asScala.toSet == expectedParameters)
   }
 }

@@ -59,9 +59,13 @@ class VmCreateRequestTestSuite extends FlatSpec {
 
   "withAccountName" should "add an account name parameter to a request" in {
     val accountName = "name"
-    val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ACCOUNT, accountName))
+    val domainId = UUID.randomUUID()
+    val expectedParameters = defaultParameters ++ Set(
+      new ApacheCloudStackApiCommandParameter(ACCOUNT, accountName),
+      new ApacheCloudStackApiCommandParameter(DOMAIN_ID, domainId)
+    )
     val request = new VmCreateRequest(settings)
 
-    assert(request.withAccountName(accountName).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withDomainAccount(accountName, domainId).request.getParameters.asScala.toSet == expectedParameters)
   }
 }

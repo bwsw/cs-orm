@@ -52,7 +52,6 @@ class UserFindRequest extends Request {
 
   /**
     * Add domain id parameter to a request.
-    * If the account name parameter is used, domain id must also be used.
     */
   def withDomain(id: UUID): UserFindRequest = {
     request.addParameter(DOMAIN_ID, id)

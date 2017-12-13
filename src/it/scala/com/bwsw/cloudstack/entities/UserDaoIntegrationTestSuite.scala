@@ -29,14 +29,12 @@ class UserDaoIntegrationTestSuite extends FlatSpec with TestEntities {
   val firstUserId = UUID.randomUUID()
   val secondUserId = UUID.randomUUID()
 
-  it should "retrieve empty user list" in {
-    val userFindRequest = new UserFindRequest().withId(firstUserId)
-    val initUsers = userDao.find(userFindRequest)
+  it should "retrieve users after their creation" in {
+    val firstFindRequest = new UserFindRequest().withId(firstUserId)
+    val initUsers = userDao.find(firstFindRequest)
 
     assert(initUsers.isEmpty)
-  }
 
-  it should "retrieve user after it creation" in {
     val firstUserCreationSettings = UserCreateRequest.Settings(
       accountName="admin",
       email = "e@e",
@@ -48,12 +46,10 @@ class UserDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     val firstUserCreateRequest = new UserCreateRequest(firstUserCreationSettings).withId(firstUserId)
     userDao.create(firstUserCreateRequest)
 
-    val userFindRequest = new UserFindRequest().withId(firstUserId)
-    val updatedUsers = userDao.find(userFindRequest)
+    val secondFindRequest = new UserFindRequest().withId(firstUserId)
+    val updatedUsers = userDao.find(secondFindRequest)
     assert(updatedUsers.size == 1 && updatedUsers.head.id == firstUserId)
-  }
 
-  it should "retrieve all created users" in {
     val secondUserCreationSettings = UserCreateRequest.Settings(
       accountName="admin",
       email = "e@e",

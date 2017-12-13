@@ -36,6 +36,7 @@ class TagFindRequest extends Request {
 
   /**
     * Add an account name parameter to a request.
+    * The client domain will be used if another domain is not specified
     */
   def withAccountName(name: String): TagFindRequest = {
     request.addParameter(ACCOUNT, name)

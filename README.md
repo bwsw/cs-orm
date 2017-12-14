@@ -4,7 +4,7 @@ Simple CloudStack Entities Framework
 The library provides the convenient way of working with Apache CloudStack entities through the following mechanisms:
 1. Creating and retrieving the declared entities on/from Apache CloudStack server, such as users, accounts, virtual machines, tags.
 It based on the extensible request builders which simplify creating CloudStack requests.
-2. Base set of Apache CloudStack events, for retrieving their from Apache CloudStack messages.
+2. Base set of Apache CloudStack events to work with CloudStack Event Log (see [official documentation](http://docs.cloudstack.apache.org/projects/cloudstack-administration/en/4.9/events.html)).
 
 ## Install with SBT
 
@@ -18,9 +18,9 @@ libraryDependencies += "com.bwsw" %% "cs-entities" % "4.9.3"
 3. Use Executor and JsonSerializer to create a GenericDao instance, it may be an existing GenericDao or a custom implementation \
 (if you implement GenericDao, first of all you have to implement one Request for each DAO method).
 4. Use existing Entity response hierarchy to work with users, accounts, vws or tags \
-(if you create a new GenericDao implementation for ![another](http://cloudstack.apache.org/api/apidocs-4.9/) Apache CloudStack entity then you have to implement a new Entity response hierarchy).
+(if you create a new GenericDao implementation for [another](http://cloudstack.apache.org/api/apidocs-4.9/) Apache CloudStack entity then you have to implement a new Entity response hierarchy).
 
-Also see ![diagrams](docs/diagrams)
+The ![diagrams](docs/diagrams) are provided for you to understand the process of library classes relationships.
 
 ## Example Usage
 

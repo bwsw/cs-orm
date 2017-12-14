@@ -3,7 +3,7 @@ Simple CloudStack Entities Framework
 
 The library provides the convenient way of working with Apache CloudStack entities through the following mechanisms:
 1. Creating and retrieving the declared entities on/from Apache CloudStack server, such as users, accounts, virtual machines, tags.
-It based on extensible Request which simplify creating requests to CloudStack.
+It based on the extensible request builders which simplify creating CloudStack requests.
 2. Base set of Apache CloudStack events, for retrieving their from Apache CloudStack messages.
 
 ## Install with SBT
@@ -13,11 +13,14 @@ Add the following to your `build.sbt`
 libraryDependencies += "com.bwsw" %% "cs-entities" % "4.9.3"
 ```
 ## Getting Started      
+1. Create Executor instance with specified parameters to interact with Apache CloudStack server. \
+2. Create JsonSerializer instance for parsing json responses from the server. \
+3. Use Executor and JsonSerializer to create a GenericDao instance, it may be an existing GenericDao or a custom implementation \
+(if you implement GenericDao, first of all you have to implement one Request for each DAO method).
+4. Use existing Entity response hierarchy to work with users, accounts, vws or tags \
+(if you create a new GenericDao implementation for ![another](http://cloudstack.apache.org/api/apidocs-4.9/) Apache CloudStack entity then you have to implement a new Entity response hierarchy).
 
-The diagram below is a simple illustration of how the library's classes should be used. \
-![Sequence](docs/diagrams/cs_entities_user_sequence.png)
-
-Implement your GenericDao, Request, and Response hierarchy for working with another entities \
+Also see ![diagrams](docs/diagrams)
 
 ## Example Usage
 
@@ -58,10 +61,10 @@ Run tests: `sbt test`
     * `CS_PORT` - host of Apache CloudStack simulator server, for example - "8888"
 2. Run Apache CloudStack simulator in docker container:
 ```bash
-    docker run --rm --name resmo-simulator-kafka -d -p ${CS_PORT}:${CS_PORT} resmo/cloudstack-sim
+    docker run --rm --name resmo-cloudstack-simulator -d -p ${CS_PORT}:${CS_PORT} resmo/cloudstack-sim
 ```
 
-3. After the end of the cloudstack simulator deploying (you can check it like in ![here](jenkins/run_cs_simulator.sh)) execute: `sbt it:test`
+3. After the end of the cloudstack simulator deploying (you can check it like ![this](jenkins/run_cs_simulator.sh)) execute: `sbt it:test`
 
 ## Versioning
 

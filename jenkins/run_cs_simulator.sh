@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-docker run --rm --name resmo-simulator-kafka -d -p ${CS_PORT}:${CS_PORT} resmo/cloudstack-sim
+docker run --rm --name resmo-cloudstack-simulator -d -p ${CS_PORT}:${CS_PORT} resmo/cloudstack-sim
 
 ITERATIONS=40
 SLEEP=30

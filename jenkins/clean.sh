@@ -1,3 +1,3 @@
 #!/bin/bash -e
 
-docker stop resmo-simulator-kafka
+docker stop resmo-cloudstack-simulator

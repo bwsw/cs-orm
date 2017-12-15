@@ -16,15 +16,14 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.dao
+package com.bwsw.cloudstack.entities.util.requests
 
-import com.bwsw.cloudstack.entities.Executor
-import com.bwsw.cloudstack.entities.common.JsonMapper
-import com.bwsw.cloudstack.entities.requests.DomainFindRequest
-import com.bwsw.cloudstack.entities.responses.{Domain, DomainResponse}
+import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
+import com.bwsw.cloudstack.entities.requests.Request
+import com.bwsw.cloudstack.entities.util.requests.TestConstants.{Commands, ParameterKeys, ParameterValues}
 
-class DomainDao (executor: Executor, mapper: JsonMapper) extends GenericDao[DomainResponse, Domain](executor, mapper) {
-  protected type F = DomainFindRequest
-
-  override def find(request: F)(implicit m: Manifest[DomainResponse]): Iterable[Domain] = super.find(request)
+class DomainFindRequest extends Request {
+  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_DOMAINS)
+    .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
+    .addParameter(ParameterKeys.LIST_ALL, true)
 }

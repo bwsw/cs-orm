@@ -16,14 +16,15 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities.util.responses
 
 import java.util.UUID
 
+import com.bwsw.cloudstack.entities.responses.{Entity, EntityList, EntityResponse}
 import com.fasterxml.jackson.annotation.JsonProperty
 
-case class ServiceOfferingResponse(@JsonProperty("listserviceofferingsresponse") override val entityList: ServiceOfferingList) extends EntityResponse(entityList)
+case class ZoneResponse(@JsonProperty("listzonesresponse") override val entityList: ZoneList) extends EntityResponse(entityList)
 
-case class ServiceOfferingList(@JsonProperty("serviceoffering") override val entities: Option[List[ServiceOffering]]) extends EntityList(entities)
+case class ZoneList(@JsonProperty("zone") override val entities: Option[List[Zone]]) extends EntityList(entities)
 
-case class ServiceOffering(id: UUID) extends Entity
+case class Zone(id: UUID) extends Entity

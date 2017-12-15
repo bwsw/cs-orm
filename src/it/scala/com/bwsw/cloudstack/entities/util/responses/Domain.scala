@@ -16,12 +16,15 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.requests
-import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
-import com.bwsw.cloudstack.entities.requests.TestConstants._
+package com.bwsw.cloudstack.entities.util.responses
 
-class ServiceOfferingFindRequest extends Request {
-  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_SERVICE_OFFERINGS)
-    .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
-    .addParameter(ParameterKeys.LIST_ALL, true)
-}
+import java.util.UUID
+
+import com.bwsw.cloudstack.entities.responses.{Entity, EntityList, EntityResponse}
+import com.fasterxml.jackson.annotation.JsonProperty
+
+case class DomainResponse(@JsonProperty("listdomainsresponse") override val entityList: DomainList) extends EntityResponse(entityList)
+
+case class DomainList(@JsonProperty("domain") override val entities: Option[List[Domain]]) extends EntityList(entities)
+
+case class Domain(id: UUID) extends Entity

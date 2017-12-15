@@ -16,14 +16,14 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities.util.requests
 
-import java.util.UUID
+import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
+import com.bwsw.cloudstack.entities.requests.Request
+import com.bwsw.cloudstack.entities.util.requests.TestConstants._
 
-import com.fasterxml.jackson.annotation.JsonProperty
-
-case class ZoneResponse(@JsonProperty("listzonesresponse") override val entityList: ZoneList) extends EntityResponse(entityList)
-
-case class ZoneList(@JsonProperty("zone") override val entities: Option[List[Zone]]) extends EntityList(entities)
-
-case class Zone(id: UUID) extends Entity
+class ZoneFindRequest extends Request {
+  override protected[entities] val request = new ApacheCloudStackRequest(Commands.LIST_ZONES)
+    .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
+    .addParameter(ParameterKeys.AVAILABLE, true)
+}

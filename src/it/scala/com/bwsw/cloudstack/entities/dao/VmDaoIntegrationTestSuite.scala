@@ -16,14 +16,15 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities
+package com.bwsw.cloudstack.entities.dao
 
 import java.util.UUID
 
-import com.bwsw.cloudstack.entities.dao._
+import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest
-import com.bwsw.cloudstack.entities.requests.{DomainFindRequest, ServiceOfferingFindRequest, TemplateFindRequest, ZoneFindRequest}
 import com.bwsw.cloudstack.entities.requests.vm.{VmCreateRequest, VmFindRequest}
+import com.bwsw.cloudstack.entities.util.dao.{DomainDao, ServiceOfferingDao, TemplateDao, ZoneDao}
+import com.bwsw.cloudstack.entities.util.requests.{DomainFindRequest, ServiceOfferingFindRequest, TemplateFindRequest, ZoneFindRequest}
 import org.scalatest.FlatSpec
 
 class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {

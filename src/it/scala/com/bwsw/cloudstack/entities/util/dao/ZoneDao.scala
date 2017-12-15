@@ -16,15 +16,16 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.dao
+package com.bwsw.cloudstack.entities.util.dao
 
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.JsonMapper
-import com.bwsw.cloudstack.entities.requests.ServiceOfferingFindRequest
-import com.bwsw.cloudstack.entities.responses.{ServiceOffering, ServiceOfferingResponse}
+import com.bwsw.cloudstack.entities.dao.GenericDao
+import com.bwsw.cloudstack.entities.util.requests.ZoneFindRequest
+import com.bwsw.cloudstack.entities.util.responses.{Zone, ZoneResponse}
 
-class ServiceOfferingDao(executor: Executor, mapper: JsonMapper) extends GenericDao[ServiceOfferingResponse, ServiceOffering](executor, mapper) {
-  protected type F = ServiceOfferingFindRequest
+class ZoneDao(executor: Executor, mapper: JsonMapper) extends GenericDao[ZoneResponse, Zone](executor, mapper) {
+  protected type F = ZoneFindRequest
 
-  override def find(request: ServiceOfferingFindRequest)(implicit m: Manifest[ServiceOfferingResponse]): Iterable[ServiceOffering] = super.find(request)
+  override def find(request: F)(implicit m: Manifest[ZoneResponse]): Iterable[Zone] = super.find(request)
 }

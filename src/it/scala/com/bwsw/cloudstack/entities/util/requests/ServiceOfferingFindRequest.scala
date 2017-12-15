@@ -16,14 +16,14 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities.util.requests
 
-import java.util.UUID
+import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
+import com.bwsw.cloudstack.entities.requests.Request
+import com.bwsw.cloudstack.entities.util.requests.TestConstants._
 
-import com.fasterxml.jackson.annotation.JsonProperty
-
-case class TemplateResponse(@JsonProperty("listtemplatesresponse") override val entityList: TemplateList) extends EntityResponse(entityList)
-
-case class TemplateList(@JsonProperty("template") override val entities: Option[List[Template]]) extends EntityList(entities)
-
-case class Template(id: UUID) extends Entity
+class ServiceOfferingFindRequest extends Request {
+  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_SERVICE_OFFERINGS)
+    .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
+    .addParameter(ParameterKeys.LIST_ALL, true)
+}

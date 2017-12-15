@@ -16,25 +16,16 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.requests
+package com.bwsw.cloudstack.entities.util.dao
 
-object TestConstants {
-  object ParameterKeys {
-    val RESPONSE = "response"
-    val LIST_ALL = "listAll"
-    val TEMPLATE_FILTER = "templatefilter"
-    val AVAILABLE = "available"
-  }
+import com.bwsw.cloudstack.entities.Executor
+import com.bwsw.cloudstack.entities.common.JsonMapper
+import com.bwsw.cloudstack.entities.dao.GenericDao
+import com.bwsw.cloudstack.entities.util.requests.TemplateFindRequest
+import com.bwsw.cloudstack.entities.util.responses.{Template, TemplateResponse}
 
-  object ParameterValues {
-    val JSON = "json"
-    val FEATURED = "featured"
-  }
+class TemplateDao(executor: Executor, mapper: JsonMapper) extends GenericDao[TemplateResponse, Template](executor, mapper) {
+  protected type F = TemplateFindRequest
 
-  object Commands {
-    val LIST_SERVICE_OFFERINGS = "listServiceOfferings"
-    val LIST_TEMPLATES = "listTemplates"
-    val LIST_ZONES = "listZones"
-    val LIST_DOMAINS = "listDomains"
-  }
+  override def find(request: TemplateFindRequest)(implicit m: Manifest[TemplateResponse]): Iterable[Template] = super.find(request)
 }

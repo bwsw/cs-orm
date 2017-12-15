@@ -16,11 +16,11 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities
+package com.bwsw.cloudstack.entities.dao
 
 import java.util.UUID
 
-import com.bwsw.cloudstack.entities.dao.{TagDao, UserDao}
+import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.tag.types.UserTagType
 import com.bwsw.cloudstack.entities.requests.tag.{TagCreateRequest, TagFindRequest}
 import com.bwsw.cloudstack.entities.requests.user.UserCreateRequest

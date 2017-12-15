@@ -17,7 +17,7 @@ libraryDependencies += "com.bwsw" %% "cs-entities" % "4.9.3"
 2. Create JsonSerializer instance for parsing json responses from the server. \
 3. Use Executor and JsonSerializer to create a GenericDao instance, it may be an existing GenericDao or a custom implementation \
 (if you implement GenericDao, first of all you have to implement one Request for each DAO method).
-4. Use existing Entity response hierarchy to work with users, accounts, vws or tags \
+4. Use existing Entity response hierarchy to work with users, accounts, vms or tags \
 (if you create a new GenericDao implementation for [another](http://cloudstack.apache.org/api/apidocs-4.9/) Apache CloudStack entity then you have to implement a new Entity response hierarchy).
 
 The ![diagrams](docs/diagrams) are provided for you to understand the process of library classes relationships.

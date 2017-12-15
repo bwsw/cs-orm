@@ -16,15 +16,15 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.dao
+package com.bwsw.cloudstack.entities.util.responses
 
-import com.bwsw.cloudstack.entities.Executor
-import com.bwsw.cloudstack.entities.common.JsonMapper
-import com.bwsw.cloudstack.entities.requests.ZoneFindRequest
-import com.bwsw.cloudstack.entities.responses.{Zone, ZoneResponse}
+import java.util.UUID
 
-class ZoneDao(executor: Executor, mapper: JsonMapper) extends GenericDao[ZoneResponse, Zone](executor, mapper) {
-  protected type F = ZoneFindRequest
+import com.bwsw.cloudstack.entities.responses.{Entity, EntityList, EntityResponse}
+import com.fasterxml.jackson.annotation.JsonProperty
 
-  override def find(request: F)(implicit m: Manifest[ZoneResponse]): Iterable[Zone] = super.find(request)
-}
+case class TemplateResponse(@JsonProperty("listtemplatesresponse") override val entityList: TemplateList) extends EntityResponse(entityList)
+
+case class TemplateList(@JsonProperty("template") override val entities: Option[List[Template]]) extends EntityList(entities)
+
+case class Template(id: UUID) extends Entity

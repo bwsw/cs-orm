@@ -16,14 +16,16 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses
+package com.bwsw.cloudstack.entities.util.dao
 
-import java.util.UUID
+import com.bwsw.cloudstack.entities.Executor
+import com.bwsw.cloudstack.entities.common.JsonMapper
+import com.bwsw.cloudstack.entities.dao.GenericDao
+import com.bwsw.cloudstack.entities.util.requests.DomainFindRequest
+import com.bwsw.cloudstack.entities.util.responses.{Domain, DomainResponse}
 
-import com.fasterxml.jackson.annotation.JsonProperty
+class DomainDao (executor: Executor, mapper: JsonMapper) extends GenericDao[DomainResponse, Domain](executor, mapper) {
+  protected type F = DomainFindRequest
 
-case class DomainResponse(@JsonProperty("listdomainsresponse") override val entityList: DomainList) extends EntityResponse(entityList)
-
-case class DomainList(@JsonProperty("domain") override val entities: Option[List[Domain]]) extends EntityList(entities)
-
-case class Domain(id: UUID) extends Entity
+  override def find(request: F)(implicit m: Manifest[DomainResponse]): Iterable[Domain] = super.find(request)
+}

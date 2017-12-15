@@ -16,13 +16,16 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.requests
+package com.bwsw.cloudstack.entities.util.dao
 
-import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
-import com.bwsw.cloudstack.entities.requests.TestConstants._
+import com.bwsw.cloudstack.entities.Executor
+import com.bwsw.cloudstack.entities.common.JsonMapper
+import com.bwsw.cloudstack.entities.dao.GenericDao
+import com.bwsw.cloudstack.entities.util.requests.ServiceOfferingFindRequest
+import com.bwsw.cloudstack.entities.util.responses.{ServiceOffering, ServiceOfferingResponse}
 
-class ZoneFindRequest extends Request {
-  override protected[entities] val request = new ApacheCloudStackRequest(Commands.LIST_ZONES)
-    .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
-    .addParameter(ParameterKeys.AVAILABLE, true)
+class ServiceOfferingDao(executor: Executor, mapper: JsonMapper) extends GenericDao[ServiceOfferingResponse, ServiceOffering](executor, mapper) {
+  protected type F = ServiceOfferingFindRequest
+
+  override def find(request: ServiceOfferingFindRequest)(implicit m: Manifest[ServiceOfferingResponse]): Iterable[ServiceOffering] = super.find(request)
 }

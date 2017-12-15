@@ -32,13 +32,13 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   val templateId = retrievedTemplateId
   val zoneId = retrievedZoneId
 
-  it should "create vm use request which contains only required parameters" in {
+  it should "create a vm using a request which contains only required parameters" in {
     val vmCreateRequest = new VmCreateRequest(VmCreateRequest.Settings(serviceOfferingId, templateId, zoneId))
 
     checkVmCreation(vmCreateRequest.request)
   }
 
-  it should "create vm use request which contains all available parameters" in {
+  it should "create a vm using a request which contains the required and optional parameters" in {
     val domainId = retrievedDomainId
     val accountFindRequest = new AccountFindRequest().withDomain(domainId)
     val accountName = mapper.deserialize[AccountTestFindResponse](
@@ -60,7 +60,7 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     assert(actualVm == expectedVm)
   }
 
-  it should "create vm use request which contains only required parameters and parameter with incorrect key" in {
+  it should "create a vm using a request which contains only required parameters and a parameter with incorrect key" in {
     val incorrectParameter = UUID.randomUUID().toString
     val request = new VmCreateRequest(
       VmCreateRequest.Settings(serviceOfferingId, templateId, zoneId)

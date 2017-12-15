@@ -21,6 +21,7 @@ lazy val root = (project in file("."))
   .configs(IntegrationTest)
   .settings(
     name := "cs-entities",
+    organization := "com.bwsw",
     version := "4.9.3",
     scalaVersion := "2.12.4",
     libraryDependencies ++= Seq(

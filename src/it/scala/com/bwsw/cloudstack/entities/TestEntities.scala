@@ -28,7 +28,8 @@ import com.bwsw.cloudstack.entities.util.requests.{DomainFindRequest, ServiceOff
 trait TestEntities {
   private val csHost = ApplicationConfig.getRequiredString("app.cloudstack.host")
   private val csPort = ApplicationConfig.getRequiredString("app.cloudstack.port")
-  val creatorSettings = PasswordAuthenticationClientCreator.Settings("admin","password","/")
+  val adminAccount = "admin"
+  val creatorSettings = PasswordAuthenticationClientCreator.Settings(adminAccount,"password","/")
   val executorSettings = Executor.Settings(Array(s"http://$csHost:$csPort/client/api"), retryDelay = 1000)
   val creator = new PasswordAuthenticationClientCreator(creatorSettings)
   val executor = new Executor(executorSettings, creator, true)
@@ -52,7 +53,7 @@ trait TestEntities {
     zoneDao.find(zoneFindRequest).head.id
   }
 
-  val retrievedDomainId: UUID = {
+  val retrievedAdminDomainId: UUID = {
     val domainDao = new DomainDao(executor, mapper)
     val domainFindRequest = new DomainFindRequest
     domainDao.find(domainFindRequest).head.id

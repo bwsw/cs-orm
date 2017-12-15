@@ -32,7 +32,7 @@ class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     val firstAccountName = UUID.randomUUID().toString
     val secondAccountName = UUID.randomUUID().toString
 
-    val domainId = retrievedDomainId
+    val domainId = retrievedAdminDomainId
     val accountDao = new AccountDao(executor, mapper)
     createAccountWithName(accountDao, firstAccountName, domainId)
     createAccountWithName(accountDao, secondAccountName, domainId)

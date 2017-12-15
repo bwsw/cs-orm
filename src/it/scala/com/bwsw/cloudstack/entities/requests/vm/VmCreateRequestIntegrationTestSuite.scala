@@ -39,7 +39,7 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   }
 
   it should "create a vm using a request which contains the required and optional parameters" in {
-    val domainId = retrievedDomainId
+    val domainId = retrievedAdminDomainId
     val accountFindRequest = new AccountFindRequest().withDomain(domainId)
     val accountName = mapper.deserialize[AccountTestFindResponse](
       executor.executeRequest(accountFindRequest.request)
@@ -69,7 +69,7 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     checkVmCreation(request)
   }
 
-  def checkVmCreation(request: ApacheCloudStackRequest): Unit = {
+  private def checkVmCreation(request: ApacheCloudStackRequest): Unit = {
     val response = executor.executeRequest(request)
 
     val vmId = mapper.deserialize[VmCreateResponse](response).vmId.id

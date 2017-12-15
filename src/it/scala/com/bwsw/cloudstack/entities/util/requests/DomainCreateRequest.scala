@@ -18,25 +18,12 @@
 */
 package com.bwsw.cloudstack.entities.util.requests
 
-object TestConstants {
-  object ParameterKeys {
-    val RESPONSE = "response"
-    val LIST_ALL = "listAll"
-    val TEMPLATE_FILTER = "templatefilter"
-    val AVAILABLE = "available"
-    val NAME = "name"
-  }
+import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
+import com.bwsw.cloudstack.entities.requests.Request
+import com.bwsw.cloudstack.entities.util.requests.TestConstants.{Commands, ParameterKeys, ParameterValues}
 
-  object ParameterValues {
-    val JSON = "json"
-    val FEATURED = "featured"
-  }
-
-  object Commands {
-    val LIST_SERVICE_OFFERINGS = "listServiceOfferings"
-    val LIST_TEMPLATES = "listTemplates"
-    val LIST_ZONES = "listZones"
-    val LIST_DOMAINS = "listDomains"
-    val CREATE_DOMAIN = "createDomain"
-  }
+class DomainCreateRequest(name: String) extends Request {
+  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.CREATE_DOMAIN)
+    .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
+    .addParameter(ParameterKeys.NAME, name)
 }

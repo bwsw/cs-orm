@@ -16,27 +16,14 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.util.requests
+package com.bwsw.cloudstack.entities.util.responses.domain
 
-object TestConstants {
-  object ParameterKeys {
-    val RESPONSE = "response"
-    val LIST_ALL = "listAll"
-    val TEMPLATE_FILTER = "templatefilter"
-    val AVAILABLE = "available"
-    val NAME = "name"
-  }
+import java.util.UUID
 
-  object ParameterValues {
-    val JSON = "json"
-    val FEATURED = "featured"
-  }
+import com.fasterxml.jackson.annotation.JsonProperty
 
-  object Commands {
-    val LIST_SERVICE_OFFERINGS = "listServiceOfferings"
-    val LIST_TEMPLATES = "listTemplates"
-    val LIST_ZONES = "listZones"
-    val LIST_DOMAINS = "listDomains"
-    val CREATE_DOMAIN = "createDomain"
-  }
-}
+case class DomainCreateResponse(@JsonProperty("createdomainresponse") domainEntity: DomainEntity)
+
+case class DomainEntity(@JsonProperty("domain") domainId: DomainId)
+
+case class DomainId(id: UUID)

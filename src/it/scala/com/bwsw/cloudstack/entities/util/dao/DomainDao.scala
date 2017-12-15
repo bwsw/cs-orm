@@ -22,7 +22,7 @@ import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.JsonMapper
 import com.bwsw.cloudstack.entities.dao.GenericDao
 import com.bwsw.cloudstack.entities.util.requests.DomainFindRequest
-import com.bwsw.cloudstack.entities.util.responses.{Domain, DomainResponse}
+import com.bwsw.cloudstack.entities.util.responses.common.{Domain, DomainResponse}
 
 class DomainDao (executor: Executor, mapper: JsonMapper) extends GenericDao[DomainResponse, Domain](executor, mapper) {
   protected type F = DomainFindRequest

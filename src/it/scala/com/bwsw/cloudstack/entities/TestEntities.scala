@@ -18,8 +18,12 @@
 */
 package com.bwsw.cloudstack.entities
 
+import java.util.UUID
+
 import com.bwsw.cloudstack.PasswordAuthenticationClientCreator
 import com.bwsw.cloudstack.entities.common.JsonMapper
+import com.bwsw.cloudstack.entities.util.dao.{DomainDao, ServiceOfferingDao, TemplateDao, ZoneDao}
+import com.bwsw.cloudstack.entities.util.requests.{DomainFindRequest, ServiceOfferingFindRequest, TemplateFindRequest, ZoneFindRequest}
 
 trait TestEntities {
   private val csHost = ApplicationConfig.getRequiredString("app.cloudstack.host")
@@ -29,4 +33,28 @@ trait TestEntities {
   val creator = new PasswordAuthenticationClientCreator(creatorSettings)
   val executor = new Executor(executorSettings, creator, true)
   val mapper = new JsonMapper(true)
+
+  val retievedServiceOfferingId: UUID = {
+    val serviceOfferingDao = new ServiceOfferingDao(executor, mapper)
+    val serviceOfferingFindRequest = new ServiceOfferingFindRequest
+    serviceOfferingDao.find(serviceOfferingFindRequest).head.id
+  }
+
+  val retrievedTemplateId: UUID = {
+    val templateDao = new TemplateDao(executor, mapper)
+    val templateFindRequest = new TemplateFindRequest
+    templateDao.find(templateFindRequest).head.id
+  }
+
+  val retrievedZoneId: UUID = {
+    val zoneDao = new ZoneDao(executor, mapper)
+    val zoneFindRequest = new ZoneFindRequest
+    zoneDao.find(zoneFindRequest).head.id
+  }
+
+  val retrievedDomainId: UUID = {
+    val domainDao = new DomainDao(executor, mapper)
+    val domainFindRequest = new DomainFindRequest
+    domainDao.find(domainFindRequest).head.id
+  }
 }

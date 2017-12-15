@@ -23,8 +23,6 @@ import java.util.UUID
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest
 import com.bwsw.cloudstack.entities.requests.vm.{VmCreateRequest, VmFindRequest}
-import com.bwsw.cloudstack.entities.util.dao.{DomainDao, ServiceOfferingDao, TemplateDao, ZoneDao}
-import com.bwsw.cloudstack.entities.util.requests.{DomainFindRequest, ServiceOfferingFindRequest, TemplateFindRequest, ZoneFindRequest}
 import org.scalatest.FlatSpec
 
 class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {
@@ -34,7 +32,7 @@ class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     val firstAccountName = UUID.randomUUID().toString
     val secondAccountName = UUID.randomUUID().toString
 
-    val domainId = retrieveDomainId
+    val domainId = retrievedDomainId
     val accountDao = new AccountDao(executor, mapper)
     createAccountWithName(accountDao, firstAccountName, domainId)
     createAccountWithName(accountDao, secondAccountName, domainId)
@@ -42,9 +40,9 @@ class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     val findByAccountNameRequest = new VmFindRequest().withAccountName(firstAccountName)
     assert(vmDao.find(findByAccountNameRequest).isEmpty)
 
-    val serviceOfferingId = retieveServiceOfferingId
-    val templateId = retrieveTemplateId
-    val zoneId = retrieveZoneId
+    val serviceOfferingId = retievedServiceOfferingId
+    val templateId = retrievedTemplateId
+    val zoneId = retrievedZoneId
 
     val vmCreationSettings = VmCreateRequest.Settings(
       serviceOfferingId,
@@ -64,30 +62,6 @@ class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     val allAccountNamesInVms = vmDao.find(findRequest).map(_.accountName)
 
     assert(allAccountNamesInVms.contains(firstAccountName) && allAccountNamesInVms.contains(secondAccountName))
-  }
-
-  private def retieveServiceOfferingId: UUID = {
-    val serviceOfferingDao = new ServiceOfferingDao(executor, mapper)
-    val serviceOfferingFindRequest = new ServiceOfferingFindRequest
-    serviceOfferingDao.find(serviceOfferingFindRequest).head.id
-  }
-
-  private def retrieveTemplateId: UUID = {
-    val templateDao = new TemplateDao(executor, mapper)
-    val templateFindRequest = new TemplateFindRequest
-    templateDao.find(templateFindRequest).head.id
-  }
-
-  private def retrieveZoneId: UUID = {
-    val zoneDao = new ZoneDao(executor, mapper)
-    val zoneFindRequest = new ZoneFindRequest
-    zoneDao.find(zoneFindRequest).head.id
-  }
-
-  private def retrieveDomainId: UUID = {
-    val domainDao = new DomainDao(executor, mapper)
-    val domainFindRequest = new DomainFindRequest
-    domainDao.find(domainFindRequest).head.id
   }
 
   private def createAccountWithName(accountDao: AccountDao, name: String, domainId: UUID) = {

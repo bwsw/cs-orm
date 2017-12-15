@@ -16,15 +16,20 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.util.responses
+package com.bwsw.cloudstack.entities.util.responses.vm
 
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.responses.{Entity, EntityList, EntityResponse}
 import com.fasterxml.jackson.annotation.JsonProperty
 
-case class TemplateResponse(@JsonProperty("listtemplatesresponse") override val entityList: TemplateList) extends EntityResponse(entityList)
+case class VmTestFindResponse(@JsonProperty("listvirtualmachinesresponse") override val entityList: VmTestList) extends EntityResponse(entityList)
 
-case class TemplateList(@JsonProperty("template") override val entities: Option[List[Template]]) extends EntityList(entities)
+case class VmTestList(@JsonProperty("virtualmachine") override val entities: Option[List[VmTest]]) extends EntityList(entities)
 
-case class Template(id: UUID) extends Entity
+case class VmTest(id: UUID,
+                  zoneid: UUID,
+                  templateid: UUID,
+                  serviceofferingid: UUID,
+                  @JsonProperty("account") accountName: String,
+                  @JsonProperty("domainid") domain: UUID) extends Entity

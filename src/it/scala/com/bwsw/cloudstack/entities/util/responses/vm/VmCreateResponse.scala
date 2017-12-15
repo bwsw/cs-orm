@@ -16,15 +16,12 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.util.responses
+package com.bwsw.cloudstack.entities.util.responses.vm
 
 import java.util.UUID
 
-import com.bwsw.cloudstack.entities.responses.{Entity, EntityList, EntityResponse}
 import com.fasterxml.jackson.annotation.JsonProperty
 
-case class DomainResponse(@JsonProperty("listdomainsresponse") override val entityList: DomainList) extends EntityResponse(entityList)
+case class VmCreateResponse(@JsonProperty("deployvirtualmachineresponse") vmId: VmId)
 
-case class DomainList(@JsonProperty("domain") override val entities: Option[List[Domain]]) extends EntityList(entities)
-
-case class Domain(id: UUID) extends Entity
+case class VmId(id: UUID)

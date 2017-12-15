@@ -29,7 +29,7 @@ import org.scalatest.FlatSpec
 import scala.util.{Failure, Success, Try}
 
 class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
-  it should "retrieve json string if request consist only default parameters" in {
+  it should "retrieve json string if request contains only default parameters" in {
     val vmFindRequest = new VmFindRequest
     val response = mapper.deserialize[VirtualMachinesResponse](executor.executeRequest(vmFindRequest.request))
 
@@ -37,7 +37,7 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
-    " if entity with value of id parameter does not exist" in {
+    " if entity with a specified value of id parameter does not exist" in {
     val vmId = UUID.randomUUID()
     val vmFindRequest = new VmFindRequest().withId(vmId)
 
@@ -45,7 +45,7 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
-    " if entity with value of account name parameter does not exist" in {
+    " if entity with a specified value of account name parameter does not exist" in {
     val accountName = UUID.randomUUID().toString
     val vmFindRequest = new VmFindRequest().withAccountName(accountName)
 
@@ -53,7 +53,7 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
-    " if entity with value of domain parameter does not exist" in {
+    " if entity with a specified value of domain parameter does not exist" in {
     val domainId = UUID.randomUUID()
     val vmFindRequest = new VmFindRequest().withDomain(domainId)
 
@@ -61,7 +61,7 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
-    " if entity with value of group parameter does not exist" in {
+    " if entity with a specified value of group parameter does not exist" in {
     val groupId = UUID.randomUUID()
     val vmFindRequest = new VmFindRequest().withGroup(groupId)
 
@@ -69,7 +69,7 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
-    " if entity with value of user parameter does not exist" in {
+    " if entity with a specified value of user parameter does not exist" in {
     val userId = UUID.randomUUID()
     val vmFindRequest = new VmFindRequest().withUser(userId)
 
@@ -77,14 +77,14 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
-    " if entity with value of zone parameter does not exist" in {
+    " if entity with a specified value of zone parameter does not exist" in {
     val zoneId = UUID.randomUUID()
     val vmFindRequest = new VmFindRequest().withZone(zoneId)
 
     assert(tryExecuteRequest(vmFindRequest))
   }
 
-  it should "retrieve json string if request consist default parameters and parameter with incorrect key" in {
+  it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
     val request = new VmFindRequest().request.addParameter("incorrectParameterKey", "value")
     val response = mapper.deserialize[VirtualMachinesResponse](executor.executeRequest(request))
@@ -93,9 +93,6 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   }
 
   private def tryExecuteRequest(request: Request): Boolean = {
-    val vmId = UUID.randomUUID()
-    val vmFindRequest = new VmFindRequest().withId(vmId)
-
     Try {
       executor.executeRequest(request.request)
     } match {

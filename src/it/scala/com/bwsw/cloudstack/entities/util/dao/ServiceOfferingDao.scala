@@ -22,7 +22,7 @@ import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.JsonMapper
 import com.bwsw.cloudstack.entities.dao.GenericDao
 import com.bwsw.cloudstack.entities.util.requests.ServiceOfferingFindRequest
-import com.bwsw.cloudstack.entities.util.responses.{ServiceOffering, ServiceOfferingResponse}
+import com.bwsw.cloudstack.entities.util.responses.common.{ServiceOffering, ServiceOfferingResponse}
 
 class ServiceOfferingDao(executor: Executor, mapper: JsonMapper) extends GenericDao[ServiceOfferingResponse, ServiceOffering](executor, mapper) {
   protected type F = ServiceOfferingFindRequest

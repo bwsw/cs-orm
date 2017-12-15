@@ -22,7 +22,7 @@ import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.JsonMapper
 import com.bwsw.cloudstack.entities.dao.GenericDao
 import com.bwsw.cloudstack.entities.util.requests.ZoneFindRequest
-import com.bwsw.cloudstack.entities.util.responses.{Zone, ZoneResponse}
+import com.bwsw.cloudstack.entities.util.responses.common.{Zone, ZoneResponse}
 
 class ZoneDao(executor: Executor, mapper: JsonMapper) extends GenericDao[ZoneResponse, Zone](executor, mapper) {
   protected type F = ZoneFindRequest

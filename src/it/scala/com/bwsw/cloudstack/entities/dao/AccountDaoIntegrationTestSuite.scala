@@ -16,11 +16,11 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities
+package com.bwsw.cloudstack.entities.dao
 
 import java.util.UUID
 
-import com.bwsw.cloudstack.entities.dao.AccountDao
+import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.account.{AccountCreateRequest, AccountFindRequest}
 import org.scalatest.FlatSpec
 

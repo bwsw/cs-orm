@@ -22,6 +22,7 @@ import java.util.UUID
 
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest
+import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.RootAdmin
 import com.bwsw.cloudstack.entities.requests.vm.{VmCreateRequest, VmFindRequest}
 import org.scalatest.FlatSpec
 
@@ -40,7 +41,7 @@ class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     val findByAccountNameRequest = new VmFindRequest().withAccountName(firstAccountName)
     assert(vmDao.find(findByAccountNameRequest).isEmpty)
 
-    val serviceOfferingId = retievedServiceOfferingId
+    val serviceOfferingId = retrievedServiceOfferingId
     val templateId = retrievedTemplateId
     val zoneId = retrievedZoneId
 
@@ -66,6 +67,7 @@ class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {
 
   private def createAccountWithName(accountDao: AccountDao, name: String, domainId: UUID) = {
     val firstAccountCreationSettings = AccountCreateRequest.Settings(
+      _type = RootAdmin,
       email = "e@e",
       firstName = "first",
       lastName = "last",
@@ -75,7 +77,6 @@ class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {
 
     val firstAccountCreateRequest = new AccountCreateRequest(firstAccountCreationSettings)
       .withName(name)
-      .withRole(1)
       .withDomain(domainId)
     accountDao.create(firstAccountCreateRequest)
   }

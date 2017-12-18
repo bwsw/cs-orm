@@ -35,7 +35,7 @@ trait TestEntities {
   val executor = new Executor(executorSettings, creator, true)
   val mapper = new JsonMapper(true)
 
-  val retievedServiceOfferingId: UUID = {
+  val retrievedServiceOfferingId: UUID = {
     val serviceOfferingDao = new ServiceOfferingDao(executor, mapper)
     val serviceOfferingFindRequest = new ServiceOfferingFindRequest
     serviceOfferingDao.find(serviceOfferingFindRequest).head.id

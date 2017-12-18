@@ -30,12 +30,13 @@ import com.bwsw.cloudstack.entities.requests.Request
   *
   * @param settings required parameters for account creation, more info see AccountCreateRequest.Settings
   *                 NOTE: account type and role ID are not included in settings, but at least one of them must be defined using
-  *                       withType or withRole methods.
+  *                 withType or withRole methods.
   */
 class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Request {
 
   override protected[entities] val request = new ApacheCloudStackRequest(Commands.CREATE_ACCOUNT)
     .addParameter(RESPONSE, ParameterValues.JSON)
+    .addParameter(ACCOUNT_TYPE, settings._type.numericValue)
     .addParameter(EMAIL, settings.email)
     .addParameter(FIRST_NAME, settings.firstName)
     .addParameter(LAST_NAME, settings.lastName)
@@ -53,7 +54,7 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
   /**
     * Add a time zone parameter to a request.
     */
-  def withTimeZone(timeZone: TimeZone): AccountCreateRequest ={
+  def withTimeZone(timeZone: TimeZone): AccountCreateRequest = {
     request.addParameter(TIMEZONE, timeZone.toZoneId)
     this
   }
@@ -73,15 +74,6 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
     */
   def withName(name: String): AccountCreateRequest = {
     request.addParameter(ACCOUNT, name)
-    this
-  }
-
-  /**
-    * Add an account type parameter to a request.
-    * Specify 0 for user, 1 for root admin, and 2 for domain admin.
-    */
-  def withType(accountType: Int): AccountCreateRequest = {
-    request.addParameter(ACCOUNT_TYPE, accountType)
     this
   }
 
@@ -113,18 +105,30 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
 }
 
 object AccountCreateRequest {
+
   /**
     * Class is responsible for providing account creation settings.
     *
-    * @param email user email
+    * @param _type     account type. Once you set the type for an account, it cannot be edited.
+    * @param email     user email
     * @param firstName user first name
-    * @param lastName user last name
-    * @param password user text password (Default hashed to SHA256SALT).
-    * @param username user unique username
+    * @param lastName  user last name
+    * @param password  user text password (Default hashed to SHA256SALT).
+    * @param username  user unique username
     */
-  case class Settings(email: String,
+  case class Settings(_type: AccountType,
+                      email: String,
                       firstName: String,
                       lastName: String,
                       password: String,
                       username: String)
+
+  sealed abstract class AccountType(val numericValue: Int)
+
+  case object User extends AccountType(0)
+
+  case object RootAdmin extends AccountType(1)
+
+  case object DomainAdmin extends AccountType(2)
+
 }

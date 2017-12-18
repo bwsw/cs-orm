@@ -26,7 +26,7 @@ import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.requests.tag.types.UserTagType
 import com.bwsw.cloudstack.entities.requests.tag.{TagCreateRequest, TagFindRequest}
 import com.bwsw.cloudstack.entities.responses.Tag
-import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues.DUMMY_VALUE
+import com.bwsw.cloudstack.entities.TestConstants.ParameterValues.DUMMY_VALUE
 import org.scalatest.FlatSpec
 
 class TagDaoTestSuite extends FlatSpec with TestData {

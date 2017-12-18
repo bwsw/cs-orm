@@ -21,10 +21,10 @@ package com.bwsw.cloudstack.entities.requests.tag
 import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackApiCommandParameter
+import com.bwsw.cloudstack.entities.TestConstants.ParameterValues
 import com.bwsw.cloudstack.entities.requests.Constants.Commands
 import com.bwsw.cloudstack.entities.requests.tag.types.VmTagType
 import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
-import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._

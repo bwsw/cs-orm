@@ -23,6 +23,7 @@ import java.util.UUID
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.account.AccountFindRequest
+import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
 import com.bwsw.cloudstack.entities.util.responses.vm.{VmCreateResponse, VmTest, VmTestFindResponse}
 import com.bwsw.cloudstack.entities.util.responses.account.AccountTestFindResponse
 import org.scalatest.FlatSpec
@@ -64,7 +65,7 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val incorrectParameter = UUID.randomUUID().toString
     val request = new VmCreateRequest(
       VmCreateRequest.Settings(serviceOfferingId, templateId, zoneId)
-    ).request.addParameter(incorrectParameter, "value")
+    ).request.addParameter(incorrectParameter, ParameterValues.DUMMY_VALUE)
 
     checkVmCreation(request)
   }

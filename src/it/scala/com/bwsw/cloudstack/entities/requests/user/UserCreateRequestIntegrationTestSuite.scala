@@ -23,7 +23,8 @@ import java.util.{TimeZone, UUID}
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import com.bwsw.cloudstack.PasswordAuthenticationClientCreator
 import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest
-import com.bwsw.cloudstack.entities.util.requests.DomainCreateRequest
+import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
+import com.bwsw.cloudstack.entities.util.requests.{DomainCreateRequest, TestConstants}
 import com.bwsw.cloudstack.entities.util.responses.domain.DomainCreateResponse
 import com.bwsw.cloudstack.entities.{Executor, TestEntities}
 import com.bwsw.cloudstack.entities.util.responses.user.{TestUser, UserCreateResponse}
@@ -118,7 +119,7 @@ class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
       password = password,
       username = userName
     )
-    val request = new UserCreateRequest(settings).request.addParameter(incorrectParameter, "value")
+    val request = new UserCreateRequest(settings).request.addParameter(incorrectParameter, ParameterValues.DUMMY_VALUE)
 
     checkUserCreation(request, settings)
   }

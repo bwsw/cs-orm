@@ -16,11 +16,20 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities
+package com.bwsw.cloudstack.entities.util.responses.account
 
-object TestConstants {
-  object ParameterValues {
-    val JSON = "json"
-    val DUMMY_VALUE = "value"
-  }
-}
+import java.util.UUID
+
+import com.bwsw.cloudstack.entities.util.responses.user.TestUser
+import com.fasterxml.jackson.annotation.JsonProperty
+
+case class AccountCreateResponse(@JsonProperty("createaccountresponse") accountEntity: AccountEntity)
+
+case class AccountEntity(@JsonProperty("account") account: TestAccount)
+
+case class TestAccount(id: UUID,
+                       @JsonProperty("accounttype") accountType: Int,
+                       @JsonProperty("domainid") domainId: UUID,
+                       @JsonProperty("networkdomain") networkDomain: String,
+                       user: Set[TestUser],
+                       @JsonProperty("roletype") roleType: String)

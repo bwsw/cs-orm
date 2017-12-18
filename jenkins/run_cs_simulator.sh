@@ -5,7 +5,7 @@ docker run --rm --name resmo-cloudstack-simulator -d -p ${CS_PORT}:${CS_PORT} re
 ITERATIONS=40
 SLEEP=30
 
-echo "wait CloudStack simulator deploying"
+echo "wait for CloudStack simulator deploys"
 
 for i in `seq 1 $ITERATIONS`
 do

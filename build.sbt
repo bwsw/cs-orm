@@ -60,5 +60,6 @@ lazy val root = (project in file("."))
         url   = url("http://bitworks.software/")
       )
     ),
-    inConfig(IntegrationTest)(Defaults.itSettings)
+    inConfig(IntegrationTest)(Defaults.itSettings),
+    coverageEnabled in Test := true
   )

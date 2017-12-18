@@ -21,6 +21,7 @@ package com.bwsw.cloudstack.entities.dao
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.TestEntities
+import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.RootAdmin
 import com.bwsw.cloudstack.entities.requests.account.{AccountCreateRequest, AccountFindRequest}
 import org.scalatest.FlatSpec
 
@@ -36,6 +37,7 @@ class AccountDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     assert(initAccounts.isEmpty)
 
     val firstAccountCreationSettings = AccountCreateRequest.Settings(
+      _type = RootAdmin,
       email = "e@e",
       firstName = "first",
       lastName = "last",
@@ -43,7 +45,7 @@ class AccountDaoIntegrationTestSuite extends FlatSpec with TestEntities {
       username = s"username $firstAccountId"
     )
 
-    val firstAccountCreateRequest = new AccountCreateRequest(firstAccountCreationSettings).withId(firstAccountId).withType(1)
+    val firstAccountCreateRequest = new AccountCreateRequest(firstAccountCreationSettings).withId(firstAccountId)
     accountDao.create(firstAccountCreateRequest)
 
     val secondFindRequest = new AccountFindRequest().withId(firstAccountId)
@@ -51,6 +53,7 @@ class AccountDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     assert(updatedAccounts.size == 1 && updatedAccounts.head.id == firstAccountId)
 
     val secondAccountCreationSettings = AccountCreateRequest.Settings(
+      _type = RootAdmin,
       email = "e@e",
       firstName = "first",
       lastName = "last",

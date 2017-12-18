@@ -23,12 +23,12 @@ import java.util.{TimeZone, UUID}
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import com.bwsw.cloudstack.PasswordAuthenticationClientCreator
 import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest
+import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.User
 import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
-import com.bwsw.cloudstack.entities.util.requests.{DomainCreateRequest, TestConstants}
+import com.bwsw.cloudstack.entities.util.requests.DomainCreateRequest
 import com.bwsw.cloudstack.entities.util.responses.domain.DomainCreateResponse
 import com.bwsw.cloudstack.entities.{Executor, TestEntities}
 import com.bwsw.cloudstack.entities.util.responses.user.{TestUser, UserCreateResponse}
-import com.fasterxml.jackson.annotation.JsonProperty
 import org.scalatest.FlatSpec
 
 class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
@@ -65,13 +65,14 @@ class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
 
     val accountCreateRequest = new AccountCreateRequest(
       Settings(
+        _type = User,
         email = "e@e",
         firstName = "fn",
         lastName = "ln",
         password = "password",
         username = "username"
       )
-    ).withName(accountName).withDomain(newDomainId).withRole(3)
+    ).withName(accountName).withDomain(newDomainId)
 
     executor.executeRequest(accountCreateRequest.request)
 

@@ -29,7 +29,7 @@ import com.bwsw.cloudstack.entities.util.responses.account.AccountTestFindRespon
 import org.scalatest.FlatSpec
 
 class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
-  val serviceOfferingId = retievedServiceOfferingId
+  val serviceOfferingId = retrievedServiceOfferingId
   val templateId = retrievedTemplateId
   val zoneId = retrievedZoneId
 

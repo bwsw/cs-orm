@@ -23,12 +23,14 @@ import java.util.{TimeZone, UUID}
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackApiCommandParameter
 import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
 import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
+import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.RootAdmin
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
 
 class AccountCreateRequestTestSuite extends FlatSpec {
   val settings = AccountCreateRequest.Settings(
+    _type = RootAdmin,
     email = "test@example.com",
     firstName = "fn",
     lastName = "ln",
@@ -42,7 +44,8 @@ class AccountCreateRequestTestSuite extends FlatSpec {
     new ApacheCloudStackApiCommandParameter(FIRST_NAME, settings.firstName),
     new ApacheCloudStackApiCommandParameter(LAST_NAME, settings.lastName),
     new ApacheCloudStackApiCommandParameter(PASSWORD, settings.password),
-    new ApacheCloudStackApiCommandParameter(USER_NAME, settings.username)
+    new ApacheCloudStackApiCommandParameter(USER_NAME, settings.username),
+    new ApacheCloudStackApiCommandParameter(ACCOUNT_TYPE, settings._type.numericValue)
   )
 
   it should "create a request with predefined and specified (via constructor) parameters" in {
@@ -82,14 +85,6 @@ class AccountCreateRequestTestSuite extends FlatSpec {
     val request = new AccountCreateRequest(settings)
 
     assert(request.withName(accountName).request.getParameters.asScala.toSet == expectedParameters)
-  }
-
-  "withType" should "add account type parameter to a request" in {
-    val accountType = 1
-    val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ACCOUNT_TYPE, accountType))
-    val request = new AccountCreateRequest(settings)
-
-    assert(request.withType(accountType).request.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withNetworkDomain" should "add network domain parameter to a request" in {

@@ -23,6 +23,7 @@ import java.util.UUID
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.Executor
+import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.RootAdmin
 import com.bwsw.cloudstack.entities.requests.account.{AccountCreateRequest, AccountFindRequest}
 import com.bwsw.cloudstack.entities.responses.{Account, User}
 import org.scalatest.FlatSpec
@@ -105,6 +106,7 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
   "create" should "submit request to Executor" in {
     var actualRequests = List.empty[ApacheCloudStackRequest]
     val createRequest = new AccountCreateRequest(AccountCreateRequest.Settings(
+      _type = RootAdmin,
       email = "e@e",
       firstName = "fn",
       lastName = "ln",
@@ -130,6 +132,7 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
   "create" should "not swallow an exception" in {
     var actualRequests = List.empty[ApacheCloudStackRequest]
     val createRequest = new AccountCreateRequest(AccountCreateRequest.Settings(
+      _type = RootAdmin,
       email = "e@e",
       firstName = "fn",
       lastName = "ln",

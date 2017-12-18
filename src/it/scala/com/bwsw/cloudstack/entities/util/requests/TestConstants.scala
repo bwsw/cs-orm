@@ -24,11 +24,13 @@ object TestConstants {
     val LIST_ALL = "listAll"
     val TEMPLATE_FILTER = "templatefilter"
     val AVAILABLE = "available"
+    val NAME = "name"
   }
 
   object ParameterValues {
     val JSON = "json"
     val FEATURED = "featured"
+    val DUMMY_VALUE = "value"
   }
 
   object Commands {
@@ -36,5 +38,6 @@ object TestConstants {
     val LIST_TEMPLATES = "listTemplates"
     val LIST_ZONES = "listZones"
     val LIST_DOMAINS = "listDomains"
+    val CREATE_DOMAIN = "createDomain"
   }
 }

@@ -26,6 +26,7 @@ import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.requests.tag.types.UserTagType
 import com.bwsw.cloudstack.entities.requests.tag.{TagCreateRequest, TagFindRequest}
 import com.bwsw.cloudstack.entities.responses.Tag
+import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues.DUMMY_VALUE
 import org.scalatest.FlatSpec
 
 class TagDaoTestSuite extends FlatSpec with TestData {
@@ -33,13 +34,12 @@ class TagDaoTestSuite extends FlatSpec with TestData {
 
   "find" should "return non-empty entity set if a response json string contains the relevant data" in {
     val key = "key"
-    val value = "value"
-    val expectedTagSet = Set(Tag(key, value))
+    val expectedTagSet = Set(Tag(key, DUMMY_VALUE))
 
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
         assert(findRequest.request == request)
-        Response.getTagResponseJson(key, value)
+        Response.getTagResponseJson(key, DUMMY_VALUE)
       }
     }
 
@@ -108,7 +108,7 @@ class TagDaoTestSuite extends FlatSpec with TestData {
     val createRequest = new TagCreateRequest(TagCreateRequest.Settings(
       resourceType = new UserTagType,
       resourceIds = Set(UUID.randomUUID(), UUID.randomUUID()),
-      tags = List(Tag("key", "value"), Tag("key1", "value1"))
+      tags = List(Tag("key", DUMMY_VALUE), Tag("key1", DUMMY_VALUE))
     ))
 
     val expectedRequests = List(createRequest.request)
@@ -131,7 +131,7 @@ class TagDaoTestSuite extends FlatSpec with TestData {
     val createRequest = new TagCreateRequest(TagCreateRequest.Settings(
       resourceType = new UserTagType,
       resourceIds = Set(UUID.randomUUID(), UUID.randomUUID()),
-      tags = List(Tag("key", "value"), Tag("key1", "value1"))
+      tags = List(Tag("key", DUMMY_VALUE), Tag("key1", DUMMY_VALUE))
     ))
 
     val expectedRequests = List(createRequest.request)

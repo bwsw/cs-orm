@@ -24,6 +24,7 @@ import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequ
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.Request
 import com.bwsw.cloudstack.entities.responses.VirtualMachinesResponse
+import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
 import org.scalatest.FlatSpec
 
 import scala.util.{Failure, Success, Try}
@@ -86,7 +87,7 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
 
   it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
-    val request = new VmFindRequest().request.addParameter(incorrectParameterKey, "value")
+    val request = new VmFindRequest().request.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
     val response = mapper.deserialize[VirtualMachinesResponse](executor.executeRequest(request))
 
     assert(response.isInstanceOf[VirtualMachinesResponse])

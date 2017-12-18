@@ -21,9 +21,10 @@ package com.bwsw.cloudstack.entities.requests.tag
 import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackApiCommandParameter
-import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
+import com.bwsw.cloudstack.entities.requests.Constants.Commands
 import com.bwsw.cloudstack.entities.requests.tag.types.VmTagType
 import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
+import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
@@ -82,10 +83,9 @@ class TagFindRequestTestSuite extends FlatSpec {
   }
 
   "withValue" should "add a tag value to a request" in {
-    val value = "value"
-    val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(VALUE, value))
+    val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(VALUE, ParameterValues.DUMMY_VALUE))
     val request = new TagFindRequest
 
-    assert(request.withValue(value).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withValue(ParameterValues.DUMMY_VALUE).request.getParameters.asScala.toSet == expectedParameters)
   }
 }

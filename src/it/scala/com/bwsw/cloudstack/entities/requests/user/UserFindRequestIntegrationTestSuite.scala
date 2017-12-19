@@ -61,8 +61,7 @@ class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     assert(tryExecuteRequest(userFindRequest))
   }
 
-  it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
-    " if entity with a specified value of name parameter does not exist" in {
+  it should "return an empty list of users if entity with a specified value of name parameter does not exist" in {
     val name = UUID.randomUUID().toString
     val userFindRequest = new UserFindRequest().withName(name)
     val response = mapper.deserialize[UserResponse](executor.executeRequest(userFindRequest.request))
@@ -88,5 +87,4 @@ class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
       case Failure(_: Throwable) => false
     }
   }
-
 }

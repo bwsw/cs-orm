@@ -40,11 +40,11 @@ class TagCreateRequestTestSuite extends FlatSpec {
   val value2 = "value2"
   val tagList = List(Tag("key1", "value1"), Tag("key2","value2"))
 
-  val tagType = new UserTagType()
+  val tagType = UserTagType
 
   val defaultParameters = Set[ApacheCloudStackApiCommandParameter](
     new ApacheCloudStackApiCommandParameter(RESPONSE,ParameterValues.JSON),
-    new ApacheCloudStackApiCommandParameter(RESOURCE_TYPE, tagType.toString),
+    new ApacheCloudStackApiCommandParameter(RESOURCE_TYPE, tagType.name),
     new ApacheCloudStackApiCommandParameter(RESOURCE_IDS, resourceIds.mkString(",")),
     new ApacheCloudStackApiCommandParameter("tags[0].key", key1),
     new ApacheCloudStackApiCommandParameter("tags[0].value", value1),

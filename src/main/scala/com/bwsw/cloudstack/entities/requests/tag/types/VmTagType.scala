@@ -18,6 +18,4 @@
 */
 package com.bwsw.cloudstack.entities.requests.tag.types
 
-class VmTagType extends TagType {
-  override def toString: String = "UserVM"
-}
+case object VmTagType extends TagType("UserVM")

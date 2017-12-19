@@ -52,7 +52,7 @@ class TagDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     assert(tagDao.find(findRequest).isEmpty)
 
     val firstCreateTagRequest = new TagCreateRequest(TagCreateRequest.Settings(
-      new UserTagType(),
+      UserTagType,
       Set(userId),
       List(firstTag)
     ))
@@ -62,7 +62,7 @@ class TagDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     assert(tagDao.find(findRequest) == Set(firstTag))
 
     val secondCreateTagRequest = new TagCreateRequest(TagCreateRequest.Settings(
-      new UserTagType(),
+      UserTagType,
       Set(userId),
       List(secondTag, thirdTag)
     ))

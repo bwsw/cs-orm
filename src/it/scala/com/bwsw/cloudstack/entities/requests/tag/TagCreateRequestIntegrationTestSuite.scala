@@ -20,7 +20,7 @@ package com.bwsw.cloudstack.entities.requests.tag
 
 import java.util.UUID
 
-import com.bwsw.cloudstack.entities.requests.tag.types.UserTagType
+import com.bwsw.cloudstack.entities.requests.tag.types.{TagType, UserTagType}
 import com.bwsw.cloudstack.entities.requests.user.UserCreateRequest
 import com.bwsw.cloudstack.entities.responses
 import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues.{DUMMY_KEY, DUMMY_VALUE}
@@ -32,11 +32,10 @@ import org.scalatest.{Outcome, fixture}
 class TagCreateRequestIntegrationTestSuite extends fixture.FlatSpec with TestEntities {
   val tagNumber = 3
 
-  case class FixtureParam(resourceType: UserTagType, resourceIds: Set[UUID])
+  case class FixtureParam(resourceIds: Set[UUID], resourceType: TagType = UserTagType)
 
   def withFixture(test: OneArgTest): Outcome = {
     val userId = UUID.randomUUID()
-    val resourceType = new UserTagType()
     val resourceIds: Set[UUID] = Set(userId)
 
     val userCreationSettings = UserCreateRequest.Settings(
@@ -50,7 +49,7 @@ class TagCreateRequestIntegrationTestSuite extends fixture.FlatSpec with TestEnt
     val userCreateRequest = new UserCreateRequest(userCreationSettings).withId(userId).request
     mapper.deserialize[UserCreateResponse](executor.executeRequest(userCreateRequest))
 
-    val theFixture = FixtureParam(resourceType, resourceIds)
+    val theFixture = FixtureParam(resourceIds)
 
     withFixture(test.toNoArgTest(theFixture))
   }
@@ -100,7 +99,7 @@ class TagCreateRequestIntegrationTestSuite extends fixture.FlatSpec with TestEnt
                                retrievedTag: Tag): Boolean = {
     expectedTag.key == retrievedTag.key &&
       expectedTag.value == retrievedTag.value &&
-      settings.resourceType.toString == retrievedTag.resourceType &&
+      settings.resourceType.name == retrievedTag.resourceType &&
       settings.resourceIds.contains(retrievedTag.resourceId)
   }
 }

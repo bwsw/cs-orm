@@ -106,7 +106,7 @@ class TagDaoTestSuite extends FlatSpec with TestData {
   "create" should "submit request to Executor" in {
     var actualRequests = List.empty[ApacheCloudStackRequest]
     val createRequest = new TagCreateRequest(TagCreateRequest.Settings(
-      resourceType = new UserTagType,
+      resourceType = UserTagType,
       resourceIds = Set(UUID.randomUUID(), UUID.randomUUID()),
       tags = List(Tag("key", DUMMY_VALUE), Tag("key1", DUMMY_VALUE))
     ))
@@ -129,7 +129,7 @@ class TagDaoTestSuite extends FlatSpec with TestData {
   "create" should "not swallow an exception" in {
     var actualRequests = List.empty[ApacheCloudStackRequest]
     val createRequest = new TagCreateRequest(TagCreateRequest.Settings(
-      resourceType = new UserTagType,
+      resourceType = UserTagType,
       resourceIds = Set(UUID.randomUUID(), UUID.randomUUID()),
       tags = List(Tag("key", DUMMY_VALUE), Tag("key1", DUMMY_VALUE))
     ))

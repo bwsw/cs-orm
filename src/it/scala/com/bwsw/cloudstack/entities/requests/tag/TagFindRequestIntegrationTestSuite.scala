@@ -76,10 +76,9 @@ class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   }
 
   it should "return an empty list of tags if entity with a specified value of resource type parameter does not exist" in {
-    class IncorrectTagType extends TagType
+    case object IncorrectTagType extends TagType(UUID.randomUUID().toString)
 
-    val tagType = new IncorrectTagType()
-    val tagFindRequest = new TagFindRequest().withResourceType(tagType)
+    val tagFindRequest = new TagFindRequest().withResourceType(IncorrectTagType)
 
     checkEmptyResponse(tagFindRequest)
   }

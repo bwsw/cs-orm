@@ -71,7 +71,7 @@ class TagFindRequest extends Request {
     * Add a resource type parameter to a request.
     */
   def withResourceType(resourceType: TagType): TagFindRequest = {
-    request.addParameter(RESOURCE_TYPE, resourceType.toString)
+    request.addParameter(RESOURCE_TYPE, resourceType.name)
     this
   }
 

@@ -18,6 +18,4 @@
 */
 package com.bwsw.cloudstack.entities.requests.tag.types
 
-class UserTagType extends TagType {
-  override def toString: String = "User"
-}
+case object UserTagType extends TagType("User")

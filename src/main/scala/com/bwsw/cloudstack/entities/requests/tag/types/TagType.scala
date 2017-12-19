@@ -19,9 +19,7 @@
 package com.bwsw.cloudstack.entities.requests.tag.types
 
 /**
-  * Common trait is used to create a tag of specified type
+  * Base class is used to create a tag of specified type
   * (see: https://cwiki.apache.org/confluence/display/CLOUDSTACK/Resource+Tags)
   */
-trait TagType {
-  def toString: String
-}
+abstract class TagType(val name: String)

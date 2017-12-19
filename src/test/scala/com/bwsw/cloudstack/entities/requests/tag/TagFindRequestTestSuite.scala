@@ -75,8 +75,8 @@ class TagFindRequestTestSuite extends FlatSpec {
   }
 
   "withResourceType" should "add a resource type to a request" in {
-    val resourceType = new VmTagType
-    val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(RESOURCE_TYPE, resourceType.toString))
+    val resourceType = VmTagType
+    val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(RESOURCE_TYPE, resourceType.name))
     val request = new TagFindRequest
 
     assert(request.withResourceType(resourceType).request.getParameters.asScala.toSet == expectedParameters)

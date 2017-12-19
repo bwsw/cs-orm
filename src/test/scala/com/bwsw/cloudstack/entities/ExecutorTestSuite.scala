@@ -30,12 +30,13 @@ import org.scalatest.{Outcome, PrivateMethodTester, fixture}
 import scala.util.{Failure, Try}
 
 class ExecutorTestSuite extends fixture.FlatSpec with PrivateMethodTester {
+  private val retryDelay = 1000
   val firstEndpoint = "http://127.0.0.1:8080/client/api"
   val secondEndpoint = "http://127.0.0.2:8080/client/api"
   val expectedRequest = new ApacheCloudStackRequest("test")
   val expectedResponse = "response"
 
-  val settings = Executor.Settings(Array(firstEndpoint, secondEndpoint), retryDelay = 100)
+  val settings = Executor.Settings(Array(firstEndpoint, secondEndpoint), retryDelay)
 
   case class FixtureParam(queue: WeightedQueue[String])
 

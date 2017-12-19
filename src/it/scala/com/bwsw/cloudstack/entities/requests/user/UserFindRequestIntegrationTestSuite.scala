@@ -16,58 +16,66 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.requests.account
+package com.bwsw.cloudstack.entities.requests.user
 
 import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.Request
-import com.bwsw.cloudstack.entities.responses.AccountResponse
+import com.bwsw.cloudstack.entities.responses.UserResponse
 import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
 import org.scalatest.FlatSpec
 
 import scala.util.{Failure, Success, Try}
 
-class AccountFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
+class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains only default parameters" in {
-    val accountFindRequest = new AccountFindRequest
-    val response = mapper.deserialize[AccountResponse](executor.executeRequest(accountFindRequest.request))
+    val userFindRequest = new UserFindRequest
+    val response = mapper.deserialize[UserResponse](executor.executeRequest(userFindRequest.request))
 
-    assert(response.isInstanceOf[AccountResponse])
+    assert(response.isInstanceOf[UserResponse])
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of id parameter does not exist" in {
-    val accountId = UUID.randomUUID()
-    val accountFindRequest = new AccountFindRequest().withId(accountId)
+    val id = UUID.randomUUID()
+    val userFindRequest = new UserFindRequest().withId(id)
 
-    assert(tryExecuteRequest(accountFindRequest))
+    assert(tryExecuteRequest(userFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of domain parameter does not exist" in {
     val domainId = UUID.randomUUID()
-    val accountFindRequest = new AccountFindRequest().withDomain(domainId)
+    val userFindRequest = new UserFindRequest().withDomain(domainId)
 
-    assert(tryExecuteRequest(accountFindRequest))
+    assert(tryExecuteRequest(userFindRequest))
+  }
+
+  it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
+    " if entity with a specified value of account name parameter does not exist" in {
+    val accountName = UUID.randomUUID().toString
+    val userFindRequest = new UserFindRequest().withAccountName(accountName)
+
+    assert(tryExecuteRequest(userFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of name parameter does not exist" in {
     val name = UUID.randomUUID().toString
-    val accountFindRequest = new AccountFindRequest().withName(name)
-    val response = mapper.deserialize[AccountResponse](executor.executeRequest(accountFindRequest.request))
+    val userFindRequest = new UserFindRequest().withName(name)
+    val response = mapper.deserialize[UserResponse](executor.executeRequest(userFindRequest.request))
 
     assert(response.entityList.entities.isEmpty)
   }
 
   it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
-    val request = new AccountFindRequest().request.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
-    val response = mapper.deserialize[AccountResponse](executor.executeRequest(request))
+    val request = new UserFindRequest().request.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
+    val response = mapper.deserialize[UserResponse](executor.executeRequest(request))
 
-    assert(response.isInstanceOf[AccountResponse])
+    assert(response.isInstanceOf[UserResponse])
   }
 
   private def tryExecuteRequest(request: Request): Boolean = {

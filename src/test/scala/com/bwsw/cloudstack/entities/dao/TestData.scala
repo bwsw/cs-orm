@@ -23,19 +23,34 @@ import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.JsonMapper
 
 trait TestData {
-  val executorSettings = Executor.Settings(Array("localhost:9000"), 1000)
+  private val retryDelay = 1000
+  val executorSettings = Executor.Settings(Array("localhost:9000"), retryDelay)
   val clientCreator = new KeyAuthenticationClientCreator(KeyAuthenticationClientCreator.Settings("apiKey", "secretKey"))
   val jsonMapper = new JsonMapper(true)
 
   object Response {
-    def getTagResponseJson(key: String, value: String): String = "{\"listtagsresponse\":{\"count\":1,\"tag\":[{\"key\":\"" + s"$key" + "\",\"value\":\"" + s"$value" + "\"}]}}"
-    def getAccountResponseJson(account: String, user: String): String = "{\"listaccountsresponse\":{\"count\":1,\"account\":[{\"id\":\"" + s"$account" + "\",\"user\":[{\"id\":\"" + s"$user" + "\",\"accountid\":\"" + s"$account" + "\"}]}]}}"
-    def getUserResponseJson(user: String, account: String): String = "{\"listusersresponse\":{\"count\":1,\"user\":[{\"id\":\"" + s"$user" + "\", \"accountid\":\" " + s"$account" + "\"}]}}"
-    def getVmResponseJson(vm: String, accountName: String, domain: String): String = "{\"listvirtualmachinesresponse\":{\"virtualmachine\":[{\"id\":\"" + s"$vm" + "\",\"account\":\"" + s"$accountName" + "\",\"domainid\":\"" + s"$domain" + "\"}]}}"
+    def getTagResponseJson(key: String, value: String): String =
+      "{\"listtagsresponse\":{\"count\":1,\"tag\":[{\"key\":\"" + s"$key" + "\",\"value\":\"" + s"$value" + "\"}]}}"
+
+    def getAccountResponseJson(account: String, user: String): String =
+      "{\"listaccountsresponse\":{\"count\":1,\"account\":[{\"id\":\"" + s"$account" + "\"," +
+        "\"user\":[{\"id\":\"" + s"$user" + "\",\"accountid\":\"" + s"$account" + "\"}]}]}}"
+
+    def getUserResponseJson(user: String, account: String): String =
+      "{\"listusersresponse\":{\"count\":1,\"user\":[{\"id\":\"" + s"$user" + "\", " +
+        "\"accountid\":\" " + s"$account" + "\"}]}}"
+
+    def getVmResponseJson(vm: String, accountName: String, domain: String): String =
+      "{\"listvirtualmachinesresponse\":{\"virtualmachine\":[{\"id\":\"" + s"$vm" + "\"," +
+        "\"account\":\"" + s"$accountName" + "\",\"domainid\":\"" + s"$domain" + "\"}]}}"
 
     def getResponseWithEmptyVmList: String = "{\"listvirtualmachinesresponse\":{}}"
+
     def getResponseWithEmptyAccountList: String = "{\"listaccountsresponse\":{}}"
+
     def getResponseWithEmptyUserList: String = "{\"listusersresponse\":{}}"
+
     def getResponseWithEmptyTagList: String = "{\"listtagsresponse\":{}}"
   }
+
 }

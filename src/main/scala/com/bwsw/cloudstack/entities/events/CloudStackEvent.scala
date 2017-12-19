@@ -30,7 +30,11 @@ import com.bwsw.cloudstack.entities.events.Constants._
 /**
   * A base structure of Apache CloudStack event.
   */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "event", defaultImpl = classOf[CloudStackEvent], visible = true, include = JsonTypeInfo.As.EXISTING_PROPERTY)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
+  property = "event",
+  defaultImpl = classOf[CloudStackEvent],
+  visible = true,
+  include = JsonTypeInfo.As.EXISTING_PROPERTY)
 @JsonSubTypes(Array(
   new Type(value = classOf[UserCreateEvent], name = Events.USER_CREATE),
   new Type(value = classOf[AccountCreateEvent], name = Events.ACCOUNT_CREATE),

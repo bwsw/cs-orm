@@ -24,8 +24,8 @@ import com.bwsw.cloudstack.entities.responses.{Entity, EntityList, EntityRespons
 import com.fasterxml.jackson.annotation.JsonProperty
 
 
-case class AccountTestFindResponse(@JsonProperty("listaccountsresponse") override val entityList: AccountTestList) extends EntityResponse(entityList)
+case class AccountFindResponse(@JsonProperty("listaccountsresponse") accounts: Accounts)
 
-case class AccountTestList(@JsonProperty("account") override val entities: Option[List[AccountTest]]) extends EntityList(entities)
+case class Accounts(@JsonProperty("account") maybeAccounts: Option[List[Account]])
 
-case class AccountTest(id: UUID, name: String) extends Entity
+case class Account(id: UUID, name: String)

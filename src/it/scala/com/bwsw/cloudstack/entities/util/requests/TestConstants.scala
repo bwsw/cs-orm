@@ -30,6 +30,7 @@ object TestConstants {
   object ParameterValues {
     val JSON = "json"
     val FEATURED = "featured"
+    val DUMMY_KEY = "key"
     val DUMMY_VALUE = "value"
   }
 

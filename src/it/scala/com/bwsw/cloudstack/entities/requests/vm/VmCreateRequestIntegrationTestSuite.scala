@@ -25,7 +25,7 @@ import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.account.AccountFindRequest
 import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
 import com.bwsw.cloudstack.entities.util.responses.vm.{VmCreateResponse, VmTest, VmTestFindResponse}
-import com.bwsw.cloudstack.entities.util.responses.account.AccountTestFindResponse
+import com.bwsw.cloudstack.entities.util.responses.account.AccountFindResponse
 import org.scalatest.FlatSpec
 
 class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
@@ -42,9 +42,9 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "create a vm using a request which contains the required and optional parameters" in {
     val domainId = retrievedAdminDomainId
     val accountFindRequest = new AccountFindRequest().withDomain(domainId)
-    val accountName = mapper.deserialize[AccountTestFindResponse](
+    val accountName = mapper.deserialize[AccountFindResponse](
       executor.executeRequest(accountFindRequest.request)
-    ).entityList.entities.get.head.name
+    ).accounts.maybeAccounts.get.head.name
 
     val vmCreateRequest = new VmCreateRequest(VmCreateRequest.Settings(serviceOfferingId, templateId, zoneId))
       .withDomainAccount(accountName, domainId)

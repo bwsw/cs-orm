@@ -23,8 +23,11 @@ import java.util.UUID
 import com.bwsw.cloudstack.entities.responses.{Entity, EntityList, EntityResponse}
 import com.fasterxml.jackson.annotation.JsonProperty
 
-case class ServiceOfferingResponse(@JsonProperty("listserviceofferingsresponse") override val entityList: ServiceOfferingList) extends EntityResponse(entityList)
+case class ServiceOfferingResponse(@JsonProperty("listserviceofferingsresponse") override val entityList: ServiceOfferingList)
+  extends EntityResponse(entityList)
 
-case class ServiceOfferingList(@JsonProperty("serviceoffering") override val entities: Option[List[ServiceOffering]]) extends EntityList(entities)
+case class ServiceOfferingList(@JsonProperty("serviceoffering") override val entities: Option[List[ServiceOffering]])
+  extends EntityList(entities)
 
 case class ServiceOffering(id: UUID) extends Entity
+

@@ -15,12 +15,14 @@ sh ./jenkins/run_cs_simulator.sh
 sbt it:test
 
 echo "---------------------------------------------"
-echo "-------------- Scalastyle checks ------------"
+echo "-------------- Scalastyle check ------------"
 echo "---------------------------------------------"
 
 sbt scalastyle
 
 sbt test:scalastyle
+
+sbt it:scalastyle
 
 echo "git branch: $GIT_BRANCH"
 if [ -n "$GIT_BRANCH" ]; then

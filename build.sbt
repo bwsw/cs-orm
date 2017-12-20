@@ -43,7 +43,7 @@ lazy val root = (project in file("."))
       if (isSnapshot.value) {
         Some("snapshots" at nexus + "content/repositories/snapshots")
       } else {
-        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+        Some("releases" at nexus + "service/local/staging/deploy/maven2")
       }
     },
     scmInfo := Some(
@@ -54,12 +54,20 @@ lazy val root = (project in file("."))
     ),
     developers := List(
       Developer(
-        id    = "bitworks",
-        name  = "Bitworks Software, Ltd.",
+        id = "bitworks",
+        name = "Bitworks Software, Ltd.",
         email = "bitworks@bw-sw.com",
-        url   = url("http://bitworks.software/")
+        url = url("http://bitworks.software/")
       )
     ),
     inConfig(IntegrationTest)(Defaults.itSettings),
-    coverageEnabled in Test := true
+    coverageEnabled in Test := true,
+    inConfig(IntegrationTest)(ScalastylePlugin.rawScalastyleSettings()) ++
+      Seq(
+        scalastyleConfig in IntegrationTest := (scalastyleConfig in scalastyle).value,
+        scalastyleTarget in IntegrationTest := target.value / "scalastyle-it-results.xml",
+        scalastyleFailOnError in IntegrationTest := (scalastyleFailOnError in scalastyle).value,
+        (scalastyleFailOnWarning in IntegrationTest) := (scalastyleFailOnWarning in scalastyle).value,
+        scalastyleSources in IntegrationTest := (unmanagedSourceDirectories in IntegrationTest).value
+      )
   )

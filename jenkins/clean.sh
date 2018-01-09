@@ -1,3 +1,3 @@
 #!/bin/bash -e
 
-docker stop resmo-cloudstack-simulator
+docker stop cloudstack-kafka-sim spotify-kafka

@@ -76,7 +76,7 @@ class JsonMapper extends Mapper[String] {
   }
 
   def getIgnoreUnknownPropertiesFlag: Boolean = {
-    logger.debug(s"Retrieve a value of flag: FAIL_ON_UNKNOWN_PROPERTIES")
+    logger.debug("Retrieve a value of flag: FAIL_ON_UNKNOWN_PROPERTIES")
     !((mapper.getDeserializationConfig.getDeserializationFeatures & DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES.getMask)
       == DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES.getMask)
   }

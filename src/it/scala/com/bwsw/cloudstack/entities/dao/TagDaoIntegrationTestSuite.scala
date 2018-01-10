@@ -32,7 +32,6 @@ import org.scalatest.FlatSpec
 
 class TagDaoIntegrationTestSuite extends FlatSpec with TestEntities {
 
-
   it should "retrieve user tags after their creation" in {
     val userId = UUID.randomUUID()
     createUser(userId)

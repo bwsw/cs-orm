@@ -1,6 +1,17 @@
 #!/bin/bash -e
 
-docker run --rm --name resmo-cloudstack-simulator -d -p ${CS_PORT}:${CS_PORT} resmo/cloudstack-sim
+KAFKA_ACKS=all
+KAFKA_TOPIC=cs
+KAFKA_WRITE_RETRIES=1
+
+docker run -d --rm --name spotify-kafka --tty=true -p 2181:2181 -p $KAFKA_PORT:$KAFKA_PORT --env ADVERTISED_HOST=$KAFKA_HOST --env ADVERTISED_PORT=$KAFKA_PORT spotify/kafka
+
+docker run --rm -e KAFKA_HOST="${KAFKA_HOST}" \
+                -e KAFKA_PORT="${KAFKA_PORT}" \
+                -e KAFKA_ACKS="${KAFKA_ACKS}" \
+                -e KAFKA_TOPIC="${KAFKA_TOPIC}" \
+                -e KAFKA_WRITE_RETRIES="${KAFKA_WRITE_RETRIES}" \
+                --name cloudstack-kafka-sim -d -p $CS_PORT:$CS_PORT bwsw/cs-simulator-kafka:4.10.3-NP
 
 ITERATIONS=40
 SLEEP=30

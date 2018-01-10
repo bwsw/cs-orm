@@ -59,9 +59,16 @@ Run tests: `sbt test`
 
 1. Add local environment variables:
     * `CS_PORT` - host of Apache CloudStack simulator server, for example - "8888"
+    * `KAFKA_HOST` - host of Kafka, for example - localhost
+    * `KAFKA_PORT` - port of Kafka, for example - "9092"
+    
 2. Run Apache CloudStack simulator in docker container:
 ```bash
-    docker run --rm --name resmo-cloudstack-simulator -d -p ${CS_PORT}:${CS_PORT} resmo/cloudstack-sim
+    docker run -d --rm --name spotify-kafka --tty=true -p 2181:2181 -p $KAFKA_PORT:$KAFKA_PORT --env ADVERTISED_HOST=$KAFKA_HOST --env ADVERTISED_PORT=$KAFKA_PORT spotify/kafka
+    
+    docker run --rm -e KAFKA_HOST="${KAFKA_HOST}" \
+                    -e KAFKA_PORT="${KAFKA_PORT}" \
+                    --name cloudstack-kafka-sim -d -p $CS_PORT:$CS_PORT bwsw/cs-simulator-kafka:4.10.3-NP
 ```
 
 3. After the end of the cloudstack simulator deploying (you can check it like ![this](jenkins/run_cs_simulator.sh)) execute: `sbt it:test`

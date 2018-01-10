@@ -33,6 +33,7 @@ lazy val root = (project in file("."))
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.8",
       "com.fasterxml.jackson.module" % "jackson-module-scala_2.12" % "2.8.8"
     ),
+    addCompilerPlugin("org.psywerx.hairyfotr" %% "linter" % "0.1.17"),
     pomIncludeRepository := { _ => false },
     licenses := Seq("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
     homepage := Some(url("https://github.com/bwsw/cs-entities")),

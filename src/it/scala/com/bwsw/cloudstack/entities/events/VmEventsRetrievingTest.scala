@@ -32,7 +32,7 @@ class VmEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAf
   val templateId = retrievedTemplateId
   val zoneId = retrievedZoneId
 
-  val sleepInterval = 10000
+  val sleepInterval = 15000
   val pollTimeout = 1000
 
   val vmCreateRequest = new VmCreateRequest(VmCreateRequest.Settings(serviceOfferingId, templateId, zoneId))

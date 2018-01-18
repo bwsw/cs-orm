@@ -16,32 +16,22 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.util.requests
+package com.bwsw.cloudstack.entities.util.events
 
-object TestConstants {
-  object ParameterKeys {
-    val RESPONSE = "response"
-    val LIST_ALL = "listAll"
-    val TEMPLATE_FILTER = "templatefilter"
-    val AVAILABLE = "available"
-    val NAME = "name"
-    val ID = "id"
-  }
+import com.bwsw.cloudstack.entities.common.JsonMapper
+import com.bwsw.cloudstack.entities.events.CloudStackEvent
+import com.google.gson.JsonParseException
 
-  object ParameterValues {
-    val JSON = "json"
-    val FEATURED = "featured"
-    val DUMMY_KEY = "key"
-    val DUMMY_VALUE = "value"
-  }
+import scala.util.{Failure, Success, Try}
 
-  object Commands {
-    val LIST_SERVICE_OFFERINGS = "listServiceOfferings"
-    val LIST_TEMPLATES = "listTemplates"
-    val LIST_ZONES = "listZones"
-    val LIST_DOMAINS = "listDomains"
-    val CREATE_DOMAIN = "createDomain"
-    val DELETE_ACCOUNT = "deleteAccount"
-    val DELETE_VM = "destroyVirtualMachine"
+object RecordToEventDeserializer {
+  def deserializeRecord(record: String, mapper: JsonMapper): CloudStackEvent = {
+    Try {
+      mapper.deserialize[CloudStackEvent](record)
+    } match {
+      case Success(x) => x
+      case Failure(e: JsonParseException) => new CloudStackEvent(None, None, None)
+      case Failure(e: Throwable) => throw e
+    }
   }
 }

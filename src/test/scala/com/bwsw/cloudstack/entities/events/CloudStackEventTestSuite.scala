@@ -28,7 +28,7 @@ import com.bwsw.cloudstack.entities.events.vm.{VirtualMachineCreateEvent, Virtua
 import org.scalatest.FlatSpec
 
 class CloudStackEventTestSuite extends FlatSpec {
-  val status = Statuses.COMPLETE
+  val status = Statuses.COMPLETED
 
   it should s"be deserialized to the UserCreateEvent if event is ${Events.USER_CREATE}" in {
     val userId = UUID.randomUUID()

@@ -29,6 +29,6 @@ object Constants {
   }
 
   object Statuses {
-    val COMPLETE = "Complete"
+    val COMPLETED = "Completed"
   }
 }

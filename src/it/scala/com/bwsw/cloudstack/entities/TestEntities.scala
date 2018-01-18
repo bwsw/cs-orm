@@ -22,13 +22,19 @@ import java.util.UUID
 
 import com.bwsw.cloudstack.PasswordAuthenticationClientCreator
 import com.bwsw.cloudstack.entities.common.JsonMapper
+import com.bwsw.cloudstack.entities.dao.AccountDao
+import com.bwsw.cloudstack.entities.requests.account.AccountFindRequest
 import com.bwsw.cloudstack.entities.util.dao.{DomainDao, ServiceOfferingDao, TemplateDao, ZoneDao}
 import com.bwsw.cloudstack.entities.util.requests.{DomainFindRequest, ServiceOfferingFindRequest, TemplateFindRequest, ZoneFindRequest}
 
 trait TestEntities {
   private val csHost = ApplicationConfig.getRequiredString("app.cloudstack.host")
   private val csPort = ApplicationConfig.getRequiredString("app.cloudstack.port")
+  private val kafkaHost = ApplicationConfig.getRequiredString("app.kafka.host")
+  private val kafkaPort = ApplicationConfig.getRequiredString("app.kafka.port")
   private val retryDelay = 1000
+  val kafkaEndpoint = s"$kafkaHost:$kafkaPort"
+  val kafkaTopic = ApplicationConfig.getRequiredString("app.kafka.topic")
   val adminAccount = "admin"
   val creatorSettings = PasswordAuthenticationClientCreator.Settings(adminAccount,"password","/")
   val executorSettings = Executor.Settings(Array(s"http://$csHost:$csPort/client/api"), retryDelay)

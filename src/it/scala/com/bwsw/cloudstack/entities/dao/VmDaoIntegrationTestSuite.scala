@@ -65,7 +65,7 @@ class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     assert(allAccountNamesInVms.contains(firstAccountName) && allAccountNamesInVms.contains(secondAccountName))
   }
 
-  private def createAccountWithName(accountDao: AccountDao, name: String, domainId: UUID) = {
+  private def createAccountWithName(accountDao: AccountDao, name: String, domainId: UUID): Unit = {
     val firstAccountCreationSettings = AccountCreateRequest.Settings(
       _type = RootAdmin,
       email = "e@e",

@@ -27,6 +27,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       "br.com.autonomiccs" % "apache-cloudstack-java-client" % "1.0.5",
       "com.typesafe" % "config" % "1.3.0",
+      ("org.apache.kafka" % "kafka_2.12" % "0.10.2.1" % "it").exclude("org.slf4j", "slf4j-api"),
       "org.slf4j" % "slf4j-api" % "1.7.25",
       "org.scalatest" %% "scalatest" % "3.0.1" % "it,test",
       "com.google.guava" % "guava" % "23.0",

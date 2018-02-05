@@ -18,27 +18,23 @@
 */
 package com.bwsw.cloudstack.entities.dao
 
-import java.util.UUID
-
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.requests.user.{UserCreateRequest, UserFindRequest}
-import com.bwsw.cloudstack.entities.responses.User
+import com.bwsw.cloudstack.entities.responses.user.User
 import org.scalatest.FlatSpec
 
 class UserDaoTestSuite extends FlatSpec with TestData {
   val findRequest = new UserFindRequest
 
   "find" should "return non-empty entity list if a response json string contains the relevant data" in {
-    val userId = UUID.randomUUID()
-    val accountId = UUID.randomUUID()
-    val expectedUserList = List(User(userId, accountId))
+    val expectedUserList = List(testUser)
 
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
         assert(findRequest.request == request)
-        Response.getUserResponseJson(userId.toString, accountId.toString)
+        Response.getUserResponseJson(testUser)
       }
     }
 

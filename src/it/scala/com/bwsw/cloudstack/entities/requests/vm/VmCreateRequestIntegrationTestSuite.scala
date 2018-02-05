@@ -23,9 +23,9 @@ import java.util.UUID
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.account.AccountFindRequest
+import com.bwsw.cloudstack.entities.responses.account.AccountFindResponse
+import com.bwsw.cloudstack.entities.responses.vm.{VirtualMachine, VirtualMachineCreateResponse, VirtualMachineFindResponse}
 import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
-import com.bwsw.cloudstack.entities.util.responses.vm.{VmCreateResponse, VmTest, VmTestFindResponse}
-import com.bwsw.cloudstack.entities.util.responses.account.AccountFindResponse
 import org.scalatest.FlatSpec
 
 class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
@@ -44,19 +44,19 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val accountFindRequest = new AccountFindRequest().withDomain(domainId)
     val accountName = mapper.deserialize[AccountFindResponse](
       executor.executeRequest(accountFindRequest.request)
-    ).accounts.maybeAccounts.get.head.name
+    ).entityList.entities.get.head.name
 
     val vmCreateRequest = new VmCreateRequest(VmCreateRequest.Settings(serviceOfferingId, templateId, zoneId))
       .withDomainAccount(accountName, domainId)
     val response = executor.executeRequest(vmCreateRequest.request)
 
-    val vmId = mapper.deserialize[VmCreateResponse](response).vmId.id
+    val vmId = mapper.deserialize[VirtualMachineCreateResponse](response).vm.id
 
     val vmFindRequest = new VmFindRequest().withId(vmId)
 
-    val actualVm = mapper.deserialize[VmTestFindResponse](executor.executeRequest(vmFindRequest.request))
+    val actualVm = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(vmFindRequest.request))
       .entityList.entities.get.head
-    val expectedVm = VmTest(vmId, zoneId, templateId, serviceOfferingId, accountName, domainId)
+    val expectedVm = VirtualMachine(vmId, zoneId, templateId, serviceOfferingId, accountName, domainId)
 
     assert(actualVm == expectedVm)
   }
@@ -73,17 +73,17 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   private def checkVmCreation(request: ApacheCloudStackRequest): Unit = {
     val response = executor.executeRequest(request)
 
-    val vmId = mapper.deserialize[VmCreateResponse](response).vmId.id
+    val vmId = mapper.deserialize[VirtualMachineCreateResponse](response).vm.id
 
     val vmFindRequest = new VmFindRequest().withId(vmId)
 
-    val actualVm = mapper.deserialize[VmTestFindResponse](executor.executeRequest(vmFindRequest.request))
+    val actualVm = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(vmFindRequest.request))
       .entityList.entities.get.head
 
     assert(actualVm.id == vmId &&
-      actualVm.serviceofferingid == serviceOfferingId &&
-      actualVm.templateid == templateId &&
-      actualVm.zoneid == zoneId)
+      actualVm.serviceOfferingId == serviceOfferingId &&
+      actualVm.templateId == templateId &&
+      actualVm.zoneId == zoneId)
   }
 
 }

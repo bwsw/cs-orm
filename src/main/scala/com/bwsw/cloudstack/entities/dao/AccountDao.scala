@@ -22,7 +22,7 @@ import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequ
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.JsonMapper
 import com.bwsw.cloudstack.entities.requests.account.{AccountCreateRequest, AccountFindRequest}
-import com.bwsw.cloudstack.entities.responses.{Account, AccountResponse}
+import com.bwsw.cloudstack.entities.responses.account.{Account, AccountFindResponse}
 
 import scala.util.{Failure, Success, Try}
 
@@ -32,7 +32,7 @@ import scala.util.{Failure, Success, Try}
   * @param executor see: [[Executor]]
   * @param mapper see: [[JsonMapper]]
   */
-class AccountDao(executor: Executor, mapper: JsonMapper) extends GenericDao[AccountResponse, Account](executor, mapper) {
+class AccountDao(executor: Executor, mapper: JsonMapper) extends GenericDao[AccountFindResponse, Account](executor, mapper) {
   override protected type F = AccountFindRequest
   override protected type C = AccountCreateRequest
 
@@ -58,7 +58,7 @@ class AccountDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Acco
     *
     * @param request see: [[AccountFindRequest]]
     */
-  override def find(request: F)(implicit m: Manifest[AccountResponse]): List[Account] = {
+  override def find(request: F)(implicit m: Manifest[AccountFindResponse]): List[Account] = {
     logger.trace(s"find(request: $request)")
     val accounts = Try {
       super.find(request).toList

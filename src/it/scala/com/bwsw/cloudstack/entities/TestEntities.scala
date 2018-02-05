@@ -24,8 +24,11 @@ import com.bwsw.cloudstack.PasswordAuthenticationClientCreator
 import com.bwsw.cloudstack.entities.common.JsonMapper
 import com.bwsw.cloudstack.entities.dao.AccountDao
 import com.bwsw.cloudstack.entities.requests.account.AccountFindRequest
+import com.bwsw.cloudstack.entities.requests.domain.DomainFindRequest
+import com.bwsw.cloudstack.entities.requests.serviceoffering.ServiceOfferingFindRequest
+import com.bwsw.cloudstack.entities.requests.template.TemplateFindRequest
+import com.bwsw.cloudstack.entities.requests.zone.ZoneFindRequest
 import com.bwsw.cloudstack.entities.util.dao.{DomainDao, ServiceOfferingDao, TemplateDao, ZoneDao}
-import com.bwsw.cloudstack.entities.util.requests.{DomainFindRequest, ServiceOfferingFindRequest, TemplateFindRequest, ZoneFindRequest}
 
 trait TestEntities {
   private val csHost = ApplicationConfig.getRequiredString("app.cloudstack.host")

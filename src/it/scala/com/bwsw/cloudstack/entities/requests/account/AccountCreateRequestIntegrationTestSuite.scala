@@ -22,12 +22,13 @@ import java.util.{TimeZone, UUID}
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import com.bwsw.cloudstack.PasswordAuthenticationClientCreator
+import com.bwsw.cloudstack.entities.requests.domain.DomainCreateRequest
 import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.User
-import com.bwsw.cloudstack.entities.util.requests.DomainCreateRequest
+import com.bwsw.cloudstack.entities.responses.account.{Account, AccountCreateResponse}
+import com.bwsw.cloudstack.entities.responses.domain.DomainCreateResponse
+import com.bwsw.cloudstack.entities.responses.user
+import com.bwsw.cloudstack.entities.responses.user.User
 import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
-import com.bwsw.cloudstack.entities.util.responses.account._
-import com.bwsw.cloudstack.entities.util.responses.domain.DomainCreateResponse
-import com.bwsw.cloudstack.entities.util.responses.user.TestUser
 import com.bwsw.cloudstack.entities.{Executor, TestEntities}
 import org.scalatest.FlatSpec
 
@@ -38,7 +39,7 @@ class AccountCreateRequestIntegrationTestSuite extends FlatSpec with TestEntitie
     val password = UUID.randomUUID().toString
 
     val settings = AccountCreateRequest.Settings(
-      _type = User,
+      _type = AccountCreateRequest.User,
       email = "e@e",
       firstName = "fn",
       lastName = "ln",
@@ -62,10 +63,10 @@ class AccountCreateRequestIntegrationTestSuite extends FlatSpec with TestEntitie
     val accountRole = (4, "User")
 
     val domainCreateRequest = new DomainCreateRequest(domainName).request
-    val newDomainId = mapper.deserialize[DomainCreateResponse](executor.executeRequest(domainCreateRequest)).domainEntity.domainId.id
+    val newDomainId = mapper.deserialize[DomainCreateResponse](executor.executeRequest(domainCreateRequest)).domainEntity.domain.id
 
     val accountCreateSettings = Settings(
-      _type = User,
+      _type = AccountCreateRequest.User,
       email = "e@e",
       firstName = "fn",
       lastName = "ln",
@@ -84,19 +85,22 @@ class AccountCreateRequestIntegrationTestSuite extends FlatSpec with TestEntitie
 
     val actualAccount = mapper.deserialize[AccountCreateResponse](executor.executeRequest(accountCreateRequest.request)).accountEntity.account
 
-    val expectedAccount = TestAccount(
+    val expectedAccount = Account(
       id = accountId,
+      name = accountName,
       accountType = accountCreateSettings._type.numericValue,
-      user = Set(TestUser(id = userId,
+      domainId = newDomainId,
+      networkDomain = networkDomain,
+      users = List(user.User(id = userId,
+        accountId = accountId,
+        account = accountName,
         email = accountCreateSettings.email,
         firstname = accountCreateSettings.firstName,
         lastname = accountCreateSettings.lastName,
         username = accountCreateSettings.username,
         domainId = newDomainId,
-        timezone = Some(timeZone.getID),
-        account = accountName)),
-      domainId = newDomainId,
-      networkDomain = networkDomain,
+        timezone = Some(timeZone.getID)
+      )),
       roleType = accountRole._2
     )
 
@@ -114,7 +118,7 @@ class AccountCreateRequestIntegrationTestSuite extends FlatSpec with TestEntitie
       val incorrectParameter = UUID.randomUUID().toString
 
       val settings = AccountCreateRequest.Settings(
-        _type = User,
+        _type = AccountCreateRequest.User,
         email = "e@e",
         firstName = "fn",
         lastName = "ln",
@@ -132,10 +136,10 @@ class AccountCreateRequestIntegrationTestSuite extends FlatSpec with TestEntitie
 
     assert(
       testAccount.accountType == settings._type.numericValue &&
-        testAccount.user.head.email == settings.email &&
-        testAccount.user.head.firstname == settings.firstName &&
-        testAccount.user.head.lastname == settings.lastName &&
-        testAccount.user.head.username == settings.username
+        testAccount.users.head.email == settings.email &&
+        testAccount.users.head.firstname == settings.firstName &&
+        testAccount.users.head.lastname == settings.lastName &&
+        testAccount.users.head.username == settings.username
     )
 
     val testRequest = new AccountFindRequest().request

@@ -22,7 +22,7 @@ import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequ
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.JsonMapper
 import com.bwsw.cloudstack.entities.requests.vm.{VmCreateRequest, VmFindRequest}
-import com.bwsw.cloudstack.entities.responses.{VirtualMachine, VirtualMachinesResponse}
+import com.bwsw.cloudstack.entities.responses.vm.{VirtualMachine, VirtualMachineFindResponse}
 
 import scala.util.{Failure, Success, Try}
 
@@ -33,7 +33,7 @@ import scala.util.{Failure, Success, Try}
   * @param mapper see: [[JsonMapper]]
   */
 class VirtualMachineDao(executor: Executor, mapper: JsonMapper)
-  extends GenericDao[VirtualMachinesResponse, VirtualMachine](executor, mapper) {
+  extends GenericDao[VirtualMachineFindResponse, VirtualMachine](executor, mapper) {
 
   override protected type F = VmFindRequest
   override protected type C = VmCreateRequest
@@ -60,7 +60,7 @@ class VirtualMachineDao(executor: Executor, mapper: JsonMapper)
     *
     * @param request see: [[VmFindRequest]]
     */
-  override def find(request: F)(implicit m: Manifest[VirtualMachinesResponse]): List[VirtualMachine] = {
+  override def find(request: F)(implicit m: Manifest[VirtualMachineFindResponse]): List[VirtualMachine] = {
     logger.trace(s"find(request: $request)")
     val virtualMachines = Try {
       super.find(request).toList

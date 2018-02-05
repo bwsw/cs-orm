@@ -24,7 +24,7 @@ import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackApiCommandPara
 import com.bwsw.cloudstack.entities.requests.tag.types.UserTagType
 import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
 import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
-import com.bwsw.cloudstack.entities.responses.Tag
+import com.bwsw.cloudstack.entities.responses.tag.Tag
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._

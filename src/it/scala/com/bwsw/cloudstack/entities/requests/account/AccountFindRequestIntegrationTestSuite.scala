@@ -23,7 +23,7 @@ import java.util.UUID
 import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.Request
-import com.bwsw.cloudstack.entities.responses.AccountResponse
+import com.bwsw.cloudstack.entities.responses.account.AccountFindResponse
 import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
 import org.scalatest.FlatSpec
 
@@ -32,9 +32,9 @@ import scala.util.{Failure, Success, Try}
 class AccountFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains only default parameters" in {
     val accountFindRequest = new AccountFindRequest
-    val response = mapper.deserialize[AccountResponse](executor.executeRequest(accountFindRequest.request))
+    val response = mapper.deserialize[AccountFindResponse](executor.executeRequest(accountFindRequest.request))
 
-    assert(response.isInstanceOf[AccountResponse])
+    assert(response.isInstanceOf[AccountFindResponse])
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -56,7 +56,7 @@ class AccountFindRequestIntegrationTestSuite extends FlatSpec with TestEntities 
   it should "return an empty list of accounts if entity with a specified value of name parameter does not exist" in {
     val name = UUID.randomUUID().toString
     val accountFindRequest = new AccountFindRequest().withName(name)
-    val response = mapper.deserialize[AccountResponse](executor.executeRequest(accountFindRequest.request))
+    val response = mapper.deserialize[AccountFindResponse](executor.executeRequest(accountFindRequest.request))
 
     assert(response.entityList.entities.isEmpty)
   }
@@ -64,9 +64,9 @@ class AccountFindRequestIntegrationTestSuite extends FlatSpec with TestEntities 
   it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
     val request = new AccountFindRequest().request.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
-    val response = mapper.deserialize[AccountResponse](executor.executeRequest(request))
+    val response = mapper.deserialize[AccountFindResponse](executor.executeRequest(request))
 
-    assert(response.isInstanceOf[AccountResponse])
+    assert(response.isInstanceOf[AccountFindResponse])
   }
 
   private def tryExecuteRequest(request: Request): Boolean = {

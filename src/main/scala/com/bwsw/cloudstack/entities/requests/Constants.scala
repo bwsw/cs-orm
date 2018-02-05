@@ -23,6 +23,7 @@ object Constants {
     val ACCOUNT = "account"
     val ACCOUNT_ID = "accountid"
     val ACCOUNT_TYPE = "accounttype"
+    val AVAILABLE = "available"
     val DOMAIN_ID = "domainid"
     val EMAIL = "email"
     val FIRST_NAME = "firstname"
@@ -40,6 +41,7 @@ object Constants {
     val RESPONSE = "response"
     val ROLE_ID = "roleid"
     val SERVICE_OFFERING_ID = "serviceofferingid"
+    val TEMPLATE_FILTER = "templatefilter"
     val TEMPLATE_ID = "templateid"
     val TIMEZONE = "timezone"
     val USER_ID = "userid"
@@ -49,18 +51,26 @@ object Constants {
   }
 
   object ParameterValues {
+    val FEATURED = "featured"
     val JSON = "json"
   }
 
   object Commands {
     val CREATE_ACCOUNT = "createAccount"
+    val CREATE_DOMAIN = "createDomain"
     val CREATE_TAGS = "createTags"
     val CREATE_USER = "createUser"
     val LIST_ACCOUNTS = "listAccounts"
+    val LIST_DOMAINS = "listDomains"
+    val LIST_SERVICE_OFFERINGS = "listServiceOfferings"
     val LIST_TAGS = "listTags"
+    val LIST_TEMPLATES = "listTemplates"
     val LIST_USERS = "listUsers"
     val LIST_VMS = "listVirtualMachines"
+    val LIST_ZONES = "listZones"
     val DEPLOY_VIRTUAL_MACHINE = "deployVirtualMachine"
+    val DELETE_ACCOUNT = "deleteAccount"
+    val DELETE_VM = "destroyVirtualMachine"
   }
 
 }

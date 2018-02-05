@@ -19,29 +19,8 @@
 package com.bwsw.cloudstack.entities.util.requests
 
 object TestConstants {
-  object ParameterKeys {
-    val RESPONSE = "response"
-    val LIST_ALL = "listAll"
-    val TEMPLATE_FILTER = "templatefilter"
-    val AVAILABLE = "available"
-    val NAME = "name"
-    val ID = "id"
-  }
-
   object ParameterValues {
-    val JSON = "json"
-    val FEATURED = "featured"
     val DUMMY_KEY = "key"
     val DUMMY_VALUE = "value"
-  }
-
-  object Commands {
-    val LIST_SERVICE_OFFERINGS = "listServiceOfferings"
-    val LIST_TEMPLATES = "listTemplates"
-    val LIST_ZONES = "listZones"
-    val LIST_DOMAINS = "listDomains"
-    val CREATE_DOMAIN = "createDomain"
-    val DELETE_ACCOUNT = "deleteAccount"
-    val DELETE_VM = "destroyVirtualMachine"
   }
 }

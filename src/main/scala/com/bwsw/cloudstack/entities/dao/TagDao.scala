@@ -22,7 +22,7 @@ import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequ
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.JsonMapper
 import com.bwsw.cloudstack.entities.requests.tag.{TagCreateRequest, TagFindRequest}
-import com.bwsw.cloudstack.entities.responses.{Tag, TagResponse}
+import com.bwsw.cloudstack.entities.responses.tag.{Tag, TagFindResponse}
 
 import scala.util.{Failure, Success, Try}
 
@@ -32,7 +32,7 @@ import scala.util.{Failure, Success, Try}
   * @param executor see: [[Executor]]
   * @param mapper see: [[JsonMapper]]
   */
-class TagDao(executor: Executor, mapper: JsonMapper) extends GenericDao[TagResponse, Tag](executor, mapper) {
+class TagDao(executor: Executor, mapper: JsonMapper) extends GenericDao[TagFindResponse, Tag](executor, mapper) {
   override protected type F = TagFindRequest
   override protected type C = TagCreateRequest
 
@@ -58,7 +58,7 @@ class TagDao(executor: Executor, mapper: JsonMapper) extends GenericDao[TagRespo
     *
     * @param request see: [[TagFindRequest]]
     */
-  override def find(request: F)(implicit m: Manifest[TagResponse]): Set[Tag] = {
+  override def find(request: F)(implicit m: Manifest[TagFindResponse]): Set[Tag] = {
     logger.trace(s"find(request: $request)")
     val tags = Try {
       super.find(request).toSet

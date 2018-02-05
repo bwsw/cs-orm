@@ -23,7 +23,7 @@ import java.util.UUID
 import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.Request
-import com.bwsw.cloudstack.entities.responses.VirtualMachinesResponse
+import com.bwsw.cloudstack.entities.responses.vm.VirtualMachineFindResponse
 import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
 import org.scalatest.FlatSpec
 
@@ -32,9 +32,9 @@ import scala.util.{Failure, Success, Try}
 class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains only default parameters" in {
     val vmFindRequest = new VmFindRequest
-    val response = mapper.deserialize[VirtualMachinesResponse](executor.executeRequest(vmFindRequest.request))
+    val response = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(vmFindRequest.request))
 
-    assert(response.isInstanceOf[VirtualMachinesResponse])
+    assert(response.isInstanceOf[VirtualMachineFindResponse])
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -88,9 +88,9 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
     val request = new VmFindRequest().request.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
-    val response = mapper.deserialize[VirtualMachinesResponse](executor.executeRequest(request))
+    val response = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(request))
 
-    assert(response.isInstanceOf[VirtualMachinesResponse])
+    assert(response.isInstanceOf[VirtualMachineFindResponse])
   }
 
   private def tryExecuteRequest(request: Request): Boolean = {

@@ -25,7 +25,7 @@ import com.bwsw.cloudstack.entities.requests.tag.types.TagType
 import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
 import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
 import com.bwsw.cloudstack.entities.requests.Request
-import com.bwsw.cloudstack.entities.responses.Tag
+import com.bwsw.cloudstack.entities.responses.tag.Tag
 
 /**
   * Class is responsible for building ApacheCloudStackRequest with specified parameters for creating tags

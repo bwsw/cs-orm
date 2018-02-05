@@ -23,12 +23,10 @@ import java.util.{TimeZone, UUID}
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import com.bwsw.cloudstack.PasswordAuthenticationClientCreator
 import com.bwsw.cloudstack.entities.requests.domain.DomainCreateRequest
-import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.User
 import com.bwsw.cloudstack.entities.responses.account.{Account, AccountCreateResponse}
 import com.bwsw.cloudstack.entities.responses.domain.DomainCreateResponse
 import com.bwsw.cloudstack.entities.responses.user
-import com.bwsw.cloudstack.entities.responses.user.User
-import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
+import com.bwsw.cloudstack.entities.util.requests.IntegrationTestConstants.ParameterValues
 import com.bwsw.cloudstack.entities.{Executor, TestEntities}
 import org.scalatest.FlatSpec
 

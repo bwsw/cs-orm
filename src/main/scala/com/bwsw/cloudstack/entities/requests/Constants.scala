@@ -51,7 +51,6 @@ object Constants {
   }
 
   object ParameterValues {
-    val FEATURED = "featured"
     val JSON = "json"
   }
 

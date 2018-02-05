@@ -22,8 +22,20 @@ import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterKeys, ParameterValues}
 import com.bwsw.cloudstack.entities.requests.Request
 
+/**
+  * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving zone list.
+  */
 class ZoneFindRequest extends Request {
   override protected[entities] val request = new ApacheCloudStackRequest(Commands.LIST_ZONES)
     .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
-    .addParameter(ParameterKeys.AVAILABLE, true)
+    .addParameter(ParameterKeys.LIST_ALL, true)
+
+  /**
+    * @param isAvailable True if you want to retrieve all available Zones.
+    *                    False if you only want to return the Zones from which you have at least one VM. Default is false.
+    */
+  def withAvailableFlag(isAvailable: Boolean): ZoneFindRequest = {
+    request.addParameter(ParameterKeys.AVAILABLE, isAvailable)
+    this
+  }
 }

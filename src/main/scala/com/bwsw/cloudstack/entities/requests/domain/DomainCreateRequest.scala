@@ -22,6 +22,11 @@ import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterKeys, ParameterValues}
 import com.bwsw.cloudstack.entities.requests.Request
 
+/**
+  * Class is responsible for building ApacheCloudStackRequest with specified parameters for creating domain
+  *
+  * @param name name of creating domain
+  */
 class DomainCreateRequest(name: String) extends Request {
   override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.CREATE_DOMAIN)
     .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)

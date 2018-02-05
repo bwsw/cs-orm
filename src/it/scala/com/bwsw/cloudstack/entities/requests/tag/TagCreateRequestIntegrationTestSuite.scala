@@ -22,7 +22,7 @@ import java.util.UUID
 
 import com.bwsw.cloudstack.entities.requests.tag.types.{TagType, UserTagType}
 import com.bwsw.cloudstack.entities.requests.user.UserCreateRequest
-import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues.{DUMMY_KEY, DUMMY_VALUE}
+import com.bwsw.cloudstack.entities.util.requests.IntegrationTestConstants.ParameterValues.{DUMMY_KEY, DUMMY_VALUE}
 import com.bwsw.cloudstack.entities.util.responses.{TagTestFindResponse, TestTag}
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.responses.tag.Tag

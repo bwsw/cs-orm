@@ -18,15 +18,22 @@
 */
 package com.bwsw.cloudstack.entities.requests.serviceoffering
 
-import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
+import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackApiCommandParameter
 import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterKeys, ParameterValues}
-import com.bwsw.cloudstack.entities.requests.Request
+import org.scalatest.FlatSpec
 
-/**
-  * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving service offering list.
-  */
-class ServiceOfferingFindRequest extends Request {
-  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_SERVICE_OFFERINGS)
-    .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
-    .addParameter(ParameterKeys.LIST_ALL, true)
+import scala.collection.JavaConverters._
+
+class ServiceOfferingFindRequestTestSuite extends FlatSpec {
+  val defaultParameters = Set[ApacheCloudStackApiCommandParameter](
+    new ApacheCloudStackApiCommandParameter(ParameterKeys.RESPONSE, ParameterValues.JSON),
+    new ApacheCloudStackApiCommandParameter(ParameterKeys.LIST_ALL, true)
+  )
+
+  it should "create a request with predefined parameters" in {
+    val request = new ServiceOfferingFindRequest
+
+    assert(request.request.getParameters.asScala.toSet == defaultParameters)
+    assert(request.request.getCommand == Commands.LIST_SERVICE_OFFERINGS)
+  }
 }

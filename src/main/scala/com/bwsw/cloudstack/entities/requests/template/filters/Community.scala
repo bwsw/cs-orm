@@ -16,11 +16,6 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.util.requests
+package com.bwsw.cloudstack.entities.requests.template.filters
 
-object TestConstants {
-  object ParameterValues {
-    val DUMMY_KEY = "key"
-    val DUMMY_VALUE = "value"
-  }
-}
+object Community extends TemplateFilter("community")

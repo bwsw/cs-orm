@@ -18,15 +18,22 @@
 */
 package com.bwsw.cloudstack.entities.requests.domain
 
-import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
-import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterKeys, ParameterValues}
-import com.bwsw.cloudstack.entities.requests.Request
+import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackApiCommandParameter
+import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
+import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
+import org.scalatest.FlatSpec
 
-/**
-  * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving domain list.
-  * By default it retrieve only domain for client user, add "listAll" parameter for retrieving all domains.
-  */
-class DomainFindRequest extends Request {
-  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_DOMAINS)
-    .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
+import scala.collection.JavaConverters._
+
+class DomainFindRequestTestSuite extends FlatSpec {
+  val defaultParameters = Set[ApacheCloudStackApiCommandParameter](
+    new ApacheCloudStackApiCommandParameter(RESPONSE, ParameterValues.JSON)
+  )
+
+  it should "create a request with predefined parameters" in {
+    val request = new DomainFindRequest
+
+    assert(request.request.getParameters.asScala.toSet == defaultParameters)
+    assert(request.request.getCommand == Commands.LIST_DOMAINS)
+  }
 }

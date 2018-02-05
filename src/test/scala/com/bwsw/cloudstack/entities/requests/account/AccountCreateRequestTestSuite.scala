@@ -39,7 +39,7 @@ class AccountCreateRequestTestSuite extends FlatSpec {
   )
 
   val defaultParameters = Set[ApacheCloudStackApiCommandParameter](
-    new ApacheCloudStackApiCommandParameter(RESPONSE,ParameterValues.JSON),
+    new ApacheCloudStackApiCommandParameter(RESPONSE, ParameterValues.JSON),
     new ApacheCloudStackApiCommandParameter(EMAIL, settings.email),
     new ApacheCloudStackApiCommandParameter(FIRST_NAME, settings.firstName),
     new ApacheCloudStackApiCommandParameter(LAST_NAME, settings.lastName),

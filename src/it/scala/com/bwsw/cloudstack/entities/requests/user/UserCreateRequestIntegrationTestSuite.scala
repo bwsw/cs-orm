@@ -26,7 +26,7 @@ import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest
 import com.bwsw.cloudstack.entities.requests.domain.DomainCreateRequest
 import com.bwsw.cloudstack.entities.responses.domain.DomainCreateResponse
 import com.bwsw.cloudstack.entities.responses.user._
-import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
+import com.bwsw.cloudstack.entities.util.requests.IntegrationTestConstants.ParameterValues
 import com.bwsw.cloudstack.entities.{Executor, TestEntities}
 import org.scalatest.FlatSpec
 

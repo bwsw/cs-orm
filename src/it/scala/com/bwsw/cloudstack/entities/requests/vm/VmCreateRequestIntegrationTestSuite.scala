@@ -25,7 +25,7 @@ import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.account.AccountFindRequest
 import com.bwsw.cloudstack.entities.responses.account.AccountFindResponse
 import com.bwsw.cloudstack.entities.responses.vm.{VirtualMachine, VirtualMachineCreateResponse, VirtualMachineFindResponse}
-import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
+import com.bwsw.cloudstack.entities.util.requests.IntegrationTestConstants.ParameterValues
 import org.scalatest.FlatSpec
 
 class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {

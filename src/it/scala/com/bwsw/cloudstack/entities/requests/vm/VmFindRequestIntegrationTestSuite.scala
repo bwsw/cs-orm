@@ -32,7 +32,7 @@ import scala.util.{Failure, Success, Try}
 class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains only default parameters" in {
     val vmFindRequest = new VmFindRequest
-    val response = mapper.deserialize[VirtualMachinesResponse](executor.executeRequest(vmFindRequest.request))
+    val response = mapper.deserialize[VirtualMachinesResponse](executor.executeRequest(vmFindRequest.getRequest))
 
     assert(response.isInstanceOf[VirtualMachinesResponse])
   }
@@ -87,7 +87,7 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
 
   it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
-    val request = new VmFindRequest().request.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
+    val request = new VmFindRequest().getRequest.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
     val response = mapper.deserialize[VirtualMachinesResponse](executor.executeRequest(request))
 
     assert(response.isInstanceOf[VirtualMachinesResponse])
@@ -95,7 +95,7 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
 
   private def tryExecuteRequest(request: Request): Boolean = {
     Try {
-      executor.executeRequest(request.request)
+      executor.executeRequest(request.getRequest)
     } match {
       case Success(_) => false
       case Failure(e: ApacheCloudStackClientRequestRuntimeException) =>

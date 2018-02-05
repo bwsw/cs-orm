@@ -36,8 +36,8 @@ class VmFindRequestTestSuite extends FlatSpec {
   it should "create a request with predefined parameters" in {
     val request = new VmFindRequest
 
-    assert(request.request.getParameters.asScala.toSet == defaultParameters)
-    assert(request.request.getCommand == Commands.LIST_VMS)
+    assert(request.getRequest.getParameters.asScala.toSet == defaultParameters)
+    assert(request.getRequest.getCommand == Commands.LIST_VMS)
   }
 
   "withId" should "add an id parameter to a request" in {
@@ -45,7 +45,7 @@ class VmFindRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ID, vmId))
     val request = new VmFindRequest
 
-    assert(request.withId(vmId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withId(vmId).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withAccountName" should "add an account name parameter to a request" in {
@@ -53,7 +53,7 @@ class VmFindRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ACCOUNT, accountName))
     val request = new VmFindRequest
 
-    assert(request.withAccountName(accountName).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withAccountName(accountName).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withDomain" should "add a domain id parameter to a request" in {
@@ -61,7 +61,7 @@ class VmFindRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(DOMAIN_ID, domainId))
     val request = new VmFindRequest
 
-    assert(request.withDomain(domainId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withDomain(domainId).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withGroup" should "add a group id parameter to a request" in {
@@ -69,7 +69,7 @@ class VmFindRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(GROUP_ID, groupId))
     val request = new VmFindRequest
 
-    assert(request.withGroup(groupId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withGroup(groupId).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withUser" should "add a user id parameter to a request" in {
@@ -77,7 +77,7 @@ class VmFindRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(USER_ID, userId))
     val request = new VmFindRequest
 
-    assert(request.withUser(userId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withUser(userId).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withZone" should "add a zone id parameter to a request" in {
@@ -85,6 +85,6 @@ class VmFindRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ZONE_ID, zoneId))
     val request = new VmFindRequest
 
-    assert(request.withZone(zoneId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withZone(zoneId).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 }

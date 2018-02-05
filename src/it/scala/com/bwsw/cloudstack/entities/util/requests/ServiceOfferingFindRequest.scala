@@ -23,7 +23,7 @@ import com.bwsw.cloudstack.entities.requests.Request
 import com.bwsw.cloudstack.entities.util.requests.TestConstants._
 
 class ServiceOfferingFindRequest extends Request {
-  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_SERVICE_OFFERINGS)
+  override protected val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_SERVICE_OFFERINGS)
     .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
     .addParameter(ParameterKeys.LIST_ALL, true)
 }

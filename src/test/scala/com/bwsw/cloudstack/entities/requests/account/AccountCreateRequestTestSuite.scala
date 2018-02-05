@@ -51,8 +51,8 @@ class AccountCreateRequestTestSuite extends FlatSpec {
   it should "create a request with predefined and specified (via constructor) parameters" in {
     val request = new AccountCreateRequest(settings)
 
-    assert(request.request.getParameters.asScala.toSet == defaultParameters)
-    assert(request.request.getCommand == Commands.CREATE_ACCOUNT)
+    assert(request.getRequest.getParameters.asScala.toSet == defaultParameters)
+    assert(request.getRequest.getCommand == Commands.CREATE_ACCOUNT)
   }
 
   "withId" should "add id parameter to a request" in {
@@ -60,7 +60,7 @@ class AccountCreateRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ACCOUNT_ID, accountId.toString))
     val request = new AccountCreateRequest(settings)
 
-    assert(request.withId(accountId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withId(accountId).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withTimeZone" should "add time zone parameter to a request" in {
@@ -68,7 +68,7 @@ class AccountCreateRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(TIMEZONE, timezone))
     val request = new AccountCreateRequest(settings)
 
-    assert(request.withTimeZone(TimeZone.getTimeZone(timezone)).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withTimeZone(TimeZone.getTimeZone(timezone)).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withDomain" should "add domain id parameter to a request" in {
@@ -76,7 +76,7 @@ class AccountCreateRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(DOMAIN_ID, domainId))
     val request = new AccountCreateRequest(settings)
 
-    assert(request.withDomain(domainId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withDomain(domainId).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withName" should "add account name parameter to a request" in {
@@ -84,7 +84,7 @@ class AccountCreateRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ACCOUNT, accountName))
     val request = new AccountCreateRequest(settings)
 
-    assert(request.withName(accountName).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withName(accountName).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withNetworkDomain" should "add network domain parameter to a request" in {
@@ -92,7 +92,7 @@ class AccountCreateRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(NETWORK_DOMAIN, networkdomain))
     val request = new AccountCreateRequest(settings)
 
-    assert(request.withNetworkDomain(networkdomain).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withNetworkDomain(networkdomain).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withRole" should "add role id parameter to a request" in {
@@ -100,7 +100,7 @@ class AccountCreateRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ROLE_ID, role))
     val request = new AccountCreateRequest(settings)
 
-    assert(request.withRole(role).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withRole(role).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withUserId" should "add user id parameter to a request" in {
@@ -108,6 +108,6 @@ class AccountCreateRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(USER_ID, userId))
     val request = new AccountCreateRequest(settings)
 
-    assert(request.withUserId(userId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withUserId(userId).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 }

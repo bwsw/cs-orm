@@ -34,7 +34,7 @@ import com.bwsw.cloudstack.entities.requests.Request
   */
 class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Request {
 
-  override protected[entities] val request = new ApacheCloudStackRequest(Commands.CREATE_ACCOUNT)
+  override protected val request = new ApacheCloudStackRequest(Commands.CREATE_ACCOUNT)
     .addParameter(RESPONSE, ParameterValues.JSON)
     .addParameter(ACCOUNT_TYPE, settings._type.numericValue)
     .addParameter(EMAIL, settings.email)

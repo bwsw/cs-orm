@@ -30,7 +30,7 @@ import com.bwsw.cloudstack.entities.requests.Request
   * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving tag list
   */
 class TagFindRequest extends Request {
-  override protected[entities] val request = new ApacheCloudStackRequest(Commands.LIST_TAGS)
+  override protected val request = new ApacheCloudStackRequest(Commands.LIST_TAGS)
     .addParameter(RESPONSE, ParameterValues.JSON)
     .addParameter(LIST_ALL, true)
 

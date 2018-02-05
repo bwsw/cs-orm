@@ -23,7 +23,7 @@ import com.bwsw.cloudstack.entities.requests.Request
 import com.bwsw.cloudstack.entities.util.requests.TestConstants._
 
 class TemplateFindRequest extends Request {
-  override protected[entities] val request = new ApacheCloudStackRequest(Commands.LIST_TEMPLATES)
+  override protected val request = new ApacheCloudStackRequest(Commands.LIST_TEMPLATES)
     .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
     .addParameter(ParameterKeys.LIST_ALL, true)
     .addParameter(ParameterKeys.TEMPLATE_FILTER, ParameterValues.FEATURED)

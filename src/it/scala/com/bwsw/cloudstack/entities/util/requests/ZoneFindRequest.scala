@@ -23,7 +23,7 @@ import com.bwsw.cloudstack.entities.requests.Request
 import com.bwsw.cloudstack.entities.util.requests.TestConstants._
 
 class ZoneFindRequest extends Request {
-  override protected[entities] val request = new ApacheCloudStackRequest(Commands.LIST_ZONES)
+  override protected val request = new ApacheCloudStackRequest(Commands.LIST_ZONES)
     .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
     .addParameter(ParameterKeys.AVAILABLE, true)
 }

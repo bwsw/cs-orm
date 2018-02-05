@@ -25,7 +25,7 @@ import com.bwsw.cloudstack.entities.requests.Request
 import com.bwsw.cloudstack.entities.util.requests.TestConstants.{Commands, ParameterKeys, ParameterValues}
 
 class AccountDeleteRequest(id: UUID) extends Request {
-  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.DELETE_ACCOUNT)
+  override protected val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.DELETE_ACCOUNT)
     .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
     .addParameter(ParameterKeys.ID, id)
 }

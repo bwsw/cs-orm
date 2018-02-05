@@ -29,7 +29,7 @@ import com.bwsw.cloudstack.entities.requests.Request
   * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving vm list
   */
 class VmFindRequest extends Request {
-  override protected[entities] val request = new ApacheCloudStackRequest(Commands.LIST_VMS)
+  override protected val request = new ApacheCloudStackRequest(Commands.LIST_VMS)
     .addParameter(RESPONSE, ParameterValues.JSON)
     .addParameter(LIST_ALL, true)
 

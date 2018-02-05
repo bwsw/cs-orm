@@ -46,7 +46,7 @@ class TagCreateRequestIntegrationTestSuite extends fixture.FlatSpec with TestEnt
       password = "passwd",
       username = s"username $userId"
     )
-    val userCreateRequest = new UserCreateRequest(userCreationSettings).withId(userId).request
+    val userCreateRequest = new UserCreateRequest(userCreationSettings).withId(userId).getRequest
     mapper.deserialize[UserCreateResponse](executor.executeRequest(userCreateRequest))
 
     val theFixture = FixtureParam(resourceIds)
@@ -63,7 +63,7 @@ class TagCreateRequestIntegrationTestSuite extends fixture.FlatSpec with TestEnt
       resourceIds = fixture.resourceIds,
       tags = expectedTags
     )
-    val request = new TagCreateRequest(settings).request
+    val request = new TagCreateRequest(settings).getRequest
     executor.executeRequest(request)
 
     checkTagCreation(settings, expectedTags)
@@ -78,14 +78,14 @@ class TagCreateRequestIntegrationTestSuite extends fixture.FlatSpec with TestEnt
       resourceIds = fixture.resourceIds,
       tags = expectedTags
     )
-    val request = new TagCreateRequest(settings).request.addParameter(incorrectParameter, DUMMY_VALUE)
+    val request = new TagCreateRequest(settings).getRequest.addParameter(incorrectParameter, DUMMY_VALUE)
     executor.executeRequest(request)
 
     checkTagCreation(settings, expectedTags)
   }
 
   private def checkTagCreation(settings: TagCreateRequest.Settings, expectedTags: List[responses.Tag]): Unit = {
-    val tagFindRequest = new TagFindRequest().withResource(settings.resourceIds.head).request
+    val tagFindRequest = new TagFindRequest().withResource(settings.resourceIds.head).getRequest
     val tags = mapper.deserialize[TagFindResponse](executor.executeRequest(tagFindRequest)).tags.maybeTags
 
     assert(

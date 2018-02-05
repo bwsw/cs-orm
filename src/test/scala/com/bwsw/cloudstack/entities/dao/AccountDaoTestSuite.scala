@@ -103,6 +103,27 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
     assertThrows[ApacheCloudStackClientRequestRuntimeException](accountDao.find(findRequest))
   }
 
+  "find" should "handle child of AccountFindRequest" in {
+    val accountId = UUID.randomUUID()
+    val userId = UUID.randomUUID()
+    val expectedAccountList = List(Account(accountId, List(User(userId, accountId))))
+
+    class TestAccountFindRequest extends AccountFindRequest
+
+    val childRequest = new TestAccountFindRequest
+
+    val executor = new Executor(executorSettings, clientCreator){
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(childRequest.request == request)
+        Response.getAccountResponseJson(accountId.toString, userId.toString)
+      }
+    }
+
+    val accountDao = new AccountDao(executor, jsonMapper)
+
+    assert(accountDao.find(childRequest) == expectedAccountList)
+  }
+
   "create" should "submit request to Executor" in {
     var actualRequests = List.empty[ApacheCloudStackRequest]
     val createRequest = new AccountCreateRequest(AccountCreateRequest.Settings(
@@ -152,6 +173,36 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
     val accountDao = new AccountDao(executor, jsonMapper)
 
     assertThrows[Exception](accountDao.create(createRequest).isInstanceOf[Unit])
+    assert(actualRequests == expectedRequests)
+  }
+
+  "create" should "handle child of AccountCreateRequest" in {
+    var actualRequests = List.empty[ApacheCloudStackRequest]
+    val createRequestSettings = AccountCreateRequest.Settings(
+      _type = RootAdmin,
+      email = "e@e",
+      firstName = "fn",
+      lastName = "ln",
+      password = "passw",
+      username = "user"
+    )
+
+    class TestAccountCreateRequest extends AccountCreateRequest(createRequestSettings)
+
+    val createRequest = new TestAccountCreateRequest
+
+    val expectedRequests = List(createRequest.request)
+
+    val executor = new Executor(executorSettings, clientCreator) {
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        actualRequests = actualRequests ::: request :: Nil
+        ""
+      }
+    }
+
+    val accountDao = new AccountDao(executor, jsonMapper)
+
+    assert(accountDao.create(createRequest).isInstanceOf[Unit])
     assert(actualRequests == expectedRequests)
   }
 }

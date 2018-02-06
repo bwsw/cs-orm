@@ -32,7 +32,7 @@ import scala.util.{Failure, Success, Try}
 class AccountFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains only default parameters" in {
     val accountFindRequest = new AccountFindRequest
-    val response = mapper.deserialize[AccountFindResponse](executor.executeRequest(accountFindRequest.request))
+    val response = mapper.deserialize[AccountFindResponse](executor.executeRequest(accountFindRequest.getRequest))
 
     assert(response.isInstanceOf[AccountFindResponse])
   }
@@ -56,14 +56,14 @@ class AccountFindRequestIntegrationTestSuite extends FlatSpec with TestEntities 
   it should "return an empty list of accounts if entity with a specified value of name parameter does not exist" in {
     val name = UUID.randomUUID().toString
     val accountFindRequest = new AccountFindRequest().withName(name)
-    val response = mapper.deserialize[AccountFindResponse](executor.executeRequest(accountFindRequest.request))
+    val response = mapper.deserialize[AccountFindResponse](executor.executeRequest(accountFindRequest.getRequest))
 
     assert(response.entityList.entities.isEmpty)
   }
 
   it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
-    val request = new AccountFindRequest().request.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
+    val request = new AccountFindRequest().getRequest.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
     val response = mapper.deserialize[AccountFindResponse](executor.executeRequest(request))
 
     assert(response.isInstanceOf[AccountFindResponse])
@@ -71,7 +71,7 @@ class AccountFindRequestIntegrationTestSuite extends FlatSpec with TestEntities 
 
   private def tryExecuteRequest(request: Request): Boolean = {
     Try {
-      executor.executeRequest(request.request)
+      executor.executeRequest(request.getRequest)
     } match {
       case Success(_) => false
       case Failure(e: ApacheCloudStackClientRequestRuntimeException) =>

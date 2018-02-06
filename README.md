@@ -10,7 +10,7 @@ It based on the extensible request builders which simplify creating CloudStack r
 
 Add the following to your `build.sbt`
 ```scala
-libraryDependencies += "com.bwsw" %% "cs-entities" % "4.9.3"
+libraryDependencies += "com.bwsw" %% "cs-entities" % "4.10.3-NP"
 ```
 ## Getting Started      
 1. Create Executor instance with specified parameters to interact with Apache CloudStack server. \
@@ -58,9 +58,11 @@ Run tests: `sbt test`
 ### Integration tests
 
 1. Add local environment variables:
-    * `CS_PORT` - host of Apache CloudStack simulator server, for example - "8888"
-    * `KAFKA_HOST` - host of Kafka, for example - localhost
+    * `CS_PORT` - port of Apache CloudStack simulator server, for example - "8888"
+    * `CS_HOST` - host of Apache CloudStack simulator server, by default - "localhost"
+    * `KAFKA_HOST` - host of Kafka, for example - "localhost"
     * `KAFKA_PORT` - port of Kafka, for example - "9092"
+    * `KAFKA_TOPIC` - kafka topic containing cloudstack events
     
 2. Run Apache CloudStack simulator in docker container:
 ```bash
@@ -68,6 +70,7 @@ Run tests: `sbt test`
     
     docker run --rm -e KAFKA_HOST="${KAFKA_HOST}" \
                     -e KAFKA_PORT="${KAFKA_PORT}" \
+                    -e KAFKA_TOPIC="${KAFKA_TOPIC}" \
                     --name cloudstack-kafka-sim -d -p $CS_PORT:$CS_PORT bwsw/cs-simulator-kafka:4.10.3-NP
 ```
 

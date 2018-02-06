@@ -28,7 +28,7 @@ import com.bwsw.cloudstack.entities.requests.Request
   * @param name name of creating domain
   */
 class DomainCreateRequest(name: String) extends Request {
-  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.CREATE_DOMAIN)
+  override protected val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.CREATE_DOMAIN)
     .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
     .addParameter(ParameterKeys.NAME, name)
 }

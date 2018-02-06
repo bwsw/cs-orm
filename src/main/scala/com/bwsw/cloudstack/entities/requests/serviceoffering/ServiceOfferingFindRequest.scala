@@ -26,7 +26,7 @@ import com.bwsw.cloudstack.entities.requests.Request
   * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving service offering list.
   */
 class ServiceOfferingFindRequest extends Request {
-  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_SERVICE_OFFERINGS)
+  override protected val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_SERVICE_OFFERINGS)
     .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
     .addParameter(ParameterKeys.LIST_ALL, true)
 }

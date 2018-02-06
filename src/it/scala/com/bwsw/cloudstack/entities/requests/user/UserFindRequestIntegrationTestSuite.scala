@@ -32,7 +32,7 @@ import scala.util.{Failure, Success, Try}
 class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains only default parameters" in {
     val userFindRequest = new UserFindRequest
-    val response = mapper.deserialize[UserFindResponse](executor.executeRequest(userFindRequest.request))
+    val response = mapper.deserialize[UserFindResponse](executor.executeRequest(userFindRequest.getRequest))
 
     assert(response.isInstanceOf[UserFindResponse])
   }
@@ -64,14 +64,14 @@ class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "return an empty list of users if entity with a specified value of name parameter does not exist" in {
     val name = UUID.randomUUID().toString
     val userFindRequest = new UserFindRequest().withName(name)
-    val response = mapper.deserialize[UserFindResponse](executor.executeRequest(userFindRequest.request))
+    val response = mapper.deserialize[UserFindResponse](executor.executeRequest(userFindRequest.getRequest))
 
     assert(response.entityList.entities.isEmpty)
   }
 
   it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
-    val request = new UserFindRequest().request.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
+    val request = new UserFindRequest().getRequest.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
     val response = mapper.deserialize[UserFindResponse](executor.executeRequest(request))
 
     assert(response.isInstanceOf[UserFindResponse])
@@ -79,7 +79,7 @@ class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
 
   private def tryExecuteRequest(request: Request): Boolean = {
     Try {
-      executor.executeRequest(request.request)
+      executor.executeRequest(request.getRequest)
     } match {
       case Success(_) => false
       case Failure(e: ApacheCloudStackClientRequestRuntimeException) =>

@@ -41,7 +41,7 @@ class AccountDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Acco
     *
     * @param request see: [[AccountCreateRequest]]
     */
-  override def create(request: C): Unit = {
+  override def create[R <: C](request: R): Unit = {
     Try {
       super.create(request)
     } match {
@@ -58,7 +58,7 @@ class AccountDao(executor: Executor, mapper: JsonMapper) extends GenericDao[Acco
     *
     * @param request see: [[AccountFindRequest]]
     */
-  override def find(request: F)(implicit m: Manifest[AccountFindResponse]): List[Account] = {
+  override def find[R <: F](request: R)(implicit m: Manifest[AccountFindResponse]): List[Account] = {
     logger.trace(s"find(request: $request)")
     val accounts = Try {
       super.find(request).toList

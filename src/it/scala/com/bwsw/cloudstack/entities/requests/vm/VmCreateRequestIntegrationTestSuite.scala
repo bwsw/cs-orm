@@ -36,25 +36,25 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "create a vm using a request which contains only required parameters" in {
     val vmCreateRequest = new VmCreateRequest(VmCreateRequest.Settings(serviceOfferingId, templateId, zoneId))
 
-    checkVmCreation(vmCreateRequest.request)
+    checkVmCreation(vmCreateRequest.getRequest)
   }
 
   it should "create a vm using a request which contains the required and optional parameters" in {
     val domainId = retrievedAdminDomainId
     val accountFindRequest = new AccountFindRequest().withDomain(domainId)
     val accountName = mapper.deserialize[AccountFindResponse](
-      executor.executeRequest(accountFindRequest.request)
+      executor.executeRequest(accountFindRequest.getRequest)
     ).entityList.entities.get.head.name
 
     val vmCreateRequest = new VmCreateRequest(VmCreateRequest.Settings(serviceOfferingId, templateId, zoneId))
       .withDomainAccount(accountName, domainId)
-    val response = executor.executeRequest(vmCreateRequest.request)
+    val response = executor.executeRequest(vmCreateRequest.getRequest)
 
     val vmId = mapper.deserialize[VirtualMachineCreateResponse](response).vm.id
 
     val vmFindRequest = new VmFindRequest().withId(vmId)
 
-    val actualVm = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(vmFindRequest.request))
+    val actualVm = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(vmFindRequest.getRequest))
       .entityList.entities.get.head
     val expectedVm = VirtualMachine(vmId, zoneId, templateId, serviceOfferingId, accountName, domainId)
 
@@ -65,9 +65,11 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val incorrectParameter = UUID.randomUUID().toString
     val request = new VmCreateRequest(
       VmCreateRequest.Settings(serviceOfferingId, templateId, zoneId)
-    ).request.addParameter(incorrectParameter, ParameterValues.DUMMY_VALUE)
+    )
 
-    checkVmCreation(request)
+    request.addParameter(incorrectParameter, ParameterValues.DUMMY_VALUE)
+
+    checkVmCreation(request.getRequest)
   }
 
   private def checkVmCreation(request: ApacheCloudStackRequest): Unit = {
@@ -77,7 +79,7 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
 
     val vmFindRequest = new VmFindRequest().withId(vmId)
 
-    val actualVm = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(vmFindRequest.request))
+    val actualVm = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(vmFindRequest.getRequest))
       .entityList.entities.get.head
 
     assert(actualVm.id == vmId &&

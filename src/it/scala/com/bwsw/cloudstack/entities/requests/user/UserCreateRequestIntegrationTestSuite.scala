@@ -44,7 +44,7 @@ class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
       password = password,
       username = userName
     )
-    val request = new UserCreateRequest(settings).request
+    val request = new UserCreateRequest(settings).getRequest
 
     checkUserCreation(request, settings)
   }
@@ -60,7 +60,7 @@ class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val password = UUID.randomUUID().toString
     val timeZone = TimeZone.getTimeZone("GMT+7:00")
 
-    val domainCreateRequest = new DomainCreateRequest(domainName).request
+    val domainCreateRequest = new DomainCreateRequest(domainName).getRequest
     val newDomainId = mapper.deserialize[DomainCreateResponse](executor.executeRequest(domainCreateRequest)).domainEntity.domain.id
 
     val accountCreateRequest = new AccountCreateRequest(
@@ -74,7 +74,7 @@ class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
       )
     ).withName(accountName).withDomain(newDomainId).withId(accountId)
 
-    executor.executeRequest(accountCreateRequest.request)
+    executor.executeRequest(accountCreateRequest.getRequest)
 
     val settings = UserCreateRequest.Settings(
       accountName = accountName,
@@ -98,11 +98,11 @@ class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
       timezone = Some(timeZone.getID)
     )
 
-    val actualUser = mapper.deserialize[UserCreateResponse](executor.executeRequest(userCreateRequest.request)).userEntity.user
+    val actualUser = mapper.deserialize[UserCreateResponse](executor.executeRequest(userCreateRequest.getRequest)).userEntity.user
 
     assert(actualUser == expectedUser)
 
-    val testRequest = new UserFindRequest().request
+    val testRequest = new UserFindRequest().getRequest
 
     assert(checkPasswordCorrectness(settings.username, settings.password, s"/$domainName", testRequest))
 
@@ -121,7 +121,7 @@ class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
       password = password,
       username = userName
     )
-    val request = new UserCreateRequest(settings).request.addParameter(incorrectParameter, ParameterValues.DUMMY_VALUE)
+    val request = new UserCreateRequest(settings).getRequest.addParameter(incorrectParameter, ParameterValues.DUMMY_VALUE)
 
     checkUserCreation(request, settings)
   }
@@ -138,7 +138,7 @@ class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
         actualUser.username == settings.username
     )
 
-    val testRequest = new UserFindRequest().request
+    val testRequest = new UserFindRequest().getRequest
 
     assert(checkPasswordCorrectness(settings.username, settings.password, "/", testRequest))
   }

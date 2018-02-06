@@ -27,6 +27,6 @@ import com.bwsw.cloudstack.entities.requests.Request
   * By default it retrieves only domain for client user, you might to add "listAll" parameter for retrieving all domains.
   */
 class DomainFindRequest extends Request {
-  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_DOMAINS)
+  override protected val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_DOMAINS)
     .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
 }

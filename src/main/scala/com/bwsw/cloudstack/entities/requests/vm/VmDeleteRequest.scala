@@ -25,7 +25,7 @@ import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterKeys,
 import com.bwsw.cloudstack.entities.requests.Request
 
 class VmDeleteRequest(id: UUID) extends Request {
-  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.DELETE_VM)
+  override protected val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.DELETE_VM)
     .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
     .addParameter(ParameterKeys.ID, id)
 }

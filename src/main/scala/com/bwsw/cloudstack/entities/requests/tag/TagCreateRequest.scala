@@ -33,7 +33,7 @@ import com.bwsw.cloudstack.entities.responses.tag.Tag
   * @param settings required parameters for tag list creation, more info see AccountCreateRequest.Settings
   */
 class TagCreateRequest(settings: TagCreateRequest.Settings) extends Request {
-  override protected[entities] val request = new ApacheCloudStackRequest(Commands.CREATE_TAGS)
+  override protected val request = new ApacheCloudStackRequest(Commands.CREATE_TAGS)
     .addParameter(RESPONSE, ParameterValues.JSON)
     .addParameter(RESOURCE_TYPE, settings.resourceType.name)
     .addParameter(RESOURCE_IDS, settings.resourceIds.mkString(","))

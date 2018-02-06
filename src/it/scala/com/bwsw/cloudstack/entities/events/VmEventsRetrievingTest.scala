@@ -39,9 +39,9 @@ class VmEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAf
   val consumer = new Consumer(kafkaEndpoint, kafkaTopic)
   consumer.assignToEnd()
 
-  val vmId = mapper.deserialize[VirtualMachineCreateResponse](executor.executeRequest(vmCreateRequest.request)).vm.id
+  val vmId = mapper.deserialize[VirtualMachineCreateResponse](executor.executeRequest(vmCreateRequest.getRequest)).vm.id
   val vmDeleteRequest = new VmDeleteRequest(vmId)
-  executor.executeRequest(vmDeleteRequest.request)
+  executor.executeRequest(vmDeleteRequest.getRequest)
 
   Thread.sleep(sleepInterval)
 

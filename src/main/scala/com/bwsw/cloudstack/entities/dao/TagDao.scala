@@ -41,7 +41,7 @@ class TagDao(executor: Executor, mapper: JsonMapper) extends GenericDao[TagFindR
     *
     * @param request see: [[TagCreateRequest]]
     */
-  override def create(request: C): Unit = {
+  override def create[R <: C](request: R): Unit = {
     Try {
       super.create(request)
     } match {
@@ -58,7 +58,7 @@ class TagDao(executor: Executor, mapper: JsonMapper) extends GenericDao[TagFindR
     *
     * @param request see: [[TagFindRequest]]
     */
-  override def find(request: F)(implicit m: Manifest[TagFindResponse]): Set[Tag] = {
+  override def find[R <: F](request: R)(implicit m: Manifest[TagFindResponse]): Set[Tag] = {
     logger.trace(s"find(request: $request)")
     val tags = Try {
       super.find(request).toSet

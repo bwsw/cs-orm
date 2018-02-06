@@ -35,7 +35,7 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
 
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         Response.getVmResponseJson(testVm)
       }
     }
@@ -48,7 +48,7 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
   "find" should "return an empty entity list if a response json string does not contain the relevant data" in {
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         Response.getResponseWithEmptyVmList
       }
     }
@@ -63,7 +63,7 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
     val statusCode = 431
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         throw new ApacheCloudStackClientRequestRuntimeException(statusCode, "", "")
       }
     }
@@ -76,7 +76,7 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
   "find" should "not swallow non-ApacheCloudStackClientRequestRuntimeException" in {
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         throw new Exception
       }
     }
@@ -90,7 +90,7 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
     val statusCode = 400
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         throw new ApacheCloudStackClientRequestRuntimeException(statusCode, "", "")
       }
     }
@@ -100,6 +100,27 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
     assertThrows[ApacheCloudStackClientRequestRuntimeException](vmDao.find(findRequest))
   }
 
+  "find" should "handle child of VmFindRequest" in {
+    val vmId = UUID.randomUUID()
+    val accountName = "test"
+    val domainId = UUID.randomUUID()
+    val expectedVmList = List(VirtualMachine(vmId, accountName, domainId))
+
+    class TestVmFindRequest extends VmFindRequest
+
+    val vmFindRequest = new TestVmFindRequest
+
+    val executor = new Executor(executorSettings, clientCreator){
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(vmFindRequest.getRequest == request)
+        Response.getVmResponseJson(vmId.toString, accountName, domainId.toString)
+      }
+    }
+
+    val vmDao = new VirtualMachineDao(executor, jsonMapper)
+
+    assert(vmDao.find(vmFindRequest) == expectedVmList)
+  }
 
   "create" should "submit request to Executor" in {
     var actualRequests = List.empty[ApacheCloudStackRequest]
@@ -109,7 +130,7 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
       zoneId = UUID.randomUUID()
     ))
 
-    val expectedRequests = List(createRequest.request)
+    val expectedRequests = List(createRequest.getRequest)
 
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {
@@ -132,7 +153,7 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
       zoneId = UUID.randomUUID()
     ))
 
-    val expectedRequests = List(createRequest.request)
+    val expectedRequests = List(createRequest.getRequest)
 
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {
@@ -144,6 +165,33 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
     val vmDao = new VirtualMachineDao(executor, jsonMapper)
 
     assertThrows[Exception](vmDao.create(createRequest).isInstanceOf[Unit])
+    assert(actualRequests == expectedRequests)
+  }
+
+  "create" should "handle child of VmCreateRequest" in {
+    var actualRequests = List.empty[ApacheCloudStackRequest]
+    val createRequestSettings = VmCreateRequest.Settings(
+      serviceOfferingId = UUID.randomUUID(),
+      templateId = UUID.randomUUID(),
+      zoneId = UUID.randomUUID()
+    )
+
+    class TestVmCreateRequest extends VmCreateRequest(createRequestSettings)
+
+    val createRequest = new TestVmCreateRequest
+
+    val expectedRequests = List(createRequest.getRequest)
+
+    val executor = new Executor(executorSettings, clientCreator) {
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        actualRequests = actualRequests ::: request :: Nil
+        ""
+      }
+    }
+
+    val vmDao = new VirtualMachineDao(executor, jsonMapper)
+
+    assert(vmDao.create(createRequest).isInstanceOf[Unit])
     assert(actualRequests == expectedRequests)
   }
 }

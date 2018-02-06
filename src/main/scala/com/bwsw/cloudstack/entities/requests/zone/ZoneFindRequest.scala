@@ -26,7 +26,7 @@ import com.bwsw.cloudstack.entities.requests.Request
   * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving zone list.
   */
 class ZoneFindRequest extends Request {
-  override protected[entities] val request = new ApacheCloudStackRequest(Commands.LIST_ZONES)
+  override protected val request = new ApacheCloudStackRequest(Commands.LIST_ZONES)
     .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
     .addParameter(ParameterKeys.LIST_ALL, true)
 

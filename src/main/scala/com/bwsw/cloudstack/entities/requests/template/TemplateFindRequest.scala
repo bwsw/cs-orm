@@ -29,7 +29,7 @@ import com.bwsw.cloudstack.entities.requests.template.filters.TemplateFilter
   * @param templateFilter see [[com.bwsw.cloudstack.entities.requests.template.filters.TemplateFilter]]
   */
 class TemplateFindRequest(templateFilter: TemplateFilter) extends Request {
-  override protected[entities] val request = new ApacheCloudStackRequest(Commands.LIST_TEMPLATES)
+  override protected val request = new ApacheCloudStackRequest(Commands.LIST_TEMPLATES)
     .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
     .addParameter(ParameterKeys.LIST_ALL, true)
     .addParameter(ParameterKeys.TEMPLATE_FILTER, templateFilter.name)

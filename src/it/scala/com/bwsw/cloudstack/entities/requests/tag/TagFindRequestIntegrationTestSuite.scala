@@ -33,7 +33,7 @@ import scala.util.{Failure, Success, Try}
 class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains only default parameters" in {
     val tagFindRequest = new TagFindRequest
-    val response = mapper.deserialize[TagFindResponse](executor.executeRequest(tagFindRequest.request))
+    val response = mapper.deserialize[TagFindResponse](executor.executeRequest(tagFindRequest.getRequest))
 
     assert(response.isInstanceOf[TagFindResponse])
   }
@@ -85,21 +85,21 @@ class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
 
   it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
-    val request = new TagFindRequest().request.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
+    val request = new TagFindRequest().getRequest.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
     val response = mapper.deserialize[TagFindResponse](executor.executeRequest(request))
 
     assert(response.isInstanceOf[TagFindResponse])
   }
 
   private def checkEmptyResponse(request: Request) = {
-    val response = mapper.deserialize[TagFindResponse](executor.executeRequest(request.request))
+    val response = mapper.deserialize[TagFindResponse](executor.executeRequest(request.getRequest))
 
     assert(response.entityList.entities.isEmpty)
   }
 
   private def tryExecuteRequest(request: Request): Boolean = {
     Try {
-      executor.executeRequest(request.request)
+      executor.executeRequest(request.getRequest)
     } match {
       case Success(_) => false
       case Failure(e: ApacheCloudStackClientRequestRuntimeException) =>

@@ -27,19 +27,21 @@ import com.bwsw.cloudstack.entities.requests.tag.types.UserTagType
 import com.bwsw.cloudstack.entities.requests.tag.{TagCreateRequest, TagFindRequest}
 import com.bwsw.cloudstack.entities.TestConstants.ParameterValues.DUMMY_VALUE
 import com.bwsw.cloudstack.entities.responses.tag.Tag
+import com.bwsw.cloudstack.entities.responses.Tag
 import org.scalatest.FlatSpec
 
 class TagDaoTestSuite extends FlatSpec with TestData {
   val findRequest = new TagFindRequest
+  val dummyValue = "value"
 
   "find" should "return non-empty entity set if a response json string contains the relevant data" in {
     val key = "key"
-    val expectedTagSet = Set(Tag(key, DUMMY_VALUE))
+    val expectedTagSet = Set(Tag(key, dummyValue))
 
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
-        Response.getTagResponseJson(key, DUMMY_VALUE)
+        assert(findRequest.getRequest == request)
+        Response.getTagResponseJson(key, dummyValue)
       }
     }
 
@@ -51,7 +53,7 @@ class TagDaoTestSuite extends FlatSpec with TestData {
   "find" should "return an empty entity set if a response json string does not contain the relevant data" in {
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         Response.getResponseWithEmptyTagList
       }
     }
@@ -66,7 +68,7 @@ class TagDaoTestSuite extends FlatSpec with TestData {
     val statusCode = 431
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         throw new ApacheCloudStackClientRequestRuntimeException(statusCode, "", "")
       }
     }
@@ -79,7 +81,7 @@ class TagDaoTestSuite extends FlatSpec with TestData {
   "find" should "not swallow non-ApacheCloudStackClientRequestRuntimeException" in {
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         throw new Exception
       }
     }
@@ -93,7 +95,7 @@ class TagDaoTestSuite extends FlatSpec with TestData {
     val statusCode = 400
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         throw new ApacheCloudStackClientRequestRuntimeException(statusCode, "", "")
       }
     }
@@ -103,15 +105,35 @@ class TagDaoTestSuite extends FlatSpec with TestData {
     assertThrows[ApacheCloudStackClientRequestRuntimeException](tagDao.find(findRequest))
   }
 
+  "find" should "handle child of TagFindRequest" in {
+    val key = "key"
+    val expectedTagSet = Set(Tag(key, dummyValue))
+
+    class TestTagFindRequest extends TagFindRequest
+
+    val tagFindRequest = new TestTagFindRequest
+
+    val executor = new Executor(executorSettings, clientCreator){
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(tagFindRequest.getRequest == request)
+        Response.getTagResponseJson(key, dummyValue)
+      }
+    }
+
+    val tagDao = new TagDao(executor, jsonMapper)
+
+    assert(tagDao.find(tagFindRequest) == expectedTagSet)
+  }
+
   "create" should "submit request to Executor" in {
     var actualRequests = List.empty[ApacheCloudStackRequest]
     val createRequest = new TagCreateRequest(TagCreateRequest.Settings(
       resourceType = UserTagType,
       resourceIds = Set(UUID.randomUUID(), UUID.randomUUID()),
-      tags = List(Tag("key", DUMMY_VALUE), Tag("key1", DUMMY_VALUE))
+      tags = List(Tag("key", dummyValue), Tag("key1", dummyValue))
     ))
 
-    val expectedRequests = List(createRequest.request)
+    val expectedRequests = List(createRequest.getRequest)
 
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {
@@ -131,10 +153,10 @@ class TagDaoTestSuite extends FlatSpec with TestData {
     val createRequest = new TagCreateRequest(TagCreateRequest.Settings(
       resourceType = UserTagType,
       resourceIds = Set(UUID.randomUUID(), UUID.randomUUID()),
-      tags = List(Tag("key", DUMMY_VALUE), Tag("key1", DUMMY_VALUE))
+      tags = List(Tag("key", dummyValue), Tag("key1", dummyValue))
     ))
 
-    val expectedRequests = List(createRequest.request)
+    val expectedRequests = List(createRequest.getRequest)
 
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {
@@ -146,6 +168,33 @@ class TagDaoTestSuite extends FlatSpec with TestData {
     val tagDao = new TagDao(executor, jsonMapper)
 
     assertThrows[Exception](tagDao.create(createRequest).isInstanceOf[Unit])
+    assert(actualRequests == expectedRequests)
+  }
+
+  "create" should "handle child of TagCreateRequest" in {
+    var actualRequests = List.empty[ApacheCloudStackRequest]
+    val createRequestSettings = TagCreateRequest.Settings(
+      resourceType = UserTagType,
+      resourceIds = Set(UUID.randomUUID(), UUID.randomUUID()),
+      tags = List(Tag("key", dummyValue), Tag("key1", dummyValue))
+    )
+
+    class TestTagCreateRequest extends TagCreateRequest(createRequestSettings)
+
+    val createRequest = new TestTagCreateRequest
+
+    val expectedRequests = List(createRequest.getRequest)
+
+    val executor = new Executor(executorSettings, clientCreator) {
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        actualRequests = actualRequests ::: request :: Nil
+        ""
+      }
+    }
+
+    val tagDao = new TagDao(executor, jsonMapper)
+
+    assert(tagDao.create(createRequest).isInstanceOf[Unit])
     assert(actualRequests == expectedRequests)
   }
 }

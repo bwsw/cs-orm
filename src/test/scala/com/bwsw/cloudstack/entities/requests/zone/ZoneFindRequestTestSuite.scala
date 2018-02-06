@@ -43,7 +43,8 @@ class ZoneFindRequestTestSuite extends FlatSpec {
     val isAvailable = true
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ParameterKeys.AVAILABLE, isAvailable))
     val request = new ZoneFindRequest
+    request.withAvailableFlag(isAvailable)
 
-    assert(request.withAvailableFlag(isAvailable).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 }

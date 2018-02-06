@@ -63,16 +63,17 @@ class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val domainCreateRequest = new DomainCreateRequest(domainName).getRequest
     val newDomainId = mapper.deserialize[DomainCreateResponse](executor.executeRequest(domainCreateRequest)).domainEntity.domain.id
 
-    val accountCreateRequest = new AccountCreateRequest(
-      Settings(
-        _type = AccountCreateRequest.User,
-        email = "e@e",
-        firstName = "fn",
-        lastName = "ln",
-        password = "password",
-        username = "username"
-      )
-    ).withName(accountName).withDomain(newDomainId).withId(accountId)
+    val accountCreateRequest = new AccountCreateRequest(Settings(
+      _type = AccountCreateRequest.User,
+      email = "e@e",
+      firstName = "fn",
+      lastName = "ln",
+      password = "password",
+      username = "username"
+    ))
+    accountCreateRequest.withName(accountName)
+    accountCreateRequest.withDomain(newDomainId)
+    accountCreateRequest.withId(accountId)
 
     executor.executeRequest(accountCreateRequest.getRequest)
 
@@ -84,7 +85,10 @@ class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
       password = password,
       username = userName
     )
-    val userCreateRequest = new UserCreateRequest(settings).withId(userId).withDomain(newDomainId).withTimeZone(timeZone)
+    val userCreateRequest = new UserCreateRequest(settings)
+    userCreateRequest.withId(userId)
+    userCreateRequest.withDomain(newDomainId)
+    userCreateRequest.withTimeZone(timeZone)
 
     val expectedUser = User(
       id = userId,

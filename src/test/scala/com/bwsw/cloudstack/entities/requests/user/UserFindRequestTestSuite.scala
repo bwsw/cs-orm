@@ -44,31 +44,35 @@ class UserFindRequestTestSuite extends FlatSpec {
     val userId = UUID.randomUUID()
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ID, userId.toString))
     val request = new UserFindRequest
+    request.withId(userId)
 
-    assert(request.withId(userId).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withAccountName" should "add account name parameter to a request" in {
     val accountName = "test"
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ACCOUNT, accountName))
     val request = new UserFindRequest
+    request.withAccountName(accountName)
 
-    assert(request.withAccountName(accountName).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withDomain" should "add domain id parameter to a request" in {
     val domainId = UUID.randomUUID()
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(DOMAIN_ID, domainId))
     val request = new UserFindRequest
+    request.withDomain(domainId)
 
-    assert(request.withDomain(domainId).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withName" should "add user name parameter to a request" in {
     val userName = "userNameTest"
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(USER_NAME, userName))
     val request = new UserFindRequest
+    request.withName(userName)
 
-    assert(request.withName(userName).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 }

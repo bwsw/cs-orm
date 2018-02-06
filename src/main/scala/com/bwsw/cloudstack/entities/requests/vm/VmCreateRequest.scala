@@ -42,17 +42,16 @@ class VmCreateRequest(settings: VmCreateRequest.Settings) extends Request {
     * Add an account name parameter to a request.
     * Must be used with domain id.
     */
-  def withDomainAccount(name: String, domainId: UUID): VmCreateRequest = {
-    request.addParameter(ACCOUNT, name)
+  def withDomainAccount(name: String, domainId: UUID): Unit = {
+    addParameter(ACCOUNT, name)
     withDomain(domainId)
   }
 
   /**
     * Add a domain id parameter to a request.
     */
-  def withDomain(id: UUID): VmCreateRequest = {
-    request.addParameter(DOMAIN_ID, id)
-    this
+  def withDomain(id: UUID): Unit = {
+    addParameter(DOMAIN_ID, id)
   }
 }
 

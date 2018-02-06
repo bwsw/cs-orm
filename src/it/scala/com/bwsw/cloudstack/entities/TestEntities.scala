@@ -60,7 +60,9 @@ trait TestEntities {
 
   val retrievedZoneId: UUID = {
     val zoneDao = new ZoneDao(executor, mapper)
-    val zoneFindRequest = new ZoneFindRequest().withAvailableFlag(true)
+    val zoneFindRequest = new ZoneFindRequest()
+    zoneFindRequest.withAvailableFlag(true)
+
     zoneDao.find(zoneFindRequest).head.id
   }
 

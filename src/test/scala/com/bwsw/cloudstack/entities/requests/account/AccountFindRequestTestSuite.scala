@@ -44,23 +44,26 @@ class AccountFindRequestTestSuite extends FlatSpec {
     val accountId = UUID.randomUUID()
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ID, accountId))
     val request = new AccountFindRequest
+    request.withId(accountId)
 
-    assert(request.withId(accountId).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withName" should "add account name parameter to a request" in {
     val accountName = "test"
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(NAME, accountName))
     val request = new AccountFindRequest
+    request.withName(accountName)
 
-    assert(request.withName(accountName).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withDomain" should "add domain id parameter to a request" in {
     val domainId = UUID.randomUUID()
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(DOMAIN_ID, domainId))
     val request = new AccountFindRequest
+    request.withDomain(domainId)
 
-    assert(request.withDomain(domainId).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 }

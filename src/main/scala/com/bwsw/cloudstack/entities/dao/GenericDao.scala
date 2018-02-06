@@ -30,12 +30,12 @@ abstract class GenericDao[A <: EntityResponse, T <: Entity](protected val execut
   protected type F <: Request
   protected type C <: Request
 
-  def create(request: C): Unit = {
+  def create[R <: C](request: R): Unit = {
     logger.trace(s"create(request: $request)")
     executor.executeRequest(request.getRequest)
   }
 
-  def find(request: F)(implicit m: Manifest[A]): Iterable[T] = {
+  def find[R <: F](request: R)(implicit m: Manifest[A]): Iterable[T] = {
     logger.trace(s"find(request: $request)")
     val response = executor.executeRequest(request.getRequest)
     mapper.deserialize[A](response).entityList.entities.getOrElse(List.empty[T]).asInstanceOf[Iterable[T]]

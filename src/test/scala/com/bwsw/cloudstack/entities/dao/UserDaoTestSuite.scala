@@ -102,6 +102,27 @@ class UserDaoTestSuite extends FlatSpec with TestData {
     assertThrows[ApacheCloudStackClientRequestRuntimeException](userDao.find(findRequest))
   }
 
+  "find" should "handle child of UserFindRequest" in {
+    val userId = UUID.randomUUID()
+    val accountId = UUID.randomUUID()
+    val expectedUserList = List(User(userId, accountId))
+
+    class TestUserFindRequest extends UserFindRequest
+
+    val findUserRequest = new TestUserFindRequest
+
+    val executor = new Executor(executorSettings, clientCreator){
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(findUserRequest.getRequest == request)
+        Response.getUserResponseJson(userId.toString, accountId.toString)
+      }
+    }
+
+    val userDao = new UserDao(executor, jsonMapper)
+
+    assert(userDao.find(findUserRequest) == expectedUserList)
+  }
+
   "create" should "submit request to Executor" in {
     var actualRequests = List.empty[ApacheCloudStackRequest]
     val createRequest = new UserCreateRequest(UserCreateRequest.Settings(
@@ -151,6 +172,36 @@ class UserDaoTestSuite extends FlatSpec with TestData {
     val userDao = new UserDao(executor, jsonMapper)
 
     assertThrows[Exception](userDao.create(createRequest).isInstanceOf[Unit])
+    assert(actualRequests == expectedRequests)
+  }
+
+  "create" should "handle child of UserCreateRequest" in {
+    var actualRequests = List.empty[ApacheCloudStackRequest]
+    val createRequestSettings = UserCreateRequest.Settings(
+      accountName = "account",
+      email = "e@e",
+      firstName = "fn",
+      lastName = "ln",
+      password = "passw",
+      username = "user"
+    )
+
+    class TestUserCreateRequest extends UserCreateRequest(createRequestSettings)
+
+    val createRequest = new TestUserCreateRequest
+
+    val expectedRequests = List(createRequest.getRequest)
+
+    val executor = new Executor(executorSettings, clientCreator) {
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        actualRequests = actualRequests ::: request :: Nil
+        ""
+      }
+    }
+
+    val userDao = new UserDao(executor, jsonMapper)
+
+    assert(userDao.create(createRequest).isInstanceOf[Unit])
     assert(actualRequests == expectedRequests)
   }
 }

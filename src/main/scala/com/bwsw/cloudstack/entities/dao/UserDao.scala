@@ -41,7 +41,7 @@ class UserDao(executor: Executor, mapper: JsonMapper) extends GenericDao[UserRes
     *
     * @param request see: [[UserCreateRequest]]
     */
-  override def create(request: C): Unit = {
+  override def create[R <: C](request: R): Unit = {
     Try {
       super.create(request)
     } match {
@@ -58,7 +58,7 @@ class UserDao(executor: Executor, mapper: JsonMapper) extends GenericDao[UserRes
     *
     * @param request see: [[UserFindRequest]]
     */
-  override def find(request: F)(implicit m: Manifest[UserResponse]): List[User] = {
+  override def find[R <: F](request: R)(implicit m: Manifest[UserResponse]): List[User] = {
     logger.trace(s"find(request: $request)")
     val users = Try {
       super.find(request).toList

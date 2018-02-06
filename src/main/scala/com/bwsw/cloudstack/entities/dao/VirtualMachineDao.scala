@@ -43,7 +43,7 @@ class VirtualMachineDao(executor: Executor, mapper: JsonMapper)
     *
     * @param request see: [[VmCreateRequest]]
     */
-  override def create(request: C): Unit = {
+  override def create[R <: C](request: R): Unit = {
     Try {
       super.create(request)
     } match {
@@ -60,7 +60,7 @@ class VirtualMachineDao(executor: Executor, mapper: JsonMapper)
     *
     * @param request see: [[VmFindRequest]]
     */
-  override def find(request: F)(implicit m: Manifest[VirtualMachinesResponse]): List[VirtualMachine] = {
+  override def find[R <: F](request: R)(implicit m: Manifest[VirtualMachinesResponse]): List[VirtualMachine] = {
     logger.trace(s"find(request: $request)")
     val virtualMachines = Try {
       super.find(request).toList

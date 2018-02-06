@@ -115,7 +115,7 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
 
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(vmFindRequest.request == request)
+        assert(vmFindRequest.getRequest == request)
         Response.getVmResponseJson(vmId.toString, accountName, domainId.toString)
       }
     }
@@ -183,7 +183,7 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
 
     val createRequest = new TestVmCreateRequest
 
-    val expectedRequests = List(createRequest.request)
+    val expectedRequests = List(createRequest.getRequest)
 
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {

@@ -113,7 +113,7 @@ class UserDaoTestSuite extends FlatSpec with TestData {
 
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findUserRequest.request == request)
+        assert(findUserRequest.getRequest == request)
         Response.getUserResponseJson(userId.toString, accountId.toString)
       }
     }
@@ -190,7 +190,7 @@ class UserDaoTestSuite extends FlatSpec with TestData {
 
     val createRequest = new TestUserCreateRequest
 
-    val expectedRequests = List(createRequest.request)
+    val expectedRequests = List(createRequest.getRequest)
 
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {

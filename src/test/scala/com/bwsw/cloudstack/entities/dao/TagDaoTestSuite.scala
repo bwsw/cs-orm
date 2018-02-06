@@ -113,7 +113,7 @@ class TagDaoTestSuite extends FlatSpec with TestData {
 
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(tagFindRequest.request == request)
+        assert(tagFindRequest.getRequest == request)
         Response.getTagResponseJson(key, dummyValue)
       }
     }
@@ -181,7 +181,7 @@ class TagDaoTestSuite extends FlatSpec with TestData {
 
     val createRequest = new TestTagCreateRequest
 
-    val expectedRequests = List(createRequest.request)
+    val expectedRequests = List(createRequest.getRequest)
 
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {

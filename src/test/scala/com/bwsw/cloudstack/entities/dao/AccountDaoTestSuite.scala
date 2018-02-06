@@ -114,7 +114,7 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
 
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(childRequest.request == request)
+        assert(childRequest.getRequest == request)
         Response.getAccountResponseJson(accountId.toString, userId.toString)
       }
     }
@@ -191,7 +191,7 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
 
     val createRequest = new TestAccountCreateRequest
 
-    val expectedRequests = List(createRequest.request)
+    val expectedRequests = List(createRequest.getRequest)
 
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {

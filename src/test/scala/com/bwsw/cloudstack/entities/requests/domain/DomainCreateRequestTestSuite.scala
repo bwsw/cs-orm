@@ -39,4 +39,24 @@ class DomainCreateRequestTestSuite extends FlatSpec {
     assert(request.getRequest.getParameters.asScala.toSet == defaultParameters)
     assert(request.getRequest.getCommand == Commands.CREATE_DOMAIN)
   }
+
+  it should "create child DomainCreateRequest with one new parameter" in {
+    val testParameterValue = "testValue"
+    val testParameterName = "testName"
+
+    val expectedParameters = defaultParameters ++ Set(
+      new ApacheCloudStackApiCommandParameter(testParameterName, testParameterValue)
+    )
+
+    class TestDomainCreateRequest extends DomainCreateRequest(domainName) {
+      def withTestParameter(value: String): Unit = {
+        addParameter(testParameterName, value)
+      }
+    }
+
+    val request = new TestDomainCreateRequest
+    request.withTestParameter(testParameterValue)
+
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
+  }
 }

@@ -70,4 +70,27 @@ class VmCreateRequestTestSuite extends FlatSpec {
 
     assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
+
+  it should "create child VmCreateRequest with one of parent and one new parameters" in {
+    val domainId = UUID.randomUUID()
+    val testParameterValue = "testValue"
+    val testParameterName = "testName"
+
+    val expectedParameters = defaultParameters ++ Set(
+      new ApacheCloudStackApiCommandParameter(DOMAIN_ID, domainId),
+      new ApacheCloudStackApiCommandParameter(testParameterName, testParameterValue)
+    )
+
+    class TestVmCreateRequest extends VmCreateRequest(settings) {
+      def withTestParameter(value: String): Unit = {
+        addParameter(testParameterName, value)
+      }
+    }
+
+    val request = new TestVmCreateRequest
+    request.withDomain(domainId)
+    request.withTestParameter(testParameterValue)
+
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
+  }
 }

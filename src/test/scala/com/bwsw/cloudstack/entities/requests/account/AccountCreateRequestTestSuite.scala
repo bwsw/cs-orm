@@ -117,4 +117,27 @@ class AccountCreateRequestTestSuite extends FlatSpec {
 
     assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
+
+  it should "create child AccountCreateRequest with one of parent and one new parameters" in {
+    val userId = UUID.randomUUID()
+    val testParameterValue = "testValue"
+    val testParameterName = "testName"
+
+    val expectedParameters = defaultParameters ++ Set(
+      new ApacheCloudStackApiCommandParameter(USER_ID, userId),
+      new ApacheCloudStackApiCommandParameter(testParameterName, testParameterValue)
+    )
+
+    class TestAccountCreateRequest extends AccountCreateRequest(settings) {
+      def withTestParameter(value: String): Unit = {
+        addParameter(testParameterName, value)
+      }
+    }
+
+    val request = new TestAccountCreateRequest
+    request.withUserId(userId)
+    request.withTestParameter(testParameterValue)
+
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
+  }
 }

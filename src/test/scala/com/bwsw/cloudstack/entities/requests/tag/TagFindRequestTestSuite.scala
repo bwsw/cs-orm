@@ -94,4 +94,27 @@ class TagFindRequestTestSuite extends FlatSpec {
 
     assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
+
+  it should "create child TagFindRequest with one of parent and one new parameters" in {
+    val testParameterValue = "testValue"
+    val testParameterName = "testName"
+    val tagValue = "value"
+
+    val expectedParameters = defaultParameters ++ Set(
+      new ApacheCloudStackApiCommandParameter(VALUE, tagValue),
+      new ApacheCloudStackApiCommandParameter(testParameterName, testParameterValue)
+    )
+
+    class TestTagFindRequest extends TagFindRequest {
+      def withTestParameter(value: String): Unit = {
+        addParameter(testParameterName, value)
+      }
+    }
+
+    val request = new TestTagFindRequest
+    request.withValue(tagValue)
+    request.withTestParameter(testParameterValue)
+
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
+  }
 }

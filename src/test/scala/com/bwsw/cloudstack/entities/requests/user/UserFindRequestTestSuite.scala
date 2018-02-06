@@ -75,4 +75,27 @@ class UserFindRequestTestSuite extends FlatSpec {
 
     assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
+
+  it should "create child UserFindRequest with one of parent and one new parameters" in {
+    val userName = "userNameTest"
+    val testParameterValue = "testValue"
+    val testParameterName = "testName"
+
+    val expectedParameters = defaultParameters ++ Set(
+      new ApacheCloudStackApiCommandParameter(USER_NAME, userName),
+      new ApacheCloudStackApiCommandParameter(testParameterName, testParameterValue)
+    )
+
+    class TestUserFindRequest extends UserFindRequest {
+      def withTestParameter(value: String): Unit = {
+        addParameter(testParameterName, value)
+      }
+    }
+
+    val request = new TestUserFindRequest
+    request.withName(userName)
+    request.withTestParameter(testParameterValue)
+
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
+  }
 }

@@ -33,7 +33,7 @@ class ServiceOfferingFindRequestTestSuite extends FlatSpec {
   it should "create a request with predefined parameters" in {
     val request = new ServiceOfferingFindRequest
 
-    assert(request.request.getParameters.asScala.toSet == defaultParameters)
-    assert(request.request.getCommand == Commands.LIST_SERVICE_OFFERINGS)
+    assert(request.getRequest.getParameters.asScala.toSet == defaultParameters)
+    assert(request.getRequest.getCommand == Commands.LIST_SERVICE_OFFERINGS)
   }
 }

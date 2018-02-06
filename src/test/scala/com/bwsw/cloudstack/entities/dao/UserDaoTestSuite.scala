@@ -99,9 +99,7 @@ class UserDaoTestSuite extends FlatSpec with TestData {
   }
 
   "find" should "handle child of UserFindRequest" in {
-    val userId = UUID.randomUUID()
-    val accountId = UUID.randomUUID()
-    val expectedUserList = List(User(userId, accountId))
+    val expectedUserList = List(testUser)
 
     class TestUserFindRequest extends UserFindRequest
 
@@ -110,7 +108,7 @@ class UserDaoTestSuite extends FlatSpec with TestData {
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
         assert(findUserRequest.getRequest == request)
-        Response.getUserResponseJson(userId.toString, accountId.toString)
+        Response.getUserResponseJson(testUser)
       }
     }
 

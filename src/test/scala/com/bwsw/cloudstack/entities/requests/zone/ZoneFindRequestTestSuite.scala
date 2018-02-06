@@ -34,8 +34,8 @@ class ZoneFindRequestTestSuite extends FlatSpec {
   it should "create a request with predefined parameters" in {
     val request = new ZoneFindRequest
 
-    assert(request.request.getParameters.asScala.toSet == defaultParameters)
-    assert(request.request.getCommand == Commands.LIST_ZONES)
+    assert(request.getRequest.getParameters.asScala.toSet == defaultParameters)
+    assert(request.getRequest.getCommand == Commands.LIST_ZONES)
   }
 
 
@@ -44,6 +44,6 @@ class ZoneFindRequestTestSuite extends FlatSpec {
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ParameterKeys.AVAILABLE, isAvailable))
     val request = new ZoneFindRequest
 
-    assert(request.withAvailableFlag(isAvailable).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.withAvailableFlag(isAvailable).getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 }

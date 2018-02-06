@@ -33,7 +33,7 @@ class DomainFindRequestTestSuite extends FlatSpec {
   it should "create a request with predefined parameters" in {
     val request = new DomainFindRequest
 
-    assert(request.request.getParameters.asScala.toSet == defaultParameters)
-    assert(request.request.getCommand == Commands.LIST_DOMAINS)
+    assert(request.getRequest.getParameters.asScala.toSet == defaultParameters)
+    assert(request.getRequest.getCommand == Commands.LIST_DOMAINS)
   }
 }

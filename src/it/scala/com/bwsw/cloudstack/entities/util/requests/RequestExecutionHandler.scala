@@ -16,10 +16,23 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.responses.domain
+package com.bwsw.cloudstack.entities.util.requests
 
-import java.util.UUID
+import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
+import com.bwsw.cloudstack.entities.TestEntities
+import com.bwsw.cloudstack.entities.requests.Request
 
-import com.bwsw.cloudstack.entities.responses.common.Entity
+import scala.util.{Failure, Success, Try}
 
-case class Domain(id: UUID, name: String) extends Entity
+object RequestExecutionHandler extends TestEntities {
+  def entityNotExist(request: Request): Boolean = {
+    Try {
+      executor.executeRequest(request.getRequest)
+    } match {
+      case Success(_) => false
+      case Failure(e: ApacheCloudStackClientRequestRuntimeException) =>
+        e.getStatusCode == 431
+      case Failure(_: Throwable) => false
+    }
+  }
+}

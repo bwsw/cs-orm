@@ -20,21 +20,18 @@ package com.bwsw.cloudstack.entities.requests.account
 
 import java.util.UUID
 
-import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.TestEntities
-import com.bwsw.cloudstack.entities.requests.Request
-import com.bwsw.cloudstack.entities.responses.account.AccountFindResponse
+import com.bwsw.cloudstack.entities.responses.account.{AccountFindResponse, AccountList}
 import com.bwsw.cloudstack.entities.util.requests.IntegrationTestConstants.ParameterValues
+import com.bwsw.cloudstack.entities.util.requests.RequestExecutionHandler
 import org.scalatest.FlatSpec
-
-import scala.util.{Failure, Success, Try}
 
 class AccountFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains only default parameters" in {
     val accountFindRequest = new AccountFindRequest
     val response = mapper.deserialize[AccountFindResponse](executor.executeRequest(accountFindRequest.getRequest))
 
-    assert(response.isInstanceOf[AccountFindResponse])
+    assert(response.entityList.isInstanceOf[AccountList])
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -43,7 +40,7 @@ class AccountFindRequestIntegrationTestSuite extends FlatSpec with TestEntities 
     val accountFindRequest = new AccountFindRequest()
     accountFindRequest.withId(accountId)
 
-    assert(tryExecuteRequest(accountFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(accountFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -52,7 +49,7 @@ class AccountFindRequestIntegrationTestSuite extends FlatSpec with TestEntities 
     val accountFindRequest = new AccountFindRequest()
     accountFindRequest.withDomain(domainId)
 
-    assert(tryExecuteRequest(accountFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(accountFindRequest))
   }
 
   it should "return an empty list of accounts if entity with a specified value of name parameter does not exist" in {
@@ -65,23 +62,11 @@ class AccountFindRequestIntegrationTestSuite extends FlatSpec with TestEntities 
     assert(response.entityList.entities.isEmpty)
   }
 
-  it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
+  it should "ignore a parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
     val request = new AccountFindRequest().getRequest.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
     val response = mapper.deserialize[AccountFindResponse](executor.executeRequest(request))
 
-    assert(response.isInstanceOf[AccountFindResponse])
+    assert(response.entityList.isInstanceOf[AccountList])
   }
-
-  private def tryExecuteRequest(request: Request): Boolean = {
-    Try {
-      executor.executeRequest(request.getRequest)
-    } match {
-      case Success(_) => false
-      case Failure(e: ApacheCloudStackClientRequestRuntimeException) =>
-        e.getStatusCode == 431
-      case Failure(_: Throwable) => false
-    }
-  }
-
 }

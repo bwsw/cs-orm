@@ -45,7 +45,7 @@ class ServiceOfferingFindRequestIntegrationTestSuite extends FlatSpec with TestE
     }
     serviceFindRequest.withId(serviceId)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(serviceFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(serviceFindRequest))
   }
 
   it should "return an empty list of serviceOfferings if entity with a specified value of name parameter does not exist" in {
@@ -61,7 +61,7 @@ class ServiceOfferingFindRequestIntegrationTestSuite extends FlatSpec with TestE
     assert(response.entityList.entities.isEmpty)
   }
 
-  it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
+  it should "ignore a parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
     val request = new ServiceOfferingFindRequest().getRequest.addParameter(incorrectParameterKey, "value")
     val response = mapper.deserialize[ServiceOfferingFindResponse](executor.executeRequest(request))

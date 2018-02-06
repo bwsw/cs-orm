@@ -25,7 +25,7 @@ import com.bwsw.cloudstack.entities.requests.Request
 import scala.util.{Failure, Success, Try}
 
 object RequestExecutionHandler extends TestEntities {
-  def doesEntityNotExist(request: Request): Boolean = {
+  def entityNotExist(request: Request): Boolean = {
     Try {
       executor.executeRequest(request.getRequest)
     } match {

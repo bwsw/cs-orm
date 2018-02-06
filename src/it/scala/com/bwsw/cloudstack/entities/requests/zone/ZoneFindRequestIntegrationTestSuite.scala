@@ -45,7 +45,7 @@ class ZoneFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     }
     zoneFindRequest.withId(zoneId)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(zoneFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(zoneFindRequest))
   }
 
   it should "return an empty list of zones if entity with a specified value of name parameter does not exist" in {
@@ -61,7 +61,7 @@ class ZoneFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     assert(response.entityList.entities.isEmpty)
   }
 
-  it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
+  it should "ignore a parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
     val request = new ZoneFindRequest().getRequest.addParameter(incorrectParameterKey, "value")
     val response = mapper.deserialize[ZoneFindResponse](executor.executeRequest(request))

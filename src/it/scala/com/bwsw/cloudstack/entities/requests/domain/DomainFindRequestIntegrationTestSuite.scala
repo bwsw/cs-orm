@@ -45,7 +45,7 @@ class DomainFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     }
     domainFindRequest.withId(domainId)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(domainFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(domainFindRequest))
   }
 
   it should "return an empty list of domains if entity with a specified value of name parameter does not exist" in {
@@ -61,7 +61,7 @@ class DomainFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     assert(response.entityList.entities.isEmpty)
   }
 
-  it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
+  it should "ignore a parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
     val request = new DomainFindRequest().getRequest.addParameter(incorrectParameterKey, "value")
     val response = mapper.deserialize[DomainFindResponse](executor.executeRequest(request))

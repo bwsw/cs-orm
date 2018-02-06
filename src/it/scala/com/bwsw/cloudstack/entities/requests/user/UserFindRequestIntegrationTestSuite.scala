@@ -40,7 +40,7 @@ class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val userFindRequest = new UserFindRequest()
     userFindRequest.withId(id)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(userFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(userFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -49,7 +49,7 @@ class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val userFindRequest = new UserFindRequest()
     userFindRequest.withDomain(domainId)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(userFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(userFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -58,7 +58,7 @@ class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val userFindRequest = new UserFindRequest()
     userFindRequest.withAccountName(accountName)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(userFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(userFindRequest))
   }
 
   it should "return an empty list of users if entity with a specified value of name parameter does not exist" in {
@@ -71,7 +71,7 @@ class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     assert(response.entityList.entities.isEmpty)
   }
 
-  it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
+  it should "ignore a parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
     val request = new UserFindRequest().getRequest.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
     val response = mapper.deserialize[UserFindResponse](executor.executeRequest(request))

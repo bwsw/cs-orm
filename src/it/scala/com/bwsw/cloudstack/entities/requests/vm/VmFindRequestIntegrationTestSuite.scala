@@ -40,7 +40,7 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val vmFindRequest = new VmFindRequest()
     vmFindRequest.withId(vmId)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(vmFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(vmFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -49,7 +49,7 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val vmFindRequest = new VmFindRequest()
     vmFindRequest.withAccountName(accountName)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(vmFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(vmFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -58,7 +58,7 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val vmFindRequest = new VmFindRequest()
     vmFindRequest.withDomain(domainId)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(vmFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(vmFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -67,7 +67,7 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val vmFindRequest = new VmFindRequest()
     vmFindRequest.withGroup(groupId)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(vmFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(vmFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -76,7 +76,7 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val vmFindRequest = new VmFindRequest()
     vmFindRequest.withUser(userId)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(vmFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(vmFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -85,10 +85,10 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val vmFindRequest = new VmFindRequest()
     vmFindRequest.withZone(zoneId)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(vmFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(vmFindRequest))
   }
 
-  it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
+  it should "ignore a parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
     val request = new VmFindRequest().getRequest.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
     val response = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(request))

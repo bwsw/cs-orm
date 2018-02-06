@@ -50,7 +50,7 @@ class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val tagFindRequest = new TagFindRequest()
     tagFindRequest.withDomain(domainId)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(tagFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(tagFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -59,7 +59,7 @@ class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val tagFindRequest = new TagFindRequest()
     tagFindRequest.withAccountName(accountName)
 
-    assert(RequestExecutionHandler.doesEntityNotExist(tagFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(tagFindRequest))
   }
 
   it should "return an empty list of tags if entity with a specified value of key parameter does not exist" in {
@@ -87,7 +87,7 @@ class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     checkEmptyResponse(tagFindRequest)
   }
 
-  it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
+  it should "ignore a parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
     val request = new TagFindRequest().getRequest.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
     val response = mapper.deserialize[TagFindResponse](executor.executeRequest(request))

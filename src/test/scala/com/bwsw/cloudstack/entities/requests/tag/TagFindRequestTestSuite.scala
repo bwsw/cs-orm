@@ -95,7 +95,7 @@ class TagFindRequestTestSuite extends FlatSpec {
     assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
-  it should "create child TagFindRequest with one of parent and one new parameters" in {
+  it should "create child TagFindRequest with one of parent parameters and one new parameter" in {
     val testParameterValue = "testValue"
     val testParameterName = "testName"
     val tagValue = "value"

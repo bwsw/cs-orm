@@ -118,7 +118,7 @@ class AccountCreateRequestTestSuite extends FlatSpec {
     assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
-  it should "create child AccountCreateRequest with one of parent and one new parameters" in {
+  it should "create child AccountCreateRequest with one of parent parameters and one new parameter" in {
     val userId = UUID.randomUUID()
     val testParameterValue = "testValue"
     val testParameterName = "testName"

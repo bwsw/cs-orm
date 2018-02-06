@@ -76,7 +76,7 @@ class UserFindRequestTestSuite extends FlatSpec {
     assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
-  it should "create child UserFindRequest with one of parent and one new parameters" in {
+  it should "create child UserFindRequest with one of parent parameters and one new parameter" in {
     val userName = "userNameTest"
     val testParameterValue = "testValue"
     val testParameterName = "testName"

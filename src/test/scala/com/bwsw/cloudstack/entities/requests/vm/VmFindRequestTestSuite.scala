@@ -94,7 +94,7 @@ class VmFindRequestTestSuite extends FlatSpec {
     assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
-  it should "create child VmFindRequest with one of parent and one new parameters" in {
+  it should "create child VmFindRequest with one of parent parameters and one new parameter" in {
     val zoneId = UUID.randomUUID()
     val testParameterValue = "testValue"
     val testParameterName = "testName"

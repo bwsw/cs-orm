@@ -48,7 +48,7 @@ class ZoneFindRequestTestSuite extends FlatSpec {
     assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
-  it should "create child ZoneFindRequest with one of parent and one new parameters" in {
+  it should "create child ZoneFindRequest with one of parent parameters and one new parameter" in {
     val isAvailable = true
     val testParameterValue = "testValue"
     val testParameterName = "testName"

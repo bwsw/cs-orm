@@ -36,4 +36,24 @@ class ServiceOfferingFindRequestTestSuite extends FlatSpec {
     assert(request.getRequest.getParameters.asScala.toSet == defaultParameters)
     assert(request.getRequest.getCommand == Commands.LIST_SERVICE_OFFERINGS)
   }
+
+  it should "create child ServiceOfferingFindRequest with one new parameter" in {
+    val testParameterValue = "testValue"
+    val testParameterName = "testName"
+
+    val expectedParameters = defaultParameters ++ Set(
+      new ApacheCloudStackApiCommandParameter(testParameterName, testParameterValue)
+    )
+
+    class TestServiceOfferingFindRequest extends ServiceOfferingFindRequest {
+      def withTestParameter(value: String): Unit = {
+        addParameter(testParameterName, value)
+      }
+    }
+
+    val request = new TestServiceOfferingFindRequest
+    request.withTestParameter(testParameterValue)
+
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
+  }
 }

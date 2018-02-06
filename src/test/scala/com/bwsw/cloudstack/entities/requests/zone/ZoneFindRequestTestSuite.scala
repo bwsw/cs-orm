@@ -43,7 +43,31 @@ class ZoneFindRequestTestSuite extends FlatSpec {
     val isAvailable = true
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ParameterKeys.AVAILABLE, isAvailable))
     val request = new ZoneFindRequest
+    request.withAvailableFlag(isAvailable)
 
-    assert(request.withAvailableFlag(isAvailable).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
+  }
+
+  it should "create child ZoneFindRequest with one of parent parameters and one new parameter" in {
+    val isAvailable = true
+    val testParameterValue = "testValue"
+    val testParameterName = "testName"
+
+    val expectedParameters = defaultParameters ++ Set(
+      new ApacheCloudStackApiCommandParameter(ParameterKeys.AVAILABLE, isAvailable),
+      new ApacheCloudStackApiCommandParameter(testParameterName, testParameterValue)
+    )
+
+    class TestZoneFindRequest extends ZoneFindRequest {
+      def withTestParameter(value: String): Unit = {
+        addParameter(testParameterName, value)
+      }
+    }
+
+    val request = new TestZoneFindRequest
+    request.withAvailableFlag(isAvailable)
+    request.withTestParameter(testParameterValue)
+
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 }

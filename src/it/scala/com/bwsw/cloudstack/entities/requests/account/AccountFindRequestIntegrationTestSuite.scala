@@ -37,7 +37,8 @@ class AccountFindRequestIntegrationTestSuite extends FlatSpec with TestEntities 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of id parameter does not exist" in {
     val accountId = UUID.randomUUID()
-    val accountFindRequest = new AccountFindRequest().withId(accountId)
+    val accountFindRequest = new AccountFindRequest()
+    accountFindRequest.withId(accountId)
 
     assert(RequestExecutionHandler.doesEntityNotExist(accountFindRequest))
   }
@@ -45,14 +46,17 @@ class AccountFindRequestIntegrationTestSuite extends FlatSpec with TestEntities 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of domain parameter does not exist" in {
     val domainId = UUID.randomUUID()
-    val accountFindRequest = new AccountFindRequest().withDomain(domainId)
+    val accountFindRequest = new AccountFindRequest()
+    accountFindRequest.withDomain(domainId)
 
     assert(RequestExecutionHandler.doesEntityNotExist(accountFindRequest))
   }
 
   it should "return an empty list of accounts if entity with a specified value of name parameter does not exist" in {
     val name = UUID.randomUUID().toString
-    val accountFindRequest = new AccountFindRequest().withName(name)
+    val accountFindRequest = new AccountFindRequest()
+    accountFindRequest.withName(name)
+
     val response = mapper.deserialize[AccountFindResponse](executor.executeRequest(accountFindRequest.getRequest))
 
     assert(response.entityList.entities.isEmpty)

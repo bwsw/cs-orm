@@ -38,7 +38,8 @@ class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
 
   it should "return an empty list of tags if entity with a specified value of resource parameter does not exist" in {
     val resourceId = UUID.randomUUID()
-    val tagFindRequest = new TagFindRequest().withResource(resourceId)
+    val tagFindRequest = new TagFindRequest()
+    tagFindRequest.withResource(resourceId)
 
     checkEmptyResponse(tagFindRequest)
   }
@@ -46,7 +47,8 @@ class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of domain parameter does not exist" in {
     val domainId = UUID.randomUUID()
-    val tagFindRequest = new TagFindRequest().withDomain(domainId)
+    val tagFindRequest = new TagFindRequest()
+    tagFindRequest.withDomain(domainId)
 
     assert(RequestExecutionHandler.doesEntityNotExist(tagFindRequest))
   }
@@ -54,21 +56,24 @@ class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of account name parameter does not exist" in {
     val accountName = UUID.randomUUID().toString
-    val tagFindRequest = new TagFindRequest().withAccountName(accountName)
+    val tagFindRequest = new TagFindRequest()
+    tagFindRequest.withAccountName(accountName)
 
     assert(RequestExecutionHandler.doesEntityNotExist(tagFindRequest))
   }
 
   it should "return an empty list of tags if entity with a specified value of key parameter does not exist" in {
     val key = UUID.randomUUID().toString
-    val tagFindRequest = new TagFindRequest().withKey(key)
+    val tagFindRequest = new TagFindRequest()
+    tagFindRequest.withKey(key)
 
     checkEmptyResponse(tagFindRequest)
   }
 
   it should "return an empty list of tags if entity with a specified value of value parameter does not exist" in {
     val value = UUID.randomUUID().toString
-    val tagFindRequest = new TagFindRequest().withValue(value)
+    val tagFindRequest = new TagFindRequest()
+    tagFindRequest.withValue(value)
 
     checkEmptyResponse(tagFindRequest)
   }
@@ -76,7 +81,8 @@ class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "return an empty list of tags if entity with a specified value of resource type parameter does not exist" in {
     case object IncorrectTagType extends TagType(UUID.randomUUID().toString)
 
-    val tagFindRequest = new TagFindRequest().withResourceType(IncorrectTagType)
+    val tagFindRequest = new TagFindRequest()
+    tagFindRequest.withResourceType(IncorrectTagType)
 
     checkEmptyResponse(tagFindRequest)
   }

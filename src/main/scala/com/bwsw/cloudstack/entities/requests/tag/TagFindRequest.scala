@@ -38,48 +38,42 @@ class TagFindRequest extends Request {
     * Add an account name parameter to a request.
     * The client domain will be used if another domain is not specified
     */
-  def withAccountName(name: String): TagFindRequest = {
-    request.addParameter(ACCOUNT, name)
-    this
+  def withAccountName(name: String): Unit = {
+    addParameter(ACCOUNT, name)
   }
 
   /**
     * Add a domain id parameter to a request.
     */
-  def withDomain(id: UUID): TagFindRequest = {
-    request.addParameter(DOMAIN_ID, id)
-    this
+  def withDomain(id: UUID): Unit = {
+    addParameter(DOMAIN_ID, id)
   }
 
   /**
     * Add a tag key parameter to a request.
     */
-  def withKey(key: String): TagFindRequest = {
-    request.addParameter(KEY, key)
-    this
+  def withKey(key: String): Unit = {
+    addParameter(KEY, key)
   }
 
   /**
     * Add a resource id parameter to a request.
     */
-  def withResource(id: UUID): TagFindRequest = {
-    request.addParameter(RESOURCE_ID, id)
-    this
+  def withResource(id: UUID): Unit = {
+    addParameter(RESOURCE_ID, id)
   }
 
   /**
     * Add a resource type parameter to a request.
     */
-  def withResourceType(resourceType: TagType): TagFindRequest = {
-    request.addParameter(RESOURCE_TYPE, resourceType.name)
-    this
+  def withResourceType(resourceType: TagType): Unit = {
+    addParameter(RESOURCE_TYPE, resourceType.name)
   }
 
   /**
     * Add a tag value parameter to a request.
     */
-  def withValue(value: String): TagFindRequest = {
-    request.addParameter(VALUE, value)
-    this
+  def withValue(value: String): Unit = {
+    addParameter(VALUE, value)
   }
 }

@@ -37,7 +37,8 @@ class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of id parameter does not exist" in {
     val id = UUID.randomUUID()
-    val userFindRequest = new UserFindRequest().withId(id)
+    val userFindRequest = new UserFindRequest()
+    userFindRequest.withId(id)
 
     assert(RequestExecutionHandler.doesEntityNotExist(userFindRequest))
   }
@@ -45,7 +46,8 @@ class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of domain parameter does not exist" in {
     val domainId = UUID.randomUUID()
-    val userFindRequest = new UserFindRequest().withDomain(domainId)
+    val userFindRequest = new UserFindRequest()
+    userFindRequest.withDomain(domainId)
 
     assert(RequestExecutionHandler.doesEntityNotExist(userFindRequest))
   }
@@ -53,14 +55,17 @@ class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of account name parameter does not exist" in {
     val accountName = UUID.randomUUID().toString
-    val userFindRequest = new UserFindRequest().withAccountName(accountName)
+    val userFindRequest = new UserFindRequest()
+    userFindRequest.withAccountName(accountName)
 
     assert(RequestExecutionHandler.doesEntityNotExist(userFindRequest))
   }
 
   it should "return an empty list of users if entity with a specified value of name parameter does not exist" in {
     val name = UUID.randomUUID().toString
-    val userFindRequest = new UserFindRequest().withName(name)
+    val userFindRequest = new UserFindRequest()
+    userFindRequest.withName(name)
+
     val response = mapper.deserialize[UserFindResponse](executor.executeRequest(userFindRequest.getRequest))
 
     assert(response.entityList.entities.isEmpty)

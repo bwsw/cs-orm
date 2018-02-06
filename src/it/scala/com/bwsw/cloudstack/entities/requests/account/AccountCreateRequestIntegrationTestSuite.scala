@@ -73,13 +73,13 @@ class AccountCreateRequestIntegrationTestSuite extends FlatSpec with TestEntitie
     )
 
     val accountCreateRequest = new AccountCreateRequest(accountCreateSettings)
-      .withId(accountId)
-      .withName(accountName)
-      .withDomain(newDomainId)
-      .withRole(accountRole._1)
-      .withNetworkDomain(networkDomain)
-      .withTimeZone(timeZone)
-      .withUserId(userId)
+    accountCreateRequest.withId(accountId)
+    accountCreateRequest.withName(accountName)
+    accountCreateRequest.withDomain(newDomainId)
+    accountCreateRequest.withRole(accountRole._1)
+    accountCreateRequest.withNetworkDomain(networkDomain)
+    accountCreateRequest.withTimeZone(timeZone)
+    accountCreateRequest.withUserId(userId)
 
     val actualAccount = mapper.deserialize[AccountCreateResponse](executor.executeRequest(accountCreateRequest.getRequest)).accountEntity.account
 

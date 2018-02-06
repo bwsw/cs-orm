@@ -41,7 +41,8 @@ class AccountEventsRetrievingTest extends FlatSpec with TestEntities with Before
     username = s"username $accountId"
   )
 
-  val accountCreateRequest = new AccountCreateRequest(accountCreationSettings).withId(accountId)
+  val accountCreateRequest = new AccountCreateRequest(accountCreationSettings)
+  accountCreateRequest.withId(accountId)
   val accountDeleteRequest = new AccountDeleteRequest(accountId)
 
   val consumer = new Consumer(kafkaEndpoint, kafkaTopic)

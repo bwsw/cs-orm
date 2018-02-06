@@ -46,61 +46,54 @@ class AccountCreateRequest(settings: AccountCreateRequest.Settings) extends Requ
   /**
     * Add a domain id parameter to a request.
     */
-  def withDomain(id: UUID): AccountCreateRequest = {
-    request.addParameter(DOMAIN_ID, id)
-    this
+  def withDomain(id: UUID): Unit = {
+    addParameter(DOMAIN_ID, id)
   }
 
   /**
     * Add a time zone parameter to a request.
     */
-  def withTimeZone(timeZone: TimeZone): AccountCreateRequest = {
-    request.addParameter(TIMEZONE, timeZone.toZoneId)
-    this
+  def withTimeZone(timeZone: TimeZone): Unit = {
+    addParameter(TIMEZONE, timeZone.toZoneId)
   }
 
   /**
     * Add an account id parameter to a request,
     * required for adding account from external provisioning system.
     */
-  def withId(id: UUID): AccountCreateRequest = {
-    request.addParameter(ACCOUNT_ID, id)
-    this
+  def withId(id: UUID): Unit = {
+    addParameter(ACCOUNT_ID, id)
   }
 
   /**
     * Add an account name parameter to a request.
     * If it isn't specified, a username will be used as an account name.
     */
-  def withName(name: String): AccountCreateRequest = {
-    request.addParameter(ACCOUNT, name)
-    this
+  def withName(name: String): Unit = {
+    addParameter(ACCOUNT, name)
   }
 
   /**
     * Add a network domain parameter for the account's networks to a request.
     */
-  def withNetworkDomain(domain: String): AccountCreateRequest = {
-    request.addParameter(NETWORK_DOMAIN, domain)
-    this
+  def withNetworkDomain(domain: String): Unit = {
+    addParameter(NETWORK_DOMAIN, domain)
   }
 
   /**
     * Add an account role parameter to a request.
     * Specify 1 for admin, 2 for resource admin, 3 for domain admin, 4 for user.
     */
-  def withRole(role: Int): AccountCreateRequest = {
-    request.addParameter(ROLE_ID, role)
-    this
+  def withRole(role: Int): Unit = {
+    addParameter(ROLE_ID, role)
   }
 
   /**
     * Add an user id parameter to a request.
     * required for adding account from external provisioning system
     */
-  def withUserId(id: UUID): AccountCreateRequest = {
-    request.addParameter(USER_ID, id)
-    this
+  def withUserId(id: UUID): Unit = {
+    addParameter(USER_ID, id)
   }
 }
 

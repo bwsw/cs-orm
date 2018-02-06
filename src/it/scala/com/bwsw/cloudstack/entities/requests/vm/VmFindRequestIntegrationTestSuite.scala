@@ -37,7 +37,8 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of id parameter does not exist" in {
     val vmId = UUID.randomUUID()
-    val vmFindRequest = new VmFindRequest().withId(vmId)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withId(vmId)
 
     assert(RequestExecutionHandler.doesEntityNotExist(vmFindRequest))
   }
@@ -45,7 +46,8 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of account name parameter does not exist" in {
     val accountName = UUID.randomUUID().toString
-    val vmFindRequest = new VmFindRequest().withAccountName(accountName)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withAccountName(accountName)
 
     assert(RequestExecutionHandler.doesEntityNotExist(vmFindRequest))
   }
@@ -53,7 +55,8 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of domain parameter does not exist" in {
     val domainId = UUID.randomUUID()
-    val vmFindRequest = new VmFindRequest().withDomain(domainId)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withDomain(domainId)
 
     assert(RequestExecutionHandler.doesEntityNotExist(vmFindRequest))
   }
@@ -61,7 +64,8 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of group parameter does not exist" in {
     val groupId = UUID.randomUUID()
-    val vmFindRequest = new VmFindRequest().withGroup(groupId)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withGroup(groupId)
 
     assert(RequestExecutionHandler.doesEntityNotExist(vmFindRequest))
   }
@@ -69,7 +73,8 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of user parameter does not exist" in {
     val userId = UUID.randomUUID()
-    val vmFindRequest = new VmFindRequest().withUser(userId)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withUser(userId)
 
     assert(RequestExecutionHandler.doesEntityNotExist(vmFindRequest))
   }
@@ -77,7 +82,8 @@ class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of zone parameter does not exist" in {
     val zoneId = UUID.randomUUID()
-    val vmFindRequest = new VmFindRequest().withZone(zoneId)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withZone(zoneId)
 
     assert(RequestExecutionHandler.doesEntityNotExist(vmFindRequest))
   }

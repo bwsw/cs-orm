@@ -41,18 +41,22 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
 
   it should "create a vm using a request which contains the required and optional parameters" in {
     val domainId = retrievedAdminDomainId
-    val accountFindRequest = new AccountFindRequest().withDomain(domainId)
+    val accountFindRequest = new AccountFindRequest()
+    accountFindRequest.withDomain(domainId)
+
     val accountName = mapper.deserialize[AccountFindResponse](
       executor.executeRequest(accountFindRequest.getRequest)
     ).entityList.entities.get.head.name
 
     val vmCreateRequest = new VmCreateRequest(VmCreateRequest.Settings(serviceOfferingId, templateId, zoneId))
-      .withDomainAccount(accountName, domainId)
+    vmCreateRequest.withDomainAccount(accountName, domainId)
+
     val response = executor.executeRequest(vmCreateRequest.getRequest)
 
     val vmId = mapper.deserialize[VirtualMachineCreateResponse](response).vm.id
 
-    val vmFindRequest = new VmFindRequest().withId(vmId)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withId(vmId)
 
     val actualVm = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(vmFindRequest.getRequest))
       .entityList.entities.get.head
@@ -77,7 +81,8 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
 
     val vmId = mapper.deserialize[VirtualMachineCreateResponse](response).vm.id
 
-    val vmFindRequest = new VmFindRequest().withId(vmId)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withId(vmId)
 
     val actualVm = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(vmFindRequest.getRequest))
       .entityList.entities.get.head

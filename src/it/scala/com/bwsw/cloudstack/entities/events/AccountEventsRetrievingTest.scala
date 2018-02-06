@@ -48,8 +48,8 @@ class AccountEventsRetrievingTest extends FlatSpec with TestEntities with Before
   val consumer = new Consumer(kafkaEndpoint, kafkaTopic)
   consumer.assignToEnd()
 
-  executor.executeRequest(accountCreateRequest.request)
-  executor.executeRequest(accountDeleteRequest.request)
+  executor.executeRequest(accountCreateRequest.getRequest)
+  executor.executeRequest(accountDeleteRequest.getRequest)
 
   Thread.sleep(sleepInterval)
 

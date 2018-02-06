@@ -45,7 +45,7 @@ class UserEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAnd
   val consumer = new Consumer(kafkaEndpoint, kafkaTopic)
   consumer.assignToEnd()
 
-  executor.executeRequest(userCreateRequest.request)
+  executor.executeRequest(userCreateRequest.getRequest)
 
   Thread.sleep(sleepInterval)
 

@@ -37,7 +37,7 @@ class UserDaoTestSuite extends FlatSpec with TestData {
 
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         Response.getUserResponseJson(userId.toString, accountId.toString)
       }
     }
@@ -50,7 +50,7 @@ class UserDaoTestSuite extends FlatSpec with TestData {
   "find" should "return an empty entity list if a response json string does not contain the relevant data" in {
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         Response.getResponseWithEmptyUserList
       }
     }
@@ -65,7 +65,7 @@ class UserDaoTestSuite extends FlatSpec with TestData {
     val statusCode = 431
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         throw new ApacheCloudStackClientRequestRuntimeException(statusCode, "", "")
       }
     }
@@ -78,7 +78,7 @@ class UserDaoTestSuite extends FlatSpec with TestData {
   "find" should "not swallow non-ApacheCloudStackClientRequestRuntimeException" in {
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         throw new Exception
       }
     }
@@ -92,7 +92,7 @@ class UserDaoTestSuite extends FlatSpec with TestData {
     val statusCode = 400
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         throw new ApacheCloudStackClientRequestRuntimeException(statusCode, "", "")
       }
     }
@@ -134,7 +134,7 @@ class UserDaoTestSuite extends FlatSpec with TestData {
       username = "user"
     ))
 
-    val expectedRequests = List(createRequest.request)
+    val expectedRequests = List(createRequest.getRequest)
 
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {
@@ -160,7 +160,7 @@ class UserDaoTestSuite extends FlatSpec with TestData {
       username = "user"
     ))
 
-    val expectedRequests = List(createRequest.request)
+    val expectedRequests = List(createRequest.getRequest)
 
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {

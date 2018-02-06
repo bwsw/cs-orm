@@ -78,7 +78,8 @@ Run tests: `sbt test`
 
 ## Versioning
 
-Library has the same version as Apache CloudStack server
+Library includes the minor version which depends on CloudStack version. \
+For example 1.410.0 version depends on CloudStack 4.10
 
 ## License
 

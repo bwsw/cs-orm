@@ -110,23 +110,23 @@ class AccountCreateRequestIntegrationTestSuite extends FlatSpec with TestEntitie
 
   }
 
-    it should "create an account using a request which contains only required parameters and a parameter with incorrect key" in {
-      val userName = UUID.randomUUID().toString
-      val password = UUID.randomUUID().toString
-      val incorrectParameter = UUID.randomUUID().toString
+  it should "create an account using a request which contains only required parameters and a parameter with incorrect key" in {
+    val userName = UUID.randomUUID().toString
+    val password = UUID.randomUUID().toString
+    val incorrectParameter = UUID.randomUUID().toString
 
-      val settings = AccountCreateRequest.Settings(
-        _type = AccountCreateRequest.User,
-        email = "e@e",
-        firstName = "fn",
-        lastName = "ln",
-        password = password,
-        username = userName
-      )
-      val request = new AccountCreateRequest(settings).getRequest.addParameter(incorrectParameter, ParameterValues.DUMMY_VALUE)
+    val settings = AccountCreateRequest.Settings(
+      _type = AccountCreateRequest.User,
+      email = "e@e",
+      firstName = "fn",
+      lastName = "ln",
+      password = password,
+      username = userName
+    )
+    val request = new AccountCreateRequest(settings).getRequest.addParameter(incorrectParameter, ParameterValues.DUMMY_VALUE)
 
-      checkAccountCreation(request, settings)
-    }
+    checkAccountCreation(request, settings)
+  }
 
   private def checkAccountCreation(request: ApacheCloudStackRequest, settings: AccountCreateRequest.Settings): Unit = {
 

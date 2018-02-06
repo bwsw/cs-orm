@@ -20,22 +20,20 @@ package com.bwsw.cloudstack.entities.requests.tag
 
 import java.util.UUID
 
-import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.Request
 import com.bwsw.cloudstack.entities.requests.tag.types.TagType
-import com.bwsw.cloudstack.entities.responses.tag.TagFindResponse
+import com.bwsw.cloudstack.entities.responses.tag.{TagFindResponse, TagSet}
 import com.bwsw.cloudstack.entities.util.requests.IntegrationTestConstants.ParameterValues
+import com.bwsw.cloudstack.entities.util.requests.RequestExecutionHandler
 import org.scalatest.FlatSpec
-
-import scala.util.{Failure, Success, Try}
 
 class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains only default parameters" in {
     val tagFindRequest = new TagFindRequest
     val response = mapper.deserialize[TagFindResponse](executor.executeRequest(tagFindRequest.getRequest))
 
-    assert(response.isInstanceOf[TagFindResponse])
+    assert(response.entityList.isInstanceOf[TagSet])
   }
 
   it should "return an empty list of tags if entity with a specified value of resource parameter does not exist" in {
@@ -50,7 +48,7 @@ class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val domainId = UUID.randomUUID()
     val tagFindRequest = new TagFindRequest().withDomain(domainId)
 
-    tryExecuteRequest(tagFindRequest)
+    assert(RequestExecutionHandler.doesEntityNotExist(tagFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -58,7 +56,7 @@ class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val accountName = UUID.randomUUID().toString
     val tagFindRequest = new TagFindRequest().withAccountName(accountName)
 
-    tryExecuteRequest(tagFindRequest)
+    assert(RequestExecutionHandler.doesEntityNotExist(tagFindRequest))
   }
 
   it should "return an empty list of tags if entity with a specified value of key parameter does not exist" in {
@@ -88,23 +86,12 @@ class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val request = new TagFindRequest().getRequest.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
     val response = mapper.deserialize[TagFindResponse](executor.executeRequest(request))
 
-    assert(response.isInstanceOf[TagFindResponse])
+    assert(response.entityList.isInstanceOf[TagSet])
   }
 
   private def checkEmptyResponse(request: Request) = {
     val response = mapper.deserialize[TagFindResponse](executor.executeRequest(request.getRequest))
 
     assert(response.entityList.entities.isEmpty)
-  }
-
-  private def tryExecuteRequest(request: Request): Boolean = {
-    Try {
-      executor.executeRequest(request.getRequest)
-    } match {
-      case Success(_) => false
-      case Failure(e: ApacheCloudStackClientRequestRuntimeException) =>
-        e.getStatusCode == 431
-      case Failure(_: Throwable) => false
-    }
   }
 }

@@ -24,22 +24,19 @@ import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.requests.vm.{VmCreateRequest, VmFindRequest}
-import com.bwsw.cloudstack.entities.responses.VirtualMachine
+import com.bwsw.cloudstack.entities.responses.vm.VirtualMachine
 import org.scalatest.FlatSpec
 
 class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
   val findRequest = new VmFindRequest
 
   "find" should "return non-empty entity list if a response json string contains the relevant data" in {
-    val vmId = UUID.randomUUID()
-    val accountName = "test"
-    val domainId = UUID.randomUUID()
-    val expectedVmList = List(VirtualMachine(vmId, accountName, domainId))
+    val expectedVmList = List(testVm)
 
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
         assert(findRequest.getRequest == request)
-        Response.getVmResponseJson(vmId.toString, accountName, domainId.toString)
+        Response.getVmResponseJson(testVm)
       }
     }
 
@@ -104,10 +101,7 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
   }
 
   "find" should "handle child of VmFindRequest" in {
-    val vmId = UUID.randomUUID()
-    val accountName = "test"
-    val domainId = UUID.randomUUID()
-    val expectedVmList = List(VirtualMachine(vmId, accountName, domainId))
+    val expectedVmList = List(testVm)
 
     class TestVmFindRequest extends VmFindRequest
 
@@ -116,7 +110,7 @@ class VirtualMachineDaoTestSuite extends FlatSpec with TestData {
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
         assert(vmFindRequest.getRequest == request)
-        Response.getVmResponseJson(vmId.toString, accountName, domainId.toString)
+        Response.getVmResponseJson(testVm)
       }
     }
 

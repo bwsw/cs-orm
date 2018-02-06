@@ -22,11 +22,10 @@ import java.util.UUID
 
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.events.account.{AccountCreateEvent, AccountDeleteEvent}
-import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest
+import com.bwsw.cloudstack.entities.requests.account.{AccountCreateRequest, AccountDeleteRequest}
 import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.RootAdmin
 import com.bwsw.cloudstack.entities.util.events.RecordToEventDeserializer
 import com.bwsw.cloudstack.entities.util.kafka.Consumer
-import com.bwsw.cloudstack.entities.util.requests.AccountDeleteRequest
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
 
 class AccountEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAfterAll {

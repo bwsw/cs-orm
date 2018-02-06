@@ -25,7 +25,7 @@ import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequ
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.requests.tag.types.UserTagType
 import com.bwsw.cloudstack.entities.requests.tag.{TagCreateRequest, TagFindRequest}
-import com.bwsw.cloudstack.entities.responses.Tag
+import com.bwsw.cloudstack.entities.responses.tag.Tag
 import org.scalatest.FlatSpec
 
 class TagDaoTestSuite extends FlatSpec with TestData {

@@ -18,9 +18,14 @@
 */
 package com.bwsw.cloudstack.entities.dao
 
+import java.util.UUID
+
 import com.bwsw.cloudstack.KeyAuthenticationClientCreator
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.JsonMapper
+import com.bwsw.cloudstack.entities.responses.account.{Account, AccountFindResponse, AccountList}
+import com.bwsw.cloudstack.entities.responses.user.{User, UserFindResponse, UserList}
+import com.bwsw.cloudstack.entities.responses.vm.VirtualMachine
 
 trait TestData {
   private val retryDelay = 1000
@@ -32,17 +37,15 @@ trait TestData {
     def getTagResponseJson(key: String, value: String): String =
       "{\"listtagsresponse\":{\"count\":1,\"tag\":[{\"key\":\"" + s"$key" + "\",\"value\":\"" + s"$value" + "\"}]}}"
 
-    def getAccountResponseJson(account: String, user: String): String =
-      "{\"listaccountsresponse\":{\"count\":1,\"account\":[{\"id\":\"" + s"$account" + "\"," +
-        "\"user\":[{\"id\":\"" + s"$user" + "\",\"accountid\":\"" + s"$account" + "\"}]}]}}"
+    def getAccountResponseJson(account: Account): String =
+      "{\"listaccountsresponse\":{\"count\":1,\"account\":" + jsonMapper.serialize(List(account)) + "}}"
 
-    def getUserResponseJson(user: String, account: String): String =
-      "{\"listusersresponse\":{\"count\":1,\"user\":[{\"id\":\"" + s"$user" + "\", " +
-        "\"accountid\":\" " + s"$account" + "\"}]}}"
+    def getUserResponseJson(user: User): String = {
+      "{\"listusersresponse\":{\"count\":1,\"user\":" + jsonMapper.serialize(List(user)) + "}}"
+    }
 
-    def getVmResponseJson(vm: String, accountName: String, domain: String): String =
-      "{\"listvirtualmachinesresponse\":{\"virtualmachine\":[{\"id\":\"" + s"$vm" + "\"," +
-        "\"account\":\"" + s"$accountName" + "\",\"domainid\":\"" + s"$domain" + "\"}]}}"
+    def getVmResponseJson(vm: VirtualMachine): String =
+      "{\"listvirtualmachinesresponse\":{\"virtualmachine\":" + jsonMapper.serialize(List(vm)) + "}}"
 
     def getResponseWithEmptyVmList: String = "{\"listvirtualmachinesresponse\":{}}"
 
@@ -53,4 +56,38 @@ trait TestData {
     def getResponseWithEmptyTagList: String = "{\"listtagsresponse\":{}}"
   }
 
+  private val accountId = UUID.randomUUID()
+  private val accountName = "name"
+  private val domainId = UUID.randomUUID()
+
+  val testUser = User(
+    id = UUID.randomUUID(),
+    accountId = accountId,
+    account = accountName,
+    email = "user@example.com",
+    firstname = "first",
+    lastname = "last",
+    username = "user",
+    domainId = domainId,
+    None
+  )
+
+  val testAccount = Account(
+    id = accountId,
+    name = accountName,
+    accountType = 1,
+    domainId = domainId,
+    networkDomain = UUID.randomUUID().toString,
+    List(testUser),
+    roleType = "Admin"
+  )
+
+  val testVm = VirtualMachine(
+    id = UUID.randomUUID(),
+    zoneId = UUID.randomUUID(),
+    templateId = UUID.randomUUID(),
+    serviceOfferingId = UUID.randomUUID(),
+    accountName = accountName,
+    domainId = domainId
+  )
 }

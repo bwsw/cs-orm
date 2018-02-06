@@ -27,7 +27,7 @@ import com.bwsw.cloudstack.entities.requests.tag.types.{AccountTagType, TagType,
 import com.bwsw.cloudstack.entities.requests.tag.{TagCreateRequest, TagFindRequest}
 import com.bwsw.cloudstack.entities.requests.user.UserCreateRequest
 import com.bwsw.cloudstack.entities.requests.vm.{VmCreateRequest, VmFindRequest}
-import com.bwsw.cloudstack.entities.responses.Tag
+import com.bwsw.cloudstack.entities.responses.tag.Tag
 import org.scalatest.FlatSpec
 
 class TagDaoIntegrationTestSuite extends FlatSpec with TestEntities {

@@ -23,12 +23,11 @@ import java.util.{TimeZone, UUID}
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import com.bwsw.cloudstack.PasswordAuthenticationClientCreator
 import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest
-import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.User
-import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
-import com.bwsw.cloudstack.entities.util.requests.DomainCreateRequest
-import com.bwsw.cloudstack.entities.util.responses.domain.DomainCreateResponse
+import com.bwsw.cloudstack.entities.requests.domain.DomainCreateRequest
+import com.bwsw.cloudstack.entities.responses.domain.DomainCreateResponse
+import com.bwsw.cloudstack.entities.responses.user._
+import com.bwsw.cloudstack.entities.util.requests.IntegrationTestConstants.ParameterValues
 import com.bwsw.cloudstack.entities.{Executor, TestEntities}
-import com.bwsw.cloudstack.entities.util.responses.user.{TestUser, UserCreateResponse}
 import org.scalatest.FlatSpec
 
 class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
@@ -53,6 +52,7 @@ class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "create a user using a request which contains the required and optional parameters" in {
     import AccountCreateRequest.Settings
 
+    val accountId = UUID.randomUUID()
     val userId = UUID.randomUUID()
     val accountName = UUID.randomUUID().toString
     val domainName = UUID.randomUUID().toString
@@ -61,18 +61,18 @@ class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     val timeZone = TimeZone.getTimeZone("GMT+7:00")
 
     val domainCreateRequest = new DomainCreateRequest(domainName).getRequest
-    val newDomainId = mapper.deserialize[DomainCreateResponse](executor.executeRequest(domainCreateRequest)).domainEntity.domainId.id
+    val newDomainId = mapper.deserialize[DomainCreateResponse](executor.executeRequest(domainCreateRequest)).domainEntity.domain.id
 
     val accountCreateRequest = new AccountCreateRequest(
       Settings(
-        _type = User,
+        _type = AccountCreateRequest.User,
         email = "e@e",
         firstName = "fn",
         lastName = "ln",
         password = "password",
         username = "username"
       )
-    ).withName(accountName).withDomain(newDomainId)
+    ).withName(accountName).withDomain(newDomainId).withId(accountId)
 
     executor.executeRequest(accountCreateRequest.getRequest)
 
@@ -86,8 +86,9 @@ class UserCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
     )
     val userCreateRequest = new UserCreateRequest(settings).withId(userId).withDomain(newDomainId).withTimeZone(timeZone)
 
-    val expectedUser = TestUser(
+    val expectedUser = User(
       id = userId,
+      accountId,
       account = accountName,
       email = settings.email,
       firstname = settings.firstName,

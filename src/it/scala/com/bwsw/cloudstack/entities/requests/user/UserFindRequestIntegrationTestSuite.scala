@@ -23,8 +23,8 @@ import java.util.UUID
 import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.Request
-import com.bwsw.cloudstack.entities.responses.UserResponse
-import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
+import com.bwsw.cloudstack.entities.responses.user.UserFindResponse
+import com.bwsw.cloudstack.entities.util.requests.IntegrationTestConstants.ParameterValues
 import org.scalatest.FlatSpec
 
 import scala.util.{Failure, Success, Try}
@@ -32,9 +32,9 @@ import scala.util.{Failure, Success, Try}
 class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains only default parameters" in {
     val userFindRequest = new UserFindRequest
-    val response = mapper.deserialize[UserResponse](executor.executeRequest(userFindRequest.getRequest))
+    val response = mapper.deserialize[UserFindResponse](executor.executeRequest(userFindRequest.getRequest))
 
-    assert(response.isInstanceOf[UserResponse])
+    assert(response.isInstanceOf[UserFindResponse])
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
@@ -64,7 +64,7 @@ class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "return an empty list of users if entity with a specified value of name parameter does not exist" in {
     val name = UUID.randomUUID().toString
     val userFindRequest = new UserFindRequest().withName(name)
-    val response = mapper.deserialize[UserResponse](executor.executeRequest(userFindRequest.getRequest))
+    val response = mapper.deserialize[UserFindResponse](executor.executeRequest(userFindRequest.getRequest))
 
     assert(response.entityList.entities.isEmpty)
   }
@@ -72,9 +72,9 @@ class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
     val request = new UserFindRequest().getRequest.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
-    val response = mapper.deserialize[UserResponse](executor.executeRequest(request))
+    val response = mapper.deserialize[UserFindResponse](executor.executeRequest(request))
 
-    assert(response.isInstanceOf[UserResponse])
+    assert(response.isInstanceOf[UserFindResponse])
   }
 
   private def tryExecuteRequest(request: Request): Boolean = {

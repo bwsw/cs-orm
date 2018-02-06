@@ -24,8 +24,8 @@ import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequ
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.requests.Request
 import com.bwsw.cloudstack.entities.requests.tag.types.TagType
-import com.bwsw.cloudstack.entities.responses.TagResponse
-import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
+import com.bwsw.cloudstack.entities.responses.tag.TagFindResponse
+import com.bwsw.cloudstack.entities.util.requests.IntegrationTestConstants.ParameterValues
 import org.scalatest.FlatSpec
 
 import scala.util.{Failure, Success, Try}
@@ -33,9 +33,9 @@ import scala.util.{Failure, Success, Try}
 class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains only default parameters" in {
     val tagFindRequest = new TagFindRequest
-    val response = mapper.deserialize[TagResponse](executor.executeRequest(tagFindRequest.getRequest))
+    val response = mapper.deserialize[TagFindResponse](executor.executeRequest(tagFindRequest.getRequest))
 
-    assert(response.isInstanceOf[TagResponse])
+    assert(response.isInstanceOf[TagFindResponse])
   }
 
   it should "return an empty list of tags if entity with a specified value of resource parameter does not exist" in {
@@ -86,13 +86,13 @@ class TagFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
     val request = new TagFindRequest().getRequest.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
-    val response = mapper.deserialize[TagResponse](executor.executeRequest(request))
+    val response = mapper.deserialize[TagFindResponse](executor.executeRequest(request))
 
-    assert(response.isInstanceOf[TagResponse])
+    assert(response.isInstanceOf[TagFindResponse])
   }
 
   private def checkEmptyResponse(request: Request) = {
-    val response = mapper.deserialize[TagResponse](executor.executeRequest(request.getRequest))
+    val response = mapper.deserialize[TagFindResponse](executor.executeRequest(request.getRequest))
 
     assert(response.entityList.entities.isEmpty)
   }

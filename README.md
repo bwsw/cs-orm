@@ -10,7 +10,7 @@ It based on the extensible request builders which simplify creating CloudStack r
 
 Add the following to your `build.sbt`
 ```scala
-libraryDependencies += "com.bwsw" %% "cs-entities" % "4.10.3-NP"
+libraryDependencies += "com.bwsw" %% "cs-entities" % "1.410np.0"
 ```
 ## Getting Started      
 1. Create Executor instance with specified parameters to interact with Apache CloudStack server. \

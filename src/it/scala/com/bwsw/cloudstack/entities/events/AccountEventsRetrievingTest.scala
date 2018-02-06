@@ -55,7 +55,7 @@ class AccountEventsRetrievingTest extends FlatSpec with TestEntities with Before
 
   val records = consumer.poll(pollTimeout)
 
-  it should s"retrieve AccountCreateEvent with status 'Completed' from Kafka records" in {
+  it should "retrieve AccountCreateEvent with status 'Completed' from Kafka records" in {
     val expectedAccountCreateEvents = List(AccountCreateEvent(Some(Constants.Statuses.COMPLETED), Some(accountId)))
 
     val actualAccountCreateEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {

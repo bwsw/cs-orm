@@ -48,7 +48,7 @@ class VmEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAf
 
   val records = consumer.poll(pollTimeout)
 
-  it should s"retrieve VirtualMachineCreateEvent with status 'Completed' from Kafka records" in {
+  it should "retrieve VirtualMachineCreateEvent with status 'Completed' from Kafka records" in {
     val expectedVmCreateEvents = List(VirtualMachineCreateEvent(Some(Constants.Statuses.COMPLETED), Some(vmId)))
 
     val actualVmCreateEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {

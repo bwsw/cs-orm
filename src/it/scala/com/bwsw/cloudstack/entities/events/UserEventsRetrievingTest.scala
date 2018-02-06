@@ -51,7 +51,7 @@ class UserEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAnd
 
   val records = consumer.poll(pollTimeout)
 
-  it should s"retrieve UserCreateEvent with status 'Completed' from Kafka records" in {
+  it should "retrieve UserCreateEvent with status 'Completed' from Kafka records" in {
     val expectedUserCreateEvents = List(UserCreateEvent(Some(Constants.Statuses.COMPLETED), Some(userId)))
 
     val actualUserCreateEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {

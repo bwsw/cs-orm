@@ -27,5 +27,5 @@ import com.bwsw.cloudstack.entities.util.responses.common.{Domain, DomainRespons
 class DomainDao (executor: Executor, mapper: JsonMapper) extends GenericDao[DomainResponse, Domain](executor, mapper) {
   protected type F = DomainFindRequest
 
-  override def find(request: F)(implicit m: Manifest[DomainResponse]): Iterable[Domain] = super.find(request)
+  override def find[R <: F](request: R)(implicit m: Manifest[DomainResponse]): Iterable[Domain] = super.find(request)
 }

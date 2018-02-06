@@ -32,7 +32,7 @@ import com.bwsw.cloudstack.entities.requests.Request
   */
 class VmCreateRequest(settings: VmCreateRequest.Settings) extends Request {
 
-  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.DEPLOY_VIRTUAL_MACHINE)
+  override protected val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.DEPLOY_VIRTUAL_MACHINE)
     .addParameter(RESPONSE, ParameterValues.JSON)
     .addParameter(SERVICE_OFFERING_ID, settings.serviceOfferingId)
     .addParameter(TEMPLATE_ID, settings.templateId)

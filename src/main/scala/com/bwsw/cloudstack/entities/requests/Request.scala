@@ -21,7 +21,15 @@ package com.bwsw.cloudstack.entities.requests
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 
 trait Request {
-  protected[entities] val request: ApacheCloudStackRequest
+  protected val request: ApacheCloudStackRequest
+
+  def getRequest: ApacheCloudStackRequest = {
+    request
+  }
+
+  def addParameter(name: String, value: Any): Unit ={
+    request.addParameter(name, value)
+  }
 
   override def toString: String = {
     request.toString

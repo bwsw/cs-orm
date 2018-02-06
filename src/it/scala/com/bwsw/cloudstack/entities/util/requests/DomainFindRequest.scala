@@ -23,6 +23,6 @@ import com.bwsw.cloudstack.entities.requests.Request
 import com.bwsw.cloudstack.entities.util.requests.TestConstants.{Commands, ParameterKeys, ParameterValues}
 
 class DomainFindRequest extends Request {
-  override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_DOMAINS)
+  override protected val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_DOMAINS)
     .addParameter(ParameterKeys.RESPONSE, ParameterValues.JSON)
 }

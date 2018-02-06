@@ -38,4 +38,25 @@ class TemplateFindRequestTestSuite extends FlatSpec {
     assert(request.getRequest.getParameters.asScala.toSet == defaultParameters)
     assert(request.getRequest.getCommand == Commands.LIST_TEMPLATES)
   }
+
+  it should "create child TemplateFindRequest with one new parameter" in {
+    val testParameterValue = "testValue"
+    val testParameterName = "testName"
+
+    val expectedParameters = defaultParameters ++ Set(
+      new ApacheCloudStackApiCommandParameter(testParameterName, testParameterValue)
+    )
+
+    class TestTemplateFindRequest extends TemplateFindRequest(All) {
+      def withTestParameter(value: String): Unit = {
+        addParameter(testParameterName, value)
+      }
+    }
+
+    val request = new TestTemplateFindRequest
+    request.withTestParameter(testParameterValue)
+
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
+  }
+
 }

@@ -60,7 +60,9 @@ class TagDaoIntegrationTestSuite extends FlatSpec with TestEntities {
       password = "passwd",
       username = s"username $id"
     )
-    val userCreateRequest = new UserCreateRequest(userCreationSettings).withId(id)
+    val userCreateRequest = new UserCreateRequest(userCreationSettings)
+    userCreateRequest.withId(id)
+
     userDao.create(userCreateRequest)
   }
 
@@ -75,7 +77,9 @@ class TagDaoIntegrationTestSuite extends FlatSpec with TestEntities {
       password = "passwd",
       username = s"username $id"
     )
-    val accountCreateRequest = new AccountCreateRequest(accountCreationSettings).withId(id).withName(name)
+    val accountCreateRequest = new AccountCreateRequest(accountCreationSettings)
+    accountCreateRequest.withId(id)
+    accountCreateRequest.withName(name)
 
     domainId match {
       case Some(x) => accountCreateRequest.withDomain(x)
@@ -105,10 +109,14 @@ class TagDaoIntegrationTestSuite extends FlatSpec with TestEntities {
       templateId,
       zoneId
     )
-    val vmCreateRequest = new VmCreateRequest(vmCreationSettings).withDomainAccount(firstAccountName, domainId)
+    val vmCreateRequest = new VmCreateRequest(vmCreationSettings)
+    vmCreateRequest.withDomainAccount(firstAccountName, domainId)
+
     vmDao.create(vmCreateRequest)
 
-    val findByAccountNameRequest = new VmFindRequest().withAccountName(firstAccountName)
+    val findByAccountNameRequest = new VmFindRequest()
+    findByAccountNameRequest.withAccountName(firstAccountName)
+
     vmDao.find(findByAccountNameRequest).head.id
   }
 
@@ -118,7 +126,10 @@ class TagDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     val thirdTag = Tag("key3", "value3")
 
     val tagDao = new TagDao(executor, mapper)
-    val findRequest = new TagFindRequest().withResource(resourceId).withResourceType(tagType)
+    val findRequest = new TagFindRequest()
+    findRequest.withResource(resourceId)
+    findRequest.withResourceType(tagType)
+
     assert(tagDao.find(findRequest).isEmpty)
 
     val firstCreateTagRequest = new TagCreateRequest(TagCreateRequest.Settings(

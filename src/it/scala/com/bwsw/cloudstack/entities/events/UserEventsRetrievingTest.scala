@@ -40,7 +40,8 @@ class UserEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAnd
     username = s"username $userId"
   )
 
-  val userCreateRequest = new UserCreateRequest(userCreationSettings).withId(userId)
+  val userCreateRequest = new UserCreateRequest(userCreationSettings)
+  userCreateRequest.withId(userId)
 
   val consumer = new Consumer(kafkaEndpoint, kafkaTopic)
   consumer.assignToEnd()

@@ -45,47 +45,76 @@ class TagFindRequestTestSuite extends FlatSpec {
     val accountName = "name"
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ACCOUNT, accountName))
     val request = new TagFindRequest
+    request.withAccountName(accountName)
 
-    assert(request.withAccountName(accountName).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withDomain" should "add a domain id parameter to a request" in {
     val domainId = UUID.randomUUID()
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(DOMAIN_ID, domainId))
     val request = new TagFindRequest
+    request.withDomain(domainId)
 
-    assert(request.withDomain(domainId).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withKey" should "add a key parameter to a request" in {
     val key = "key"
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(KEY, key))
     val request = new TagFindRequest
+    request.withKey(key)
 
-    assert(request.withKey(key).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withResource" should "add a resource id parameter to a request" in {
     val resource = UUID.randomUUID()
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(RESOURCE_ID, resource))
     val request = new TagFindRequest
+    request.withResource(resource)
 
-    assert(request.withResource(resource).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withResourceType" should "add a resource type to a request" in {
     val resourceType = VmTagType
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(RESOURCE_TYPE, resourceType.name))
     val request = new TagFindRequest
+    request.withResourceType(resourceType)
 
-    assert(request.withResourceType(resourceType).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withValue" should "add a tag value to a request" in {
     val tagValue = "value"
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(VALUE, tagValue))
     val request = new TagFindRequest
+    request.withValue(tagValue)
 
-    assert(request.withValue(tagValue).getRequest.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
+  }
+
+  it should "create child TagFindRequest with one of parent parameters and one new parameter" in {
+    val testParameterValue = "testValue"
+    val testParameterName = "testName"
+    val tagValue = "value"
+
+    val expectedParameters = defaultParameters ++ Set(
+      new ApacheCloudStackApiCommandParameter(VALUE, tagValue),
+      new ApacheCloudStackApiCommandParameter(testParameterName, testParameterValue)
+    )
+
+    class TestTagFindRequest extends TagFindRequest {
+      def withTestParameter(value: String): Unit = {
+        addParameter(testParameterName, value)
+      }
+    }
+
+    val request = new TestTagFindRequest
+    request.withValue(tagValue)
+    request.withTestParameter(testParameterValue)
+
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 }

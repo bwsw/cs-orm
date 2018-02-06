@@ -36,33 +36,29 @@ class UserFindRequest extends Request {
   /**
     * Add user id parameter to a request
     */
-  def withId(id: UUID): UserFindRequest = {
-    request.addParameter(ID, id)
-    this
+  def withId(id: UUID): Unit = {
+    addParameter(ID, id)
   }
 
   /**
     * Add account name parameter to a request.
     * The client domain will be used if another domain is not specified
     */
-  def withAccountName(account: String): UserFindRequest = {
-    request.addParameter(ACCOUNT, account)
-    this
+  def withAccountName(account: String): Unit = {
+    addParameter(ACCOUNT, account)
   }
 
   /**
     * Add domain id parameter to a request.
     */
-  def withDomain(id: UUID): UserFindRequest = {
-    request.addParameter(DOMAIN_ID, id)
-    this
+  def withDomain(id: UUID): Unit = {
+    addParameter(DOMAIN_ID, id)
   }
 
   /**
     * Add user name parameter to a request.
     */
-  def withName(name: String): UserFindRequest = {
-    request.addParameter(USER_NAME, name)
-    this
+  def withName(name: String): Unit = {
+    addParameter(USER_NAME, name)
   }
 }

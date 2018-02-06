@@ -38,7 +38,9 @@ class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     createAccountWithName(accountDao, firstAccountName, domainId)
     createAccountWithName(accountDao, secondAccountName, domainId)
 
-    val findByAccountNameRequest = new VmFindRequest().withAccountName(firstAccountName)
+    val findByAccountNameRequest = new VmFindRequest()
+    findByAccountNameRequest.withAccountName(firstAccountName)
+
     assert(vmDao.find(findByAccountNameRequest).isEmpty)
 
     val serviceOfferingId = retrievedServiceOfferingId
@@ -50,13 +52,17 @@ class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {
       templateId,
       zoneId
     )
-    val firstVmCreateRequest = new VmCreateRequest(vmCreationSettings).withDomainAccount(firstAccountName, domainId)
+    val firstVmCreateRequest = new VmCreateRequest(vmCreationSettings)
+    firstVmCreateRequest.withDomainAccount(firstAccountName, domainId)
+
     vmDao.create(firstVmCreateRequest)
 
     val vmsAfterCreation = vmDao.find(findByAccountNameRequest)
     assert(vmsAfterCreation.size == 1 && vmsAfterCreation.head.accountName == firstAccountName)
 
-    val secondVmCreateRequest = new VmCreateRequest(vmCreationSettings).withDomainAccount(secondAccountName, domainId)
+    val secondVmCreateRequest = new VmCreateRequest(vmCreationSettings)
+    secondVmCreateRequest.withDomainAccount(secondAccountName, domainId)
+
     vmDao.create(secondVmCreateRequest)
 
     val findRequest = new VmFindRequest
@@ -76,8 +82,9 @@ class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {
     )
 
     val firstAccountCreateRequest = new AccountCreateRequest(firstAccountCreationSettings)
-      .withName(name)
-      .withDomain(domainId)
+    firstAccountCreateRequest.withName(name)
+    firstAccountCreateRequest.withDomain(domainId)
+
     accountDao.create(firstAccountCreateRequest)
   }
 }

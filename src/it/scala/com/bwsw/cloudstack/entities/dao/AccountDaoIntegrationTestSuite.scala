@@ -31,7 +31,9 @@ class AccountDaoIntegrationTestSuite extends FlatSpec with TestEntities {
   val secondAccountId = UUID.randomUUID()
 
   it should "retrieve accounts after their creation" in {
-    val firstFindRequest = new AccountFindRequest().withId(firstAccountId)
+    val firstFindRequest = new AccountFindRequest()
+    firstFindRequest.withId(firstAccountId)
+
     val initAccounts = accountDao.find(firstFindRequest)
 
     assert(initAccounts.isEmpty)
@@ -45,10 +47,14 @@ class AccountDaoIntegrationTestSuite extends FlatSpec with TestEntities {
       username = s"username $firstAccountId"
     )
 
-    val firstAccountCreateRequest = new AccountCreateRequest(firstAccountCreationSettings).withId(firstAccountId)
+    val firstAccountCreateRequest = new AccountCreateRequest(firstAccountCreationSettings)
+    firstAccountCreateRequest.withId(firstAccountId)
+
     accountDao.create(firstAccountCreateRequest)
 
-    val secondFindRequest = new AccountFindRequest().withId(firstAccountId)
+    val secondFindRequest = new AccountFindRequest()
+    secondFindRequest.withId(firstAccountId)
+
     val updatedAccounts = accountDao.find(secondFindRequest)
     assert(updatedAccounts.size == 1 && updatedAccounts.head.id == firstAccountId)
 
@@ -61,7 +67,9 @@ class AccountDaoIntegrationTestSuite extends FlatSpec with TestEntities {
       username = s"username $secondAccountId"
     )
 
-    val secondAccountCreateRequest = new AccountCreateRequest(secondAccountCreationSettings).withId(secondAccountId).withRole(1)
+    val secondAccountCreateRequest = new AccountCreateRequest(secondAccountCreationSettings)
+    secondAccountCreateRequest.withId(secondAccountId)
+    secondAccountCreateRequest.withRole(1)
 
     accountDao.create(secondAccountCreateRequest)
 

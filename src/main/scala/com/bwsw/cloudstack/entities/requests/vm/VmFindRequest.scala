@@ -36,49 +36,43 @@ class VmFindRequest extends Request {
   /**
     * Add a vm id parameter to a request.
     */
-  def withId(id: UUID): VmFindRequest = {
-    request.addParameter(ID, id)
-    this
+  def withId(id: UUID): Unit = {
+    addParameter(ID, id)
   }
 
   /**
     * Add an account name parameter to a request.
     * The client domain will be used if another domain is not specified
     */
-  def withAccountName(name: String): VmFindRequest = {
-    request.addParameter(ACCOUNT, name)
-    this
+  def withAccountName(name: String): Unit = {
+    addParameter(ACCOUNT, name)
   }
 
   /**
     * Add a domain id parameter to a request.
     */
-  def withDomain(id: UUID): VmFindRequest = {
-    request.addParameter(DOMAIN_ID, id)
-    this
+  def withDomain(id: UUID): Unit = {
+    addParameter(DOMAIN_ID, id)
   }
 
   /**
     * Add a group id parameter to a request.
     */
-  def withGroup(id: UUID): VmFindRequest = {
-    request.addParameter(GROUP_ID, id)
-    this
+  def withGroup(id: UUID): Unit = {
+    addParameter(GROUP_ID, id)
   }
 
   /**
     * Add a user id parameter to a request.
     */
-  def withUser(id: UUID): VmFindRequest = {
-    request.addParameter(USER_ID, id)
-    this
+  def withUser(id: UUID): Unit = {
+    addParameter(USER_ID, id)
   }
 
   /**
     * Add a zone id parameter to a request.
     */
-  def withZone(id: UUID): VmFindRequest = {
-    request.addParameter(ZONE_ID, id)
-    this
+  def withZone(id: UUID): Unit = {
+    addParameter(ZONE_ID, id)
   }
 }

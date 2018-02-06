@@ -31,8 +31,9 @@ class ZoneFindRequest extends Request {
     .addParameter(ParameterKeys.LIST_ALL, true)
 
   /**
-    * @param isAvailable True if you want to retrieve all available Zones.
-    *                    False if you only want to return the Zones from which you have at least one VM. Default is false.
+    * @param isAvailable in which:
+    *                    true if you want to retrieve all available Zones;
+    *                    false if you only want to return the Zones from which you have at least one VM. Default is false.
     */
   def withAvailableFlag(isAvailable: Boolean): ZoneFindRequest = {
     request.addParameter(ParameterKeys.AVAILABLE, isAvailable)

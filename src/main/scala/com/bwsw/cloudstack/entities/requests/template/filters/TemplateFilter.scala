@@ -18,4 +18,17 @@
 */
 package com.bwsw.cloudstack.entities.requests.template.filters
 
+/**
+  * Wrapping for filter constant which is used by TemplateFindRequest for filtering templates while them retrieving
+  *
+  * @param name filter constant.
+  *             possible values are "featured", "self", "selfexecutable","sharedexecutable","executable", and "community".
+  *             featured : templates that have been marked as featured and public.
+  *             self : templates that have been registered or created by the calling user.
+  *             selfexecutable : same as self, but only returns templates that can be used to deploy a new VM.
+  *             sharedexecutable : templates ready to be deployed that have been granted to the calling user by another user.
+  *             executable : templates that are owned by the calling user, or public templates, that can be used to deploy a VM.
+  *             community : templates that have been marked as public but not featured.
+  *             all : all templates (only usable by admins).
+  */
 abstract class TemplateFilter(val name: String)

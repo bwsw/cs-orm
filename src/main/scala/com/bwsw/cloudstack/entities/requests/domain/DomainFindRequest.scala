@@ -24,7 +24,7 @@ import com.bwsw.cloudstack.entities.requests.Request
 
 /**
   * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving domain list.
-  * By default it retrieve only domain for client user, add "listAll" parameter for retrieving all domains.
+  * By default it retrieves only domain for client user, you might to add "listAll" parameter for retrieving all domains.
   */
 class DomainFindRequest extends Request {
   override protected[entities] val request: ApacheCloudStackRequest = new ApacheCloudStackRequest(Commands.LIST_DOMAINS)

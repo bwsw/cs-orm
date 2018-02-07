@@ -20,71 +20,62 @@ package com.bwsw.cloudstack.entities.requests.user
 
 import java.util.UUID
 
-import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.TestEntities
-import com.bwsw.cloudstack.entities.requests.Request
-import com.bwsw.cloudstack.entities.responses.UserResponse
-import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
+import com.bwsw.cloudstack.entities.responses.user.{UserFindResponse, UserList}
+import com.bwsw.cloudstack.entities.util.requests.IntegrationTestConstants.ParameterValues
+import com.bwsw.cloudstack.entities.util.requests.RequestExecutionHandler
 import org.scalatest.FlatSpec
-
-import scala.util.{Failure, Success, Try}
 
 class UserFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains only default parameters" in {
     val userFindRequest = new UserFindRequest
-    val response = mapper.deserialize[UserResponse](executor.executeRequest(userFindRequest.request))
+    val response = mapper.deserialize[UserFindResponse](executor.executeRequest(userFindRequest.getRequest))
 
-    assert(response.isInstanceOf[UserResponse])
+    assert(response.entityList.isInstanceOf[UserList])
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of id parameter does not exist" in {
     val id = UUID.randomUUID()
-    val userFindRequest = new UserFindRequest().withId(id)
+    val userFindRequest = new UserFindRequest()
+    userFindRequest.withId(id)
 
-    assert(tryExecuteRequest(userFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(userFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of domain parameter does not exist" in {
     val domainId = UUID.randomUUID()
-    val userFindRequest = new UserFindRequest().withDomain(domainId)
+    val userFindRequest = new UserFindRequest()
+    userFindRequest.withDomain(domainId)
 
-    assert(tryExecuteRequest(userFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(userFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of account name parameter does not exist" in {
     val accountName = UUID.randomUUID().toString
-    val userFindRequest = new UserFindRequest().withAccountName(accountName)
+    val userFindRequest = new UserFindRequest()
+    userFindRequest.withAccountName(accountName)
 
-    assert(tryExecuteRequest(userFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(userFindRequest))
   }
 
   it should "return an empty list of users if entity with a specified value of name parameter does not exist" in {
     val name = UUID.randomUUID().toString
-    val userFindRequest = new UserFindRequest().withName(name)
-    val response = mapper.deserialize[UserResponse](executor.executeRequest(userFindRequest.request))
+    val userFindRequest = new UserFindRequest()
+    userFindRequest.withName(name)
+
+    val response = mapper.deserialize[UserFindResponse](executor.executeRequest(userFindRequest.getRequest))
 
     assert(response.entityList.entities.isEmpty)
   }
 
-  it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
+  it should "ignore a parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
-    val request = new UserFindRequest().request.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
-    val response = mapper.deserialize[UserResponse](executor.executeRequest(request))
+    val request = new UserFindRequest().getRequest.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
+    val response = mapper.deserialize[UserFindResponse](executor.executeRequest(request))
 
-    assert(response.isInstanceOf[UserResponse])
-  }
-
-  private def tryExecuteRequest(request: Request): Boolean = {
-    Try {
-      executor.executeRequest(request.request)
-    } match {
-      case Success(_) => false
-      case Failure(e: ApacheCloudStackClientRequestRuntimeException) =>
-        e.getStatusCode == 431
-      case Failure(_: Throwable) => false
-    }
+    assert(response.entityList.isInstanceOf[UserList])
   }
 }

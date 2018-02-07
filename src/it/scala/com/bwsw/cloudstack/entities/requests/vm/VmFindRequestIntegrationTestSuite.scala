@@ -20,88 +20,79 @@ package com.bwsw.cloudstack.entities.requests.vm
 
 import java.util.UUID
 
-import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequestRuntimeException
 import com.bwsw.cloudstack.entities.TestEntities
-import com.bwsw.cloudstack.entities.requests.Request
-import com.bwsw.cloudstack.entities.responses.VirtualMachinesResponse
-import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues
+import com.bwsw.cloudstack.entities.responses.vm.{VirtualMachineFindResponse, VirtualMachineList}
+import com.bwsw.cloudstack.entities.util.requests.IntegrationTestConstants.ParameterValues
+import com.bwsw.cloudstack.entities.util.requests.RequestExecutionHandler
 import org.scalatest.FlatSpec
-
-import scala.util.{Failure, Success, Try}
 
 class VmFindRequestIntegrationTestSuite extends FlatSpec with TestEntities {
   it should "retrieve json string if request contains only default parameters" in {
     val vmFindRequest = new VmFindRequest
-    val response = mapper.deserialize[VirtualMachinesResponse](executor.executeRequest(vmFindRequest.request))
+    val response = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(vmFindRequest.getRequest))
 
-    assert(response.isInstanceOf[VirtualMachinesResponse])
+    assert(response.entityList.isInstanceOf[VirtualMachineList])
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of id parameter does not exist" in {
     val vmId = UUID.randomUUID()
-    val vmFindRequest = new VmFindRequest().withId(vmId)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withId(vmId)
 
-    assert(tryExecuteRequest(vmFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(vmFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of account name parameter does not exist" in {
     val accountName = UUID.randomUUID().toString
-    val vmFindRequest = new VmFindRequest().withAccountName(accountName)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withAccountName(accountName)
 
-    assert(tryExecuteRequest(vmFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(vmFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of domain parameter does not exist" in {
     val domainId = UUID.randomUUID()
-    val vmFindRequest = new VmFindRequest().withDomain(domainId)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withDomain(domainId)
 
-    assert(tryExecuteRequest(vmFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(vmFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of group parameter does not exist" in {
     val groupId = UUID.randomUUID()
-    val vmFindRequest = new VmFindRequest().withGroup(groupId)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withGroup(groupId)
 
-    assert(tryExecuteRequest(vmFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(vmFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of user parameter does not exist" in {
     val userId = UUID.randomUUID()
-    val vmFindRequest = new VmFindRequest().withUser(userId)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withUser(userId)
 
-    assert(tryExecuteRequest(vmFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(vmFindRequest))
   }
 
   it should "throw ApacheCloudStackClientRequestRuntimeException with status code 431" +
     " if entity with a specified value of zone parameter does not exist" in {
     val zoneId = UUID.randomUUID()
-    val vmFindRequest = new VmFindRequest().withZone(zoneId)
+    val vmFindRequest = new VmFindRequest()
+    vmFindRequest.withZone(zoneId)
 
-    assert(tryExecuteRequest(vmFindRequest))
+    assert(RequestExecutionHandler.entityNotExist(vmFindRequest))
   }
 
-  it should "retrieve json string if request contains default parameters and parameter with incorrect key" in {
+  it should "ignore a parameter with incorrect key" in {
     val incorrectParameterKey = UUID.randomUUID().toString
-    val request = new VmFindRequest().request.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
-    val response = mapper.deserialize[VirtualMachinesResponse](executor.executeRequest(request))
+    val request = new VmFindRequest().getRequest.addParameter(incorrectParameterKey, ParameterValues.DUMMY_VALUE)
+    val response = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(request))
 
-    assert(response.isInstanceOf[VirtualMachinesResponse])
+    assert(response.entityList.isInstanceOf[VirtualMachineList])
   }
-
-  private def tryExecuteRequest(request: Request): Boolean = {
-    Try {
-      executor.executeRequest(request.request)
-    } match {
-      case Success(_) => false
-      case Failure(e: ApacheCloudStackClientRequestRuntimeException) =>
-        e.getStatusCode == 431
-      case Failure(_: Throwable) => false
-    }
-  }
-
 }

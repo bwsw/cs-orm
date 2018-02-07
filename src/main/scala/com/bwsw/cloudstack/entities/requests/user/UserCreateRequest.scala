@@ -31,7 +31,7 @@ import com.bwsw.cloudstack.entities.requests.Request
   * @param settings required parameters for user creation, more info see UserCreateRequest.Settings
   */
 class UserCreateRequest(settings: UserCreateRequest.Settings) extends Request {
-  override protected[entities] val request = new ApacheCloudStackRequest(Commands.CREATE_USER)
+  override protected val request = new ApacheCloudStackRequest(Commands.CREATE_USER)
     .addParameter(RESPONSE, ParameterValues.JSON)
     .addParameter(ACCOUNT, settings.accountName)
     .addParameter(EMAIL, settings.email)
@@ -44,26 +44,23 @@ class UserCreateRequest(settings: UserCreateRequest.Settings) extends Request {
     * Add domain id parameter to a request.
     * Has to be accompanied with the account parameter.
     */
-  def withDomain(id: UUID): UserCreateRequest = {
-    request.addParameter(DOMAIN_ID, id)
-    this
+  def withDomain(id: UUID): Unit = {
+    addParameter(DOMAIN_ID, id)
   }
 
   /**
     * Add time zone parameter to a request
     */
-  def withTimeZone(timeZone: TimeZone): UserCreateRequest ={
-    request.addParameter(TIMEZONE, timeZone.toZoneId)
-    this
+  def withTimeZone(timeZone: TimeZone): Unit ={
+    addParameter(TIMEZONE, timeZone.toZoneId)
   }
 
   /**
     * Add user id parameter to a request.
     * Required for adding account from external provisioning system
     */
-  def withId(id: UUID): UserCreateRequest = {
-    request.addParameter(USER_ID, id)
-    this
+  def withId(id: UUID): Unit = {
+    addParameter(USER_ID, id)
   }
 }
 

@@ -24,8 +24,12 @@ import com.bwsw.cloudstack.PasswordAuthenticationClientCreator
 import com.bwsw.cloudstack.entities.common.JsonMapper
 import com.bwsw.cloudstack.entities.dao.AccountDao
 import com.bwsw.cloudstack.entities.requests.account.AccountFindRequest
+import com.bwsw.cloudstack.entities.requests.domain.DomainFindRequest
+import com.bwsw.cloudstack.entities.requests.serviceoffering.ServiceOfferingFindRequest
+import com.bwsw.cloudstack.entities.requests.template.TemplateFindRequest
+import com.bwsw.cloudstack.entities.requests.template.filters.Featured
+import com.bwsw.cloudstack.entities.requests.zone.ZoneFindRequest
 import com.bwsw.cloudstack.entities.util.dao.{DomainDao, ServiceOfferingDao, TemplateDao, ZoneDao}
-import com.bwsw.cloudstack.entities.util.requests.{DomainFindRequest, ServiceOfferingFindRequest, TemplateFindRequest, ZoneFindRequest}
 
 trait TestEntities {
   private val csHost = ApplicationConfig.getRequiredString("app.cloudstack.host")
@@ -50,13 +54,15 @@ trait TestEntities {
 
   val retrievedTemplateId: UUID = {
     val templateDao = new TemplateDao(executor, mapper)
-    val templateFindRequest = new TemplateFindRequest
+    val templateFindRequest = new TemplateFindRequest(Featured)
     templateDao.find(templateFindRequest).head.id
   }
 
   val retrievedZoneId: UUID = {
     val zoneDao = new ZoneDao(executor, mapper)
-    val zoneFindRequest = new ZoneFindRequest
+    val zoneFindRequest = new ZoneFindRequest()
+    zoneFindRequest.withAvailableFlag(true)
+
     zoneDao.find(zoneFindRequest).head.id
   }
 

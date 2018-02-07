@@ -39,7 +39,7 @@ class AccountCreateRequestTestSuite extends FlatSpec {
   )
 
   val defaultParameters = Set[ApacheCloudStackApiCommandParameter](
-    new ApacheCloudStackApiCommandParameter(RESPONSE,ParameterValues.JSON),
+    new ApacheCloudStackApiCommandParameter(RESPONSE, ParameterValues.JSON),
     new ApacheCloudStackApiCommandParameter(EMAIL, settings.email),
     new ApacheCloudStackApiCommandParameter(FIRST_NAME, settings.firstName),
     new ApacheCloudStackApiCommandParameter(LAST_NAME, settings.lastName),
@@ -51,63 +51,93 @@ class AccountCreateRequestTestSuite extends FlatSpec {
   it should "create a request with predefined and specified (via constructor) parameters" in {
     val request = new AccountCreateRequest(settings)
 
-    assert(request.request.getParameters.asScala.toSet == defaultParameters)
-    assert(request.request.getCommand == Commands.CREATE_ACCOUNT)
+    assert(request.getRequest.getParameters.asScala.toSet == defaultParameters)
+    assert(request.getRequest.getCommand == Commands.CREATE_ACCOUNT)
   }
 
   "withId" should "add id parameter to a request" in {
     val accountId = UUID.randomUUID()
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ACCOUNT_ID, accountId.toString))
     val request = new AccountCreateRequest(settings)
+    request.withId(accountId)
 
-    assert(request.withId(accountId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withTimeZone" should "add time zone parameter to a request" in {
     val timezone = "GMT+0700"
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(TIMEZONE, timezone))
     val request = new AccountCreateRequest(settings)
+    request.withTimeZone(TimeZone.getTimeZone(timezone))
 
-    assert(request.withTimeZone(TimeZone.getTimeZone(timezone)).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withDomain" should "add domain id parameter to a request" in {
     val domainId = UUID.randomUUID()
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(DOMAIN_ID, domainId))
     val request = new AccountCreateRequest(settings)
+    request.withDomain(domainId)
 
-    assert(request.withDomain(domainId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withName" should "add account name parameter to a request" in {
     val accountName = "name"
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ACCOUNT, accountName))
     val request = new AccountCreateRequest(settings)
+    request.withName(accountName)
 
-    assert(request.withName(accountName).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withNetworkDomain" should "add network domain parameter to a request" in {
     val networkdomain = "root"
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(NETWORK_DOMAIN, networkdomain))
     val request = new AccountCreateRequest(settings)
+    request.withNetworkDomain(networkdomain)
 
-    assert(request.withNetworkDomain(networkdomain).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withRole" should "add role id parameter to a request" in {
     val role = 1
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(ROLE_ID, role))
     val request = new AccountCreateRequest(settings)
+    request.withRole(role)
 
-    assert(request.withRole(role).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withUserId" should "add user id parameter to a request" in {
     val userId = UUID.randomUUID()
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(USER_ID, userId))
     val request = new AccountCreateRequest(settings)
+    request.withUserId(userId)
 
-    assert(request.withUserId(userId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
+  }
+
+  it should "create child AccountCreateRequest with one of parent parameters and one new parameter" in {
+    val userId = UUID.randomUUID()
+    val testParameterValue = "testValue"
+    val testParameterName = "testName"
+
+    val expectedParameters = defaultParameters ++ Set(
+      new ApacheCloudStackApiCommandParameter(USER_ID, userId),
+      new ApacheCloudStackApiCommandParameter(testParameterName, testParameterValue)
+    )
+
+    class TestAccountCreateRequest extends AccountCreateRequest(settings) {
+      def withTestParameter(value: String): Unit = {
+        addParameter(testParameterName, value)
+      }
+    }
+
+    val request = new TestAccountCreateRequest
+    request.withUserId(userId)
+    request.withTestParameter(testParameterValue)
+
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 }

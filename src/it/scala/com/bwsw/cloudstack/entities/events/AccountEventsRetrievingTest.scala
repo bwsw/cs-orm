@@ -22,11 +22,10 @@ import java.util.UUID
 
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.events.account.{AccountCreateEvent, AccountDeleteEvent}
-import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest
+import com.bwsw.cloudstack.entities.requests.account.{AccountCreateRequest, AccountDeleteRequest}
 import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.RootAdmin
 import com.bwsw.cloudstack.entities.util.events.RecordToEventDeserializer
 import com.bwsw.cloudstack.entities.util.kafka.Consumer
-import com.bwsw.cloudstack.entities.util.requests.AccountDeleteRequest
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
 
 class AccountEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAfterAll {
@@ -42,20 +41,21 @@ class AccountEventsRetrievingTest extends FlatSpec with TestEntities with Before
     username = s"username $accountId"
   )
 
-  val accountCreateRequest = new AccountCreateRequest(accountCreationSettings).withId(accountId)
+  val accountCreateRequest = new AccountCreateRequest(accountCreationSettings)
+  accountCreateRequest.withId(accountId)
   val accountDeleteRequest = new AccountDeleteRequest(accountId)
 
   val consumer = new Consumer(kafkaEndpoint, kafkaTopic)
   consumer.assignToEnd()
 
-  executor.executeRequest(accountCreateRequest.request)
-  executor.executeRequest(accountDeleteRequest.request)
+  executor.executeRequest(accountCreateRequest.getRequest)
+  executor.executeRequest(accountDeleteRequest.getRequest)
 
   Thread.sleep(sleepInterval)
 
   val records = consumer.poll(pollTimeout)
 
-  it should s"retrieve AccountCreateEvent with status 'Completed' from Kafka records" in {
+  it should "retrieve AccountCreateEvent with status 'Completed' from Kafka records" in {
     val expectedAccountCreateEvents = List(AccountCreateEvent(Some(Constants.Statuses.COMPLETED), Some(accountId)))
 
     val actualAccountCreateEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {

@@ -20,11 +20,10 @@ package com.bwsw.cloudstack.entities.events
 
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.events.vm.{VirtualMachineCreateEvent, VirtualMachineDestroyEvent}
-import com.bwsw.cloudstack.entities.requests.vm.VmCreateRequest
+import com.bwsw.cloudstack.entities.requests.vm.{VmCreateRequest, VmDeleteRequest}
+import com.bwsw.cloudstack.entities.responses.vm.VirtualMachineCreateResponse
 import com.bwsw.cloudstack.entities.util.events.RecordToEventDeserializer
 import com.bwsw.cloudstack.entities.util.kafka.Consumer
-import com.bwsw.cloudstack.entities.util.requests.VmDeleteRequest
-import com.bwsw.cloudstack.entities.util.responses.vm.VmCreateResponse
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
 
 class VmEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAfterAll {
@@ -40,15 +39,15 @@ class VmEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAf
   val consumer = new Consumer(kafkaEndpoint, kafkaTopic)
   consumer.assignToEnd()
 
-  val vmId = mapper.deserialize[VmCreateResponse](executor.executeRequest(vmCreateRequest.request)).vmId.id
+  val vmId = mapper.deserialize[VirtualMachineCreateResponse](executor.executeRequest(vmCreateRequest.getRequest)).vm.id
   val vmDeleteRequest = new VmDeleteRequest(vmId)
-  executor.executeRequest(vmDeleteRequest.request)
+  executor.executeRequest(vmDeleteRequest.getRequest)
 
   Thread.sleep(sleepInterval)
 
   val records = consumer.poll(pollTimeout)
 
-  it should s"retrieve VirtualMachineCreateEvent with status 'Completed' from Kafka records" in {
+  it should "retrieve VirtualMachineCreateEvent with status 'Completed' from Kafka records" in {
     val expectedVmCreateEvents = List(VirtualMachineCreateEvent(Some(Constants.Statuses.COMPLETED), Some(vmId)))
 
     val actualVmCreateEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {

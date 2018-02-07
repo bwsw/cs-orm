@@ -24,7 +24,7 @@ import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackApiCommandPara
 import com.bwsw.cloudstack.entities.requests.tag.types.UserTagType
 import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
 import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
-import com.bwsw.cloudstack.entities.responses.Tag
+import com.bwsw.cloudstack.entities.responses.tag.Tag
 import org.scalatest.FlatSpec
 
 import scala.collection.JavaConverters._
@@ -55,7 +55,27 @@ class TagCreateRequestTestSuite extends FlatSpec {
   it should "create a request with predefined and specified (via constructor) parameters" in {
     val request = new TagCreateRequest(TagCreateRequest.Settings(tagType, resourceIds, tagList))
 
-    assert(request.request.getParameters.asScala.toSet == defaultParameters)
-    assert(request.request.getCommand == Commands.CREATE_TAGS)
+    assert(request.getRequest.getParameters.asScala.toSet == defaultParameters)
+    assert(request.getRequest.getCommand == Commands.CREATE_TAGS)
+  }
+
+  it should "create child TagCreateRequest with one new parameter" in {
+    val testParameterValue = "testValue"
+    val testParameterName = "testName"
+
+    val expectedParameters = defaultParameters ++ Set(
+      new ApacheCloudStackApiCommandParameter(testParameterName, testParameterValue)
+    )
+
+    class TestTagCreateRequest extends TagCreateRequest(TagCreateRequest.Settings(tagType, resourceIds, tagList)) {
+      def withTestParameter(value: String): Unit = {
+        addParameter(testParameterName, value)
+      }
+    }
+
+    val request = new TestTagCreateRequest
+    request.withTestParameter(testParameterValue)
+
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 }

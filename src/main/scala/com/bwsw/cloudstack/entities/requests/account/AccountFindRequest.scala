@@ -29,31 +29,28 @@ import com.bwsw.cloudstack.entities.requests.Request
   * Class is responsible for building ApacheCloudStackRequest with specified parameters for retrieving account list
   */
 class AccountFindRequest extends Request {
-  override protected[entities] val request = new ApacheCloudStackRequest(Commands.LIST_ACCOUNTS)
+  override protected val request = new ApacheCloudStackRequest(Commands.LIST_ACCOUNTS)
     .addParameter(RESPONSE, ParameterValues.JSON)
     .addParameter(LIST_ALL, true)
 
   /**
     * Add an account id parameter to a request.
     */
-  def withId(id: UUID): AccountFindRequest = {
-    request.addParameter(ID, id)
-    this
+  def withId(id: UUID): Unit = {
+    addParameter(ID, id)
   }
 
   /**
     * Add an account name parameter to a request.
     */
-  def withName(name: String): AccountFindRequest = {
-    request.addParameter(NAME, name)
-    this
+  def withName(name: String): Unit = {
+    addParameter(NAME, name)
   }
 
   /**
     * Add a domain id parameter to a request.
     */
-  def withDomain(id: UUID): AccountFindRequest = {
-    request.addParameter(DOMAIN_ID, id)
-    this
+  def withDomain(id: UUID): Unit = {
+    addParameter(DOMAIN_ID, id)
   }
 }

@@ -45,16 +45,17 @@ class VmCreateRequestTestSuite extends FlatSpec {
   it should "create a request with predefined and specified (via constructor) parameters" in {
     val request = new VmCreateRequest(settings)
 
-    assert(request.request.getParameters.asScala.toSet == defaultParameters)
-    assert(request.request.getCommand == Commands.DEPLOY_VIRTUAL_MACHINE)
+    assert(request.getRequest.getParameters.asScala.toSet == defaultParameters)
+    assert(request.getRequest.getCommand == Commands.DEPLOY_VIRTUAL_MACHINE)
   }
 
   "withDomain" should "add a domain id parameter to a request" in {
     val domainId = UUID.randomUUID()
     val expectedParameters = defaultParameters ++ Set(new ApacheCloudStackApiCommandParameter(DOMAIN_ID, domainId))
     val request = new VmCreateRequest(settings)
+    request.withDomain(domainId)
 
-    assert(request.withDomain(domainId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 
   "withAccountName" should "add an account name parameter to a request" in {
@@ -65,7 +66,31 @@ class VmCreateRequestTestSuite extends FlatSpec {
       new ApacheCloudStackApiCommandParameter(DOMAIN_ID, domainId)
     )
     val request = new VmCreateRequest(settings)
+    request.withDomainAccount(accountName, domainId)
 
-    assert(request.withDomainAccount(accountName, domainId).request.getParameters.asScala.toSet == expectedParameters)
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
+  }
+
+  it should "create child VmCreateRequest with one of parent parameters and one new parameter" in {
+    val domainId = UUID.randomUUID()
+    val testParameterValue = "testValue"
+    val testParameterName = "testName"
+
+    val expectedParameters = defaultParameters ++ Set(
+      new ApacheCloudStackApiCommandParameter(DOMAIN_ID, domainId),
+      new ApacheCloudStackApiCommandParameter(testParameterName, testParameterValue)
+    )
+
+    class TestVmCreateRequest extends VmCreateRequest(settings) {
+      def withTestParameter(value: String): Unit = {
+        addParameter(testParameterName, value)
+      }
+    }
+
+    val request = new TestVmCreateRequest
+    request.withDomain(domainId)
+    request.withTestParameter(testParameterValue)
+
+    assert(request.getRequest.getParameters.asScala.toSet == expectedParameters)
   }
 }

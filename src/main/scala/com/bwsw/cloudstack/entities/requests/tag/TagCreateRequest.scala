@@ -25,7 +25,7 @@ import com.bwsw.cloudstack.entities.requests.tag.types.TagType
 import com.bwsw.cloudstack.entities.requests.Constants.{Commands, ParameterValues}
 import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys._
 import com.bwsw.cloudstack.entities.requests.Request
-import com.bwsw.cloudstack.entities.responses.Tag
+import com.bwsw.cloudstack.entities.responses.tag.Tag
 
 /**
   * Class is responsible for building ApacheCloudStackRequest with specified parameters for creating tags
@@ -33,7 +33,7 @@ import com.bwsw.cloudstack.entities.responses.Tag
   * @param settings required parameters for tag list creation, more info see AccountCreateRequest.Settings
   */
 class TagCreateRequest(settings: TagCreateRequest.Settings) extends Request {
-  override protected[entities] val request = new ApacheCloudStackRequest(Commands.CREATE_TAGS)
+  override protected val request = new ApacheCloudStackRequest(Commands.CREATE_TAGS)
     .addParameter(RESPONSE, ParameterValues.JSON)
     .addParameter(RESOURCE_TYPE, settings.resourceType.name)
     .addParameter(RESOURCE_IDS, settings.resourceIds.mkString(","))

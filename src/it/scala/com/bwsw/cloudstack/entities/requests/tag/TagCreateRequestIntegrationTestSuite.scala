@@ -22,11 +22,11 @@ import java.util.UUID
 
 import com.bwsw.cloudstack.entities.requests.tag.types.{TagType, UserTagType}
 import com.bwsw.cloudstack.entities.requests.user.UserCreateRequest
-import com.bwsw.cloudstack.entities.responses
-import com.bwsw.cloudstack.entities.util.requests.TestConstants.ParameterValues.{DUMMY_KEY, DUMMY_VALUE}
-import com.bwsw.cloudstack.entities.util.responses.{Tag, TagFindResponse}
-import com.bwsw.cloudstack.entities.util.responses.user.UserCreateResponse
+import com.bwsw.cloudstack.entities.util.requests.IntegrationTestConstants.ParameterValues.{DUMMY_KEY, DUMMY_VALUE}
+import com.bwsw.cloudstack.entities.util.responses.{TagTestFindResponse, TestTag}
 import com.bwsw.cloudstack.entities.TestEntities
+import com.bwsw.cloudstack.entities.responses.tag.Tag
+import com.bwsw.cloudstack.entities.responses.user.UserCreateResponse
 import org.scalatest.{Outcome, fixture}
 
 class TagCreateRequestIntegrationTestSuite extends fixture.FlatSpec with TestEntities {
@@ -46,8 +46,10 @@ class TagCreateRequestIntegrationTestSuite extends fixture.FlatSpec with TestEnt
       password = "passwd",
       username = s"username $userId"
     )
-    val userCreateRequest = new UserCreateRequest(userCreationSettings).withId(userId).request
-    mapper.deserialize[UserCreateResponse](executor.executeRequest(userCreateRequest))
+    val userCreateRequest = new UserCreateRequest(userCreationSettings)
+    userCreateRequest.withId(userId)
+
+    mapper.deserialize[UserCreateResponse](executor.executeRequest(userCreateRequest.getRequest))
 
     val theFixture = FixtureParam(resourceIds)
 
@@ -56,14 +58,14 @@ class TagCreateRequestIntegrationTestSuite extends fixture.FlatSpec with TestEnt
 
   it should s"create $tagNumber tags using a request which contains only required parameters" in { fixture =>
 
-    val expectedTags = (0 until tagNumber).map(x => responses.Tag(DUMMY_KEY + x, DUMMY_VALUE)).toList
+    val expectedTags = (0 until tagNumber).map(x => Tag(DUMMY_KEY + x, DUMMY_VALUE)).toList
 
     val settings = TagCreateRequest.Settings(
       resourceType = fixture.resourceType,
       resourceIds = fixture.resourceIds,
       tags = expectedTags
     )
-    val request = new TagCreateRequest(settings).request
+    val request = new TagCreateRequest(settings).getRequest
     executor.executeRequest(request)
 
     checkTagCreation(settings, expectedTags)
@@ -71,22 +73,24 @@ class TagCreateRequestIntegrationTestSuite extends fixture.FlatSpec with TestEnt
 
   it should s"create $tagNumber tags using a request which contains only required parameters and a parameter with incorrect key" in { fixture =>
     val incorrectParameter = UUID.randomUUID().toString
-    val expectedTags = (0 until tagNumber).map(x => responses.Tag(DUMMY_KEY + x, DUMMY_VALUE)).toList
+    val expectedTags = (0 until tagNumber).map(x => Tag(DUMMY_KEY + x, DUMMY_VALUE)).toList
 
     val settings = TagCreateRequest.Settings(
       resourceType = fixture.resourceType,
       resourceIds = fixture.resourceIds,
       tags = expectedTags
     )
-    val request = new TagCreateRequest(settings).request.addParameter(incorrectParameter, DUMMY_VALUE)
+    val request = new TagCreateRequest(settings).getRequest.addParameter(incorrectParameter, DUMMY_VALUE)
     executor.executeRequest(request)
 
     checkTagCreation(settings, expectedTags)
   }
 
-  private def checkTagCreation(settings: TagCreateRequest.Settings, expectedTags: List[responses.Tag]): Unit = {
-    val tagFindRequest = new TagFindRequest().withResource(settings.resourceIds.head).request
-    val tags = mapper.deserialize[TagFindResponse](executor.executeRequest(tagFindRequest)).tags.maybeTags
+  private def checkTagCreation(settings: TagCreateRequest.Settings, expectedTags: List[Tag]): Unit = {
+    val tagFindRequest = new TagFindRequest()
+    tagFindRequest.withResource(settings.resourceIds.head)
+
+    val tags = mapper.deserialize[TagTestFindResponse](executor.executeRequest(tagFindRequest.getRequest)).tags.maybeTags
 
     assert(
       tags.isDefined &&
@@ -95,8 +99,8 @@ class TagCreateRequestIntegrationTestSuite extends fixture.FlatSpec with TestEnt
   }
 
   private def checkTagEquality(settings: TagCreateRequest.Settings,
-                               expectedTag: responses.Tag,
-                               retrievedTag: Tag): Boolean = {
+                               expectedTag: Tag,
+                               retrievedTag: TestTag): Boolean = {
     expectedTag.key == retrievedTag.key &&
       expectedTag.value == retrievedTag.value &&
       settings.resourceType.name == retrievedTag.resourceType &&

@@ -25,21 +25,19 @@ import br.com.autonomiccs.apacheCloudStack.exceptions.ApacheCloudStackClientRequ
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.RootAdmin
 import com.bwsw.cloudstack.entities.requests.account.{AccountCreateRequest, AccountFindRequest}
-import com.bwsw.cloudstack.entities.responses.{Account, User}
+import com.bwsw.cloudstack.entities.responses.account.Account
 import org.scalatest.FlatSpec
 
 class AccountDaoTestSuite extends FlatSpec with TestData {
   val findRequest = new AccountFindRequest
 
   "find" should "return non-empty entity list if a response json string contains the relevant data" in {
-    val accountId = UUID.randomUUID()
-    val userId = UUID.randomUUID()
-    val expectedAccountList = List(Account(accountId, List(User(userId, accountId))))
+    val expectedAccountList = List(testAccount)
 
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
-        Response.getAccountResponseJson(accountId.toString, userId.toString)
+        assert(findRequest.getRequest == request)
+        Response.getAccountResponseJson(testAccount)
       }
     }
 
@@ -51,7 +49,7 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
   "find" should "return an empty entity list if a response json string does not contain the relevant data" in {
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         Response.getResponseWithEmptyAccountList
       }
     }
@@ -66,7 +64,7 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
     val statusCode = 431
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         throw new ApacheCloudStackClientRequestRuntimeException(statusCode, "", "")
       }
     }
@@ -79,7 +77,7 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
   "find" should "not swallow non-ApacheCloudStackClientRequestRuntimeException" in {
     val executor = new Executor(executorSettings, clientCreator){
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         throw new Exception
       }
     }
@@ -93,7 +91,7 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
     val statusCode = 400
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {
-        assert(findRequest.request == request)
+        assert(findRequest.getRequest == request)
         throw new ApacheCloudStackClientRequestRuntimeException(statusCode, "", "")
       }
     }
@@ -101,6 +99,25 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
     val accountDao = new AccountDao(executor, jsonMapper)
 
     assertThrows[ApacheCloudStackClientRequestRuntimeException](accountDao.find(findRequest))
+  }
+
+  "find" should "handle child of AccountFindRequest" in {
+    val expectedAccountList = List(testAccount)
+
+    class TestAccountFindRequest extends AccountFindRequest
+
+    val childRequest = new TestAccountFindRequest
+
+    val executor = new Executor(executorSettings, clientCreator){
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        assert(childRequest.getRequest == request)
+        Response.getAccountResponseJson(testAccount)
+      }
+    }
+
+    val accountDao = new AccountDao(executor, jsonMapper)
+
+    assert(accountDao.find(childRequest) == expectedAccountList)
   }
 
   "create" should "submit request to Executor" in {
@@ -114,7 +131,7 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
       username = "user"
     ))
 
-    val expectedRequests = List(createRequest.request)
+    val expectedRequests = List(createRequest.getRequest)
 
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {
@@ -140,7 +157,7 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
       username = "user"
     ))
 
-    val expectedRequests = List(createRequest.request)
+    val expectedRequests = List(createRequest.getRequest)
 
     val executor = new Executor(executorSettings, clientCreator) {
       override def executeRequest(request: ApacheCloudStackRequest): String = {
@@ -152,6 +169,36 @@ class AccountDaoTestSuite extends FlatSpec with TestData {
     val accountDao = new AccountDao(executor, jsonMapper)
 
     assertThrows[Exception](accountDao.create(createRequest).isInstanceOf[Unit])
+    assert(actualRequests == expectedRequests)
+  }
+
+  "create" should "handle child of AccountCreateRequest" in {
+    var actualRequests = List.empty[ApacheCloudStackRequest]
+    val createRequestSettings = AccountCreateRequest.Settings(
+      _type = RootAdmin,
+      email = "e@e",
+      firstName = "fn",
+      lastName = "ln",
+      password = "passw",
+      username = "user"
+    )
+
+    class TestAccountCreateRequest extends AccountCreateRequest(createRequestSettings)
+
+    val createRequest = new TestAccountCreateRequest
+
+    val expectedRequests = List(createRequest.getRequest)
+
+    val executor = new Executor(executorSettings, clientCreator) {
+      override def executeRequest(request: ApacheCloudStackRequest): String = {
+        actualRequests = actualRequests ::: request :: Nil
+        ""
+      }
+    }
+
+    val accountDao = new AccountDao(executor, jsonMapper)
+
+    assert(accountDao.create(createRequest).isInstanceOf[Unit])
     assert(actualRequests == expectedRequests)
   }
 }

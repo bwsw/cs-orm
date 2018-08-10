@@ -1,5 +1,3 @@
-image: java:8
-
 variables:
   ADVERTISED_HOST: localhost
   ADVERTISED_PORT: "9092"
@@ -14,23 +12,11 @@ stages:
   - mirror
 
 test:
-  image: java:8
+  image: hseeberger/scala-sbt:8u151-2.12.4-1.0.4
   stage: test
   services:
     - spotify/kafka
     - bwsw/cs-simulator-kafka:4.10.3-NP
-  before_script:
-  # Enable the usage of sources over https
-  - apt-get update -yqq
-  - apt-get install apt-transport-https -yqq
-  # Add keyserver for SBT
-  - echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
-  - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
-  # Install SBT
-  - apt-get update -yqq
-  - apt-get install sbt -yqq
-  # Log the sbt version
-  - sbt sbt-version
   script:
     - sbt scalastyle test:scalastyle it:scalastyle
     - sbt clean coverage test it:test coverageReport

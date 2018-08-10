@@ -3,26 +3,36 @@ variables:
   ADVERTISED_PORT: "9092"
   KAFKA_HOST: spotify-kafka
   KAFKA_PORT: "9092"
-  KAFKA_ACKS: all
   KAFKA_TOPIC: cs
-  KAFKA_WRITE_RETRIES: "1"
   CS_HOST: bwsw-cs-simulator-kafka
   CS_PORT: 8888
 
 stages:
   - test
+  - it
   - mirror
 
 test:
   image: hseeberger/scala-sbt:8u151-2.12.4-1.0.4
   stage: test
+  script:
+    - sbt scalastyle test:scalastyle
+    - sbt clean coverage test coverageReport
+  coverage: '/Coverage was \[\d+.\d+\%\]/'
+  tags:
+    - build-in-docker
+    - cs-eco-builder
+
+it:
+  image: hseeberger/scala-sbt:8u151-2.12.4-1.0.4
+  stage: it
   services:
     - spotify/kafka
     - bwsw/cs-simulator-kafka:4.10.3-NP
   script:
-    - sbt scalastyle test:scalastyle it:scalastyle
-    - sbt clean coverage test it:test coverageReport
-  coverage: '/Coverage was \[\d+.\d+\%\]/'
+    - chmod +x ./wait-cs-simulator.sh && ./wait-cs-simulator.sh
+    - sbt scalastyle it:scalastyle
+    - sbt clean it:test
   tags:
     - build-in-docker
     - cs-eco-builder

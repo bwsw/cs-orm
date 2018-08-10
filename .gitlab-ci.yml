@@ -1,11 +1,13 @@
 variables:
-  ADVERTISED_HOST: localhost
+  ADVERTISED_HOST: spotify-kafka
   ADVERTISED_PORT: "9092"
-  KAFKA_HOST: localhost
+  KAFKA_HOST: spotify-kafka
   KAFKA_PORT: "9092"
   KAFKA_ACKS: all
   KAFKA_TOPIC: cs
   KAFKA_WRITE_RETRIES: "1"
+  CS_HOST: bwsw-cs-simulator-kafka
+  CS_PORT: 8888
 
 stages:
   - test

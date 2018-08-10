@@ -1,0 +1,63 @@
+image: java:8
+
+variables:
+  ADVERTISED_HOST: localhost
+  ADVERTISED_PORT: "9092"
+  KAFKA_HOST: localhost
+  KAFKA_PORT: "9092"
+  KAFKA_ACKS: all
+  KAFKA_TOPIC: cs
+  KAFKA_WRITE_RETRIES: "1"
+
+stages:
+  - test
+  - mirror
+
+test:
+  image: java:8
+  stage: test
+  services:
+    - spotify/kafka
+    - bwsw/cs-simulator-kafka:4.10.3-NP
+  before_script:
+  # Enable the usage of sources over https
+  - apt-get update -yqq
+  - apt-get install apt-transport-https -yqq
+  # Add keyserver for SBT
+  - echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+  - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+  # Install SBT
+  - apt-get update -yqq
+  - apt-get install sbt -yqq
+  # Log the sbt version
+  - sbt sbt-version
+  script:
+    - sbt scalastyle test:scalastyle it:scalastyle
+    - sbt clean coverage test it:test coverageReport
+  coverage: '/Coverage was \[\d+.\d+\%\]/'
+  tags:
+    - build-in-docker
+    - cs-eco-builder
+
+mirror-master:
+  image: maven:3.5.4
+  stage: mirror
+  variables:
+    UPSTREAM_REPOSITORY: "git@github.com:bwsw/cs-entities.git"
+    UPSTREAM_BRANCH: "master"
+    GIT_STRATEGY: clone
+  only:
+    - master
+  script:
+    - mkdir -p ~/.ssh
+    - echo $GITHUB_MIRROR_PRIVATE | base64 -d > ~/.ssh/id_rsa
+    - echo $GITHUB_MIRROR_PUBLIC > ~/.ssh/id_rsa.pub
+    - ssh-keyscan -t rsa,dsa,ecdsa github.com >> ~/.ssh/known_hosts
+    - chmod -R go-rwx ~/.ssh
+    - git remote add mirror $UPSTREAM_REPOSITORY
+    - git remote show mirror
+    - git fetch mirror
+    - git push --progress mirror HEAD:$UPSTREAM_BRANCH
+  tags:
+    - build-in-docker
+    - cs-eco-builder

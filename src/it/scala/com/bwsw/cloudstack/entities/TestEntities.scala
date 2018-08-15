@@ -38,7 +38,7 @@ trait TestEntities {
   private val kafkaPort = ApplicationConfig.getRequiredString("app.kafka.port")
   private val retryDelay = 1000
   val kafkaEndpoint = s"$kafkaHost:$kafkaPort"
-  val kafkaTopic = ApplicationConfig.getRequiredString("app.kafka.topic")
+  val kafkaTopic: String = ApplicationConfig.getRequiredString("app.kafka.topic")
   val adminAccount = "admin"
   val creatorSettings = PasswordAuthenticationClientCreator.Settings(adminAccount,"password","/")
   val executorSettings = Executor.Settings(Array(s"http://$csHost:$csPort/client/api"), retryDelay)

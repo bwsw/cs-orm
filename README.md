@@ -58,20 +58,21 @@ Run tests: `sbt test`
 ### Integration tests
 
 1. Add local environment variables:
-    * `CS_PORT` - port of Apache CloudStack simulator server, for example - "8888"
-    * `CS_HOST` - host of Apache CloudStack simulator server, by default - "localhost"
-    * `KAFKA_HOST` - host of Kafka, for example - "localhost"
-    * `KAFKA_PORT` - port of Kafka, for example - "9092"
-    * `KAFKA_TOPIC` - kafka topic containing cloudstack events
+    * `CS_PORT` - port of Apache CloudStack simulator server, by default - `8888`
+    * `CS_HOST` - host of Apache CloudStack simulator server, by default - `localhost`
+    * `KAFKA_HOST` - host of Kafka, by default - `localhost`
+    * `KAFKA_PORT` - port of Kafka, by default - `9092`
+    * `KAFKA_TOPIC` - kafka topic containing cloudstack events, by default - `cs`
+    * `ZK_PORT` - port of Zookeeper, e.g. 2181
     
 2. Run Apache CloudStack simulator in docker container:
 ```bash
-    docker run -d --rm --name spotify-kafka --tty=true -p 2181:2181 -p $KAFKA_PORT:$KAFKA_PORT --env ADVERTISED_HOST=$KAFKA_HOST --env ADVERTISED_PORT=$KAFKA_PORT spotify/kafka
+    docker run -d --rm --name spotify-kafka --tty=true -p $ZK_PORT:2181 -p $KAFKA_PORT:9092 --env ADVERTISED_HOST=$KAFKA_HOST --env ADVERTISED_PORT=$KAFKA_PORT spotify/kafka
     
     docker run --rm -e KAFKA_HOST="${KAFKA_HOST}" \
                     -e KAFKA_PORT="${KAFKA_PORT}" \
                     -e KAFKA_TOPIC="${KAFKA_TOPIC}" \
-                    --name cloudstack-kafka-sim -d -p $CS_PORT:$CS_PORT bwsw/cs-simulator-kafka:4.10.3-NP
+                    --name cs-simulator-kafka -d -p $CS_PORT:8888 bwsw/cs-simulator-kafka:4.10.3-NP
 ```
 
 3. After the end of the cloudstack simulator deploying (you can check it like ![this](jenkins/run_cs_simulator.sh)) execute: `sbt it:test`

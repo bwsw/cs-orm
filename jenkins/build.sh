@@ -12,6 +12,8 @@ echo "---------------------------------------------"
 
 sh ./jenkins/run_cs_simulator.sh
 
+sh wait-cs-simulator.sh
+
 sbt it:test
 
 echo "---------------------------------------------"

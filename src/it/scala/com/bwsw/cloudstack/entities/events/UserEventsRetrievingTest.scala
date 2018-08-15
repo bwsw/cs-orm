@@ -25,9 +25,9 @@ import com.bwsw.cloudstack.entities.events.user.UserCreateEvent
 import com.bwsw.cloudstack.entities.requests.user.UserCreateRequest
 import com.bwsw.cloudstack.entities.util.events.RecordToEventDeserializer
 import com.bwsw.cloudstack.entities.util.kafka.Consumer
-import org.scalatest.{BeforeAndAfterAll, FlatSpec}
+import org.scalatest.FlatSpec
 
-class UserEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAfterAll {
+class UserEventsRetrievingTest extends FlatSpec with TestEntities {
   val userId = UUID.randomUUID()
   val sleepInterval = 5000
   val pollTimeout = 1000

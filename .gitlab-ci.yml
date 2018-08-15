@@ -1,0 +1,57 @@
+stages:
+  - test
+  - it
+  - mirror
+
+test:
+  image: hseeberger/scala-sbt:8u151-2.12.4-1.0.4
+  stage: test
+  script:
+    - sbt scalastyle test:scalastyle
+    - sbt clean coverage test coverageReport
+  coverage: '/Coverage was \[\d+.\d+\%\]/'
+  tags:
+    - build-in-docker
+    - cs-eco-builder
+
+it:
+  stage: it
+  before_script:
+    - if (docker ps | grep spotify-kafka); then docker stop spotify-kafka; fi
+    - if (docker ps | grep cs-simulator-kafka); then docker stop cs-simulator-kafka; fi 
+  script:
+    - export CS_PORT="7777"; export CS_HOST=`hostname -I |sed 's/\|/ /'|awk '{print $1}'`; export KAFKA_HOST=$CS_HOST; export KAFKA_PORT="9077"; export KAFKA_TOPIC="cs"; export ZK_PORT="2187"
+    - docker run -d --rm --name spotify-kafka -p $ZK_PORT:2181 -p $KAFKA_PORT:9092 --env ADVERTISED_HOST=$KAFKA_HOST --env ADVERTISED_PORT=$KAFKA_PORT spotify/kafka
+    - docker run --rm -e KAFKA_HOST="${KAFKA_HOST}" -e KAFKA_PORT="${KAFKA_PORT}" -e KAFKA_TOPIC="${KAFKA_TOPIC}" --name cs-simulator-kafka -d -p $CS_PORT:8888 bwsw/cs-simulator-kafka:4.10.3-NP
+    - chmod +x ./wait-cs-simulator.sh && ./wait-cs-simulator.sh
+    - sbt scalastyle it:scalastyle
+    - sbt clean it:test
+  after_script:
+    - docker stop spotify-kafka cs-simulator-kafka
+  tags:
+    - build-as-docker
+    - sbt
+    - shell
+
+mirror-master:
+  image: maven:3.5.4
+  stage: mirror
+  variables:
+    UPSTREAM_REPOSITORY: "git@github.com:bwsw/cs-entities.git"
+    UPSTREAM_BRANCH: "master"
+    GIT_STRATEGY: clone
+  only:
+    - master
+  script:
+    - mkdir -p ~/.ssh
+    - echo $GITHUB_MIRROR_PRIVATE | base64 -d > ~/.ssh/id_rsa
+    - echo $GITHUB_MIRROR_PUBLIC > ~/.ssh/id_rsa.pub
+    - ssh-keyscan -t rsa,dsa,ecdsa github.com >> ~/.ssh/known_hosts
+    - chmod -R go-rwx ~/.ssh
+    - git remote add mirror $UPSTREAM_REPOSITORY
+    - git remote show mirror
+    - git fetch mirror
+    - git push --progress mirror HEAD:$UPSTREAM_BRANCH
+  tags:
+    - build-in-docker
+    - cs-eco-builder

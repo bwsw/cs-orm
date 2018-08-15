@@ -1,3 +1,3 @@
 #!/bin/bash -e
 
-docker stop cloudstack-kafka-sim spotify-kafka
+docker stop cs-simulator-kafka spotify-kafka

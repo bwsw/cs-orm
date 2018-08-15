@@ -1,12 +1,3 @@
-variables:
-  ADVERTISED_HOST: kafka
-  ADVERTISED_PORT: "9092"
-  KAFKA_HOST: kafka
-  KAFKA_PORT: "9092"
-  KAFKA_TOPIC: cs
-  CS_HOST: cs-simulator
-  CS_PORT: 8888
-
 stages:
   - test
   - it
@@ -24,21 +15,22 @@ test:
     - cs-eco-builder
 
 it:
-  image: hseeberger/scala-sbt:8u151-2.12.4-1.0.4
   stage: it
-  services:
-    - name: spotify/kafka
-      alias: kafka
-    - name: bwsw/cs-simulator-kafka:4.10.3-NP
-      alias: cs-simulator
+  before_script:
+    - docker stop spotify-kafka cs-simulator-kafka
   script:
+    - export CS_PORT="7777"; export CS_HOST=`hostname -I |sed 's/\|/ /'|awk '{print $1}'`; export KAFKA_HOST=$CS_HOST; export KAFKA_PORT="9077"; export KAFKA_TOPIC="cs"; export ZK_PORT="2187"
+    - docker run -d --rm --name spotify-kafka -p $ZK_PORT:2181 -p $KAFKA_PORT:9092 --env ADVERTISED_HOST=$KAFKA_HOST --env ADVERTISED_PORT=$KAFKA_PORT spotify/kafka
+    - docker run --rm -e KAFKA_HOST="${KAFKA_HOST}" -e KAFKA_PORT="${KAFKA_PORT}" -e KAFKA_TOPIC="${KAFKA_TOPIC}" --name cs-simulator-kafka -d -p $CS_PORT:8888 bwsw/cs-simulator-kafka:4.10.3-NP
     - chmod +x ./wait-cs-simulator.sh && ./wait-cs-simulator.sh
     - sbt scalastyle it:scalastyle
     - sbt clean it:test
+  after_script:
+    - docker stop spotify-kafka cs-simulator-kafka
   tags:
-    - build-in-docker
-    - cs-eco-builder
-  when: manual # fix this stage (it doesn't work with service's approach)
+    - build-as-docker
+    - sbt
+    - shell
 
 mirror-master:
   image: maven:3.5.4

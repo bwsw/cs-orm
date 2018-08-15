@@ -17,7 +17,8 @@ test:
 it:
   stage: it
   before_script:
-    - docker stop spotify-kafka cs-simulator-kafka
+    - if (docker ps | grep spotify-kafka); then docker stop spotify-kafka; fi
+    - if (docker ps | grep cs-simulator-kafka); then docker stop cs-simulator-kafka; fi 
   script:
     - export CS_PORT="7777"; export CS_HOST=`hostname -I |sed 's/\|/ /'|awk '{print $1}'`; export KAFKA_HOST=$CS_HOST; export KAFKA_PORT="9077"; export KAFKA_TOPIC="cs"; export ZK_PORT="2187"
     - docker run -d --rm --name spotify-kafka -p $ZK_PORT:2181 -p $KAFKA_PORT:9092 --env ADVERTISED_HOST=$KAFKA_HOST --env ADVERTISED_PORT=$KAFKA_PORT spotify/kafka

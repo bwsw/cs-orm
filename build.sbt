@@ -23,7 +23,7 @@ lazy val csEntities = (project in file("."))
     name := "cs-entities",
     organization := "com.bwsw",
     version := "1.410np.0",
-    scalaVersion := "2.12.4",
+    scalaVersion := "2.12.6",
     libraryDependencies ++= Seq(
       "br.com.autonomiccs" % "apache-cloudstack-java-client" % "1.0.5",
       "com.typesafe" % "config" % "1.3.0",

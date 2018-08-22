@@ -4,7 +4,7 @@ stages:
   - mirror
 
 test:
-  image: hseeberger/scala-sbt:8u151-2.12.4-1.0.4
+  image: hseeberger/scala-sbt:8u171_2.12.6_1.2.1
   stage: test
   script:
     - sbt scalastyle test:scalastyle

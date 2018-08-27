@@ -28,7 +28,7 @@ import com.bwsw.cloudstack.entities.util.kafka.Consumer
 import org.scalatest.FlatSpec
 
 class UserEventsRetrievingTest extends FlatSpec with TestEntities {
-  val userId = UUID.randomUUID()
+  val userId: UUID = UUID.randomUUID()
   val sleepInterval = 5000
   val pollTimeout = 1000
   val userCreationSettings = UserCreateRequest.Settings(
@@ -50,14 +50,13 @@ class UserEventsRetrievingTest extends FlatSpec with TestEntities {
 
   Thread.sleep(sleepInterval)
 
-  val records = consumer.poll(pollTimeout)
+  val records: List[String] = consumer.poll(pollTimeout)
 
   it should "retrieve UserCreateEvent with status 'Completed' from Kafka records" in {
-    val expectedUserCreateEvents = List(UserCreateEvent(Some(Constants.Statuses.COMPLETED), Some(userId)))
+    val expectedUserCreateEvents = List(UserCreateEvent(Constants.Statuses.COMPLETED, userId))
 
-    val actualUserCreateEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {
-      case UserCreateEvent(Some(status), Some(entityId))
-        if status == Constants.Statuses.COMPLETED && entityId == userId => true
+    val actualUserCreateEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
+      case UserCreateEvent(Constants.Statuses.COMPLETED, `userId`) => true
       case _ => false
     }
 

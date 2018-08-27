@@ -20,75 +20,85 @@ package com.bwsw.cloudstack.entities.events
 
 import java.util.UUID
 
-import com.bwsw.cloudstack.entities.common.JsonMapper
+import com.bwsw.cloudstack.entities.common.JsonFormats._
 import com.bwsw.cloudstack.entities.events.Constants._
 import com.bwsw.cloudstack.entities.events.account.{AccountCreateEvent, AccountDeleteEvent}
 import com.bwsw.cloudstack.entities.events.user.UserCreateEvent
 import com.bwsw.cloudstack.entities.events.vm.{VirtualMachineCreateEvent, VirtualMachineDestroyEvent}
-import org.scalatest.FlatSpec
+import org.scalatest.{FlatSpec, Matchers}
+import spray.json._
 
-class CloudStackEventTestSuite extends FlatSpec {
-  val status = Statuses.COMPLETED
+class CloudStackEventTestSuite extends FlatSpec with Matchers {
+
+  val status: String = Statuses.COMPLETED
 
   it should s"be deserialized to the UserCreateEvent if event is ${Events.USER_CREATE}" in {
     val userId = UUID.randomUUID()
-    val userCreateEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.USER_CREATE}" + "\",\"entityuuid\":\"" + s"$userId" + "\"}"
+    val userCreateEventJson =
+      s"""{
+         |  "status": "$status",
+         |  "event": "${Events.USER_CREATE}",
+         |  "entityuuid": "$userId"
+         |}""".stripMargin
 
-    val expectedEvent = UserCreateEvent(Some(status), Some(userId))
-    val mapper = new JsonMapper(true)
+    val expectedEvent = UserCreateEvent(status, userId)
 
-    assert(mapper.deserialize[CloudStackEvent](userCreateEventJson) == expectedEvent)
+    userCreateEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
 
   it should s"be deserialized to the AccoutCreateEvent if event is ${Events.ACCOUNT_CREATE}" in {
     val accountId = UUID.randomUUID()
-    val accountCreateEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.ACCOUNT_CREATE}" + "\",\"entityuuid\":\"" + s"$accountId" + "\"}"
+    val accountCreateEventJson =
+      s"""{
+         |  "status": "$status",
+         |  "event": "${Events.ACCOUNT_CREATE}",
+         |  "entityuuid": "$accountId"
+         |}""".stripMargin
 
-    val expectedEvent = AccountCreateEvent(Some(status), Some(accountId))
-    val mapper = new JsonMapper(true)
+    val expectedEvent = AccountCreateEvent(status, accountId)
 
-    assert(mapper.deserialize[CloudStackEvent](accountCreateEventJson) == expectedEvent)
+    accountCreateEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
 
   it should s"be deserialized to the AccoutDeleteEvent if event is ${Events.ACCOUNT_DELETE}" in {
     val accountId = UUID.randomUUID()
-    val accountDeleteEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.ACCOUNT_DELETE}" + "\",\"entityuuid\":\"" + s"$accountId" + "\"}"
+    val accountDeleteEventJson =
+      s"""{
+         |  "status": "$status",
+         |  "event": "${Events.ACCOUNT_DELETE}",
+         |  "entityuuid": "$accountId"
+         |}""".stripMargin
 
-    val expectedEvent = AccountDeleteEvent(Some(status), Some(accountId))
-    val mapper = new JsonMapper(true)
+    val expectedEvent = AccountDeleteEvent(status, accountId)
 
-    assert(mapper.deserialize[CloudStackEvent](accountDeleteEventJson) == expectedEvent)
+    accountDeleteEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
 
   it should s"be deserialized to the VirtualMachineCreateEvent if event is ${Events.VM_CREATE}" in {
     val vmId = UUID.randomUUID()
-    val vmCreateEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.VM_CREATE}" + "\",\"entityuuid\":\"" + s"$vmId" + "\"}"
+    val vmCreateEventJson =
+      s"""{
+         |  "status": "$status",
+         |  "event": "${Events.VM_CREATE}",
+         |  "entityuuid": "$vmId"
+         |}""".stripMargin
 
-    val expectedEvent = VirtualMachineCreateEvent(Some(status), Some(vmId))
-    val mapper = new JsonMapper(true)
+    val expectedEvent = VirtualMachineCreateEvent(status, vmId)
 
-    assert(mapper.deserialize[CloudStackEvent](vmCreateEventJson) == expectedEvent)
+    vmCreateEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
 
   it should s"be deserialized to the VirtualMachineDestroyEvent if event is ${Events.VM_DESTROY}" in {
     val vmId = UUID.randomUUID()
-    val vmDestroyEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.VM_DESTROY}" + "\",\"entityuuid\":\"" + s"$vmId" + "\"}"
+    val vmDestroyEventJson =
+      s"""{
+         |  "status": "$status",
+         |  "event": "${Events.VM_DESTROY}",
+         |  "entityuuid": "$vmId"
+         |}""".stripMargin
 
-    val expectedEvent = VirtualMachineDestroyEvent(Some(status), Some(vmId))
-    val mapper = new JsonMapper(true)
+    val expectedEvent = VirtualMachineDestroyEvent(status, vmId)
 
-    assert(mapper.deserialize[CloudStackEvent](vmDestroyEventJson) == expectedEvent)
-  }
-
-
-  it should "be deserialized to the CloudStackEvent if event value is not described in JsonSubTypes annotation" in {
-    val entityId = UUID.randomUUID()
-    val event = UUID.randomUUID().toString
-    val eventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"$event" + "\",\"entityuuid\":\"" + s"$entityId" + "\"}"
-
-    val expectedEvent = new CloudStackEvent(Some(status), Some(entityId), Some(event))
-    val mapper = new JsonMapper(true)
-
-    assert(mapper.deserialize[CloudStackEvent](eventJson).getClass == expectedEvent.getClass)
+    vmDestroyEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
 }

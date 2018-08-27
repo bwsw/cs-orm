@@ -18,6 +18,8 @@
 */
 package com.bwsw.cloudstack.entities.events
 
+import java.util.UUID
+
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.events.vm.{VirtualMachineCreateEvent, VirtualMachineDestroyEvent}
 import com.bwsw.cloudstack.entities.requests.vm.{VmCreateRequest, VmDeleteRequest}
@@ -26,10 +28,14 @@ import com.bwsw.cloudstack.entities.util.events.RecordToEventDeserializer
 import com.bwsw.cloudstack.entities.util.kafka.Consumer
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
 
-class VmEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAfterAll {
-  val serviceOfferingId = retrievedServiceOfferingId
-  val templateId = retrievedTemplateId
-  val zoneId = retrievedZoneId
+class VmEventsRetrievingTest
+  extends FlatSpec
+    with TestEntities
+    with BeforeAndAfterAll {
+
+  val serviceOfferingId: UUID = retrievedServiceOfferingId
+  val templateId: UUID = retrievedTemplateId
+  val zoneId: UUID = retrievedZoneId
 
   val sleepInterval = 15000
   val pollTimeout = 1000
@@ -39,20 +45,19 @@ class VmEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAf
   val consumer = new Consumer(kafkaEndpoint, kafkaTopic)
   consumer.assignToEnd()
 
-  val vmId = mapper.deserialize[VirtualMachineCreateResponse](executor.executeRequest(vmCreateRequest.getRequest)).vm.id
+  val vmId: UUID = mapper.deserialize[VirtualMachineCreateResponse](executor.executeRequest(vmCreateRequest.getRequest)).vm.id
   val vmDeleteRequest = new VmDeleteRequest(vmId)
   executor.executeRequest(vmDeleteRequest.getRequest)
 
   Thread.sleep(sleepInterval)
 
-  val records = consumer.poll(pollTimeout)
+  val records: List[String] = consumer.poll(pollTimeout)
 
   it should "retrieve VirtualMachineCreateEvent with status 'Completed' from Kafka records" in {
-    val expectedVmCreateEvents = List(VirtualMachineCreateEvent(Some(Constants.Statuses.COMPLETED), Some(vmId)))
+    val expectedVmCreateEvents = List(VirtualMachineCreateEvent(Constants.Statuses.COMPLETED, vmId))
 
-    val actualVmCreateEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {
-      case VirtualMachineCreateEvent(Some(status), Some(entityId))
-        if status == Constants.Statuses.COMPLETED && entityId == vmId => true
+    val actualVmCreateEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
+      case VirtualMachineCreateEvent(Constants.Statuses.COMPLETED, `vmId`) => true
       case _ => false
     }
 
@@ -60,11 +65,10 @@ class VmEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAf
   }
 
   it should "retrieve VirtualMachineDestroyEvent with status 'Completed' from Kafka records" in {
-    val expectedVmDestroyEvents = List(VirtualMachineDestroyEvent(Some(Constants.Statuses.COMPLETED), Some(vmId)))
+    val expectedVmDestroyEvents = List(VirtualMachineDestroyEvent(Constants.Statuses.COMPLETED, vmId))
 
-    val actualVmDestroyEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {
-      case VirtualMachineDestroyEvent(Some(status), Some(entityId))
-        if status == Constants.Statuses.COMPLETED && entityId == vmId => true
+    val actualVmDestroyEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
+      case VirtualMachineDestroyEvent(Constants.Statuses.COMPLETED, `vmId`) => true
       case _ => false
     }
 

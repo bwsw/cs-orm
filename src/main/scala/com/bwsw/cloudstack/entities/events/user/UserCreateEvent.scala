@@ -21,7 +21,7 @@ package com.bwsw.cloudstack.entities.events.user
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.events.CloudStackEvent
-import com.bwsw.cloudstack.entities.events.Constants.Events
 
-case class UserCreateEvent(override val status: Option[String], override val entityuuid: Option[UUID])
-  extends CloudStackEvent(status, entityuuid, Some(Events.USER_CREATE))
+final case class UserCreateEvent(status: String,
+                                 entityuuid: UUID)
+  extends CloudStackEvent

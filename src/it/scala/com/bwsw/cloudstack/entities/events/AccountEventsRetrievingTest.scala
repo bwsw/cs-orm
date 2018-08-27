@@ -22,14 +22,14 @@ import java.util.UUID
 
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.events.account.{AccountCreateEvent, AccountDeleteEvent}
-import com.bwsw.cloudstack.entities.requests.account.{AccountCreateRequest, AccountDeleteRequest}
 import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.RootAdmin
+import com.bwsw.cloudstack.entities.requests.account.{AccountCreateRequest, AccountDeleteRequest}
 import com.bwsw.cloudstack.entities.util.events.RecordToEventDeserializer
 import com.bwsw.cloudstack.entities.util.kafka.Consumer
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
 
 class AccountEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAfterAll {
-  val accountId = UUID.randomUUID()
+  val accountId: UUID = UUID.randomUUID()
   val sleepInterval = 10000
   val pollTimeout = 1000
   val accountCreationSettings = AccountCreateRequest.Settings(
@@ -53,14 +53,13 @@ class AccountEventsRetrievingTest extends FlatSpec with TestEntities with Before
 
   Thread.sleep(sleepInterval)
 
-  val records = consumer.poll(pollTimeout)
+  val records: List[String] = consumer.poll(pollTimeout)
 
   it should "retrieve AccountCreateEvent with status 'Completed' from Kafka records" in {
-    val expectedAccountCreateEvents = List(AccountCreateEvent(Some(Constants.Statuses.COMPLETED), Some(accountId)))
+    val expectedAccountCreateEvents = List(AccountCreateEvent(Constants.Statuses.COMPLETED, accountId))
 
-    val actualAccountCreateEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {
-      case AccountCreateEvent(Some(status), Some(entityId))
-        if status == Constants.Statuses.COMPLETED && entityId == accountId => true
+    val actualAccountCreateEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
+      case AccountCreateEvent(Constants.Statuses.COMPLETED, `accountId`) => true
       case _ => false
     }
 
@@ -68,11 +67,10 @@ class AccountEventsRetrievingTest extends FlatSpec with TestEntities with Before
   }
 
   it should "retrieve AccountDeleteEvent with status 'Completed' from Kafka records" in {
-    val expectedAccountDeleteEvents = List(AccountDeleteEvent(Some(Constants.Statuses.COMPLETED), Some(accountId)))
+    val expectedAccountDeleteEvents = List(AccountDeleteEvent(Constants.Statuses.COMPLETED, accountId))
 
-    val actualAccountDeleteEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {
-      case AccountDeleteEvent(Some(status), Some(entityId))
-        if status == Constants.Statuses.COMPLETED && entityId == accountId => true
+    val actualAccountDeleteEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
+      case AccountDeleteEvent(Constants.Statuses.COMPLETED, `accountId`) => true
       case _ => false
     }
 

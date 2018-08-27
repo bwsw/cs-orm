@@ -16,12 +16,9 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.events.account
+package com.bwsw.cloudstack.entities.events
 
-import java.util.UUID
+import spray.json.JsValue
 
-import com.bwsw.cloudstack.entities.events.CloudStackEvent
-
-final case class AccountCreateEvent(status: String,
-                                    entityuuid: UUID)
+final case class UnknownEvent(json: JsValue)
   extends CloudStackEvent

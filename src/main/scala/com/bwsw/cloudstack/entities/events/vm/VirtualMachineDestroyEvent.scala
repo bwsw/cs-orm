@@ -21,7 +21,7 @@ package com.bwsw.cloudstack.entities.events.vm
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.events.CloudStackEvent
-import com.bwsw.cloudstack.entities.events.Constants.Events
 
-case class VirtualMachineDestroyEvent(override val status: Option[String], override val entityuuid: Option[UUID])
-  extends CloudStackEvent(status, entityuuid, Some(Events.VM_DESTROY))
+final case class VirtualMachineDestroyEvent(status: String,
+                                            entityuuid: UUID)
+  extends CloudStackEvent

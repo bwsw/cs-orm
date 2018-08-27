@@ -18,30 +18,7 @@
 */
 package com.bwsw.cloudstack.entities.events
 
-import java.util.UUID
-
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type
-import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
-import com.bwsw.cloudstack.entities.events.account.{AccountCreateEvent, AccountDeleteEvent}
-import com.bwsw.cloudstack.entities.events.user.UserCreateEvent
-import com.bwsw.cloudstack.entities.events.vm.{VirtualMachineCreateEvent, VirtualMachineDestroyEvent}
-import com.bwsw.cloudstack.entities.events.Constants._
-
 /**
-  * A base structure of Apache CloudStack event.
+  * A base type of Apache CloudStack event.
   */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
-  property = "event",
-  defaultImpl = classOf[CloudStackEvent],
-  visible = true,
-  include = JsonTypeInfo.As.EXISTING_PROPERTY)
-@JsonSubTypes(Array(
-  new Type(value = classOf[UserCreateEvent], name = Events.USER_CREATE),
-  new Type(value = classOf[AccountCreateEvent], name = Events.ACCOUNT_CREATE),
-  new Type(value = classOf[AccountDeleteEvent], name = Events.ACCOUNT_DELETE),
-  new Type(value = classOf[VirtualMachineCreateEvent], name = Events.VM_CREATE),
-  new Type(value = classOf[VirtualMachineDestroyEvent], name = Events.VM_DESTROY)
-))
-class CloudStackEvent(val status: Option[String],
-                      val entityuuid: Option[UUID],
-                      @JsonProperty("event") val action: Option[String])
+trait CloudStackEvent

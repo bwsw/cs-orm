@@ -17,10 +17,11 @@
 * under the License.
 */
 package com.bwsw.cloudstack.entities.events.account
+
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.events.CloudStackEvent
-import com.bwsw.cloudstack.entities.events.Constants.Events
 
-case class AccountDeleteEvent(override val status: Option[String], override val entityuuid: Option[UUID])
-  extends CloudStackEvent(status, entityuuid, Some(Events.ACCOUNT_DELETE))
+final case class AccountDeleteEvent(status: String,
+                                    entityuuid: UUID)
+  extends CloudStackEvent

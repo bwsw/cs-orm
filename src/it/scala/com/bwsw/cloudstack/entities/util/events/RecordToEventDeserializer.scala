@@ -18,20 +18,12 @@
 */
 package com.bwsw.cloudstack.entities.util.events
 
-import com.bwsw.cloudstack.entities.common.JsonMapper
 import com.bwsw.cloudstack.entities.events.CloudStackEvent
-import com.google.gson.JsonParseException
-
-import scala.util.{Failure, Success, Try}
+import spray.json._
 
 object RecordToEventDeserializer {
-  def deserializeRecord(record: String, mapper: JsonMapper): CloudStackEvent = {
-    Try {
-      mapper.deserialize[CloudStackEvent](record)
-    } match {
-      case Success(x) => x
-      case Failure(e: JsonParseException) => new CloudStackEvent(None, None, None)
-      case Failure(e: Throwable) => throw e
-    }
-  }
+
+  def deserializeRecord(record: String)
+                       (implicit jsonWriter: JsonFormat[CloudStackEvent]): CloudStackEvent =
+    record.parseJson.convertTo[CloudStackEvent]
 }

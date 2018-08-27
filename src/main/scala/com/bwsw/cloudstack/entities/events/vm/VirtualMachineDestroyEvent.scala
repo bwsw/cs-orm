@@ -18,10 +18,12 @@
 */
 package com.bwsw.cloudstack.entities.events.vm
 
+import java.time.OffsetDateTime
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.events.CloudStackEvent
 
 final case class VirtualMachineDestroyEvent(status: String,
-                                            entityuuid: UUID)
+                                            entityuuid: UUID,
+                                            eventDateTime: OffsetDateTime)
   extends CloudStackEvent

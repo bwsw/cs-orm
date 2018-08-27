@@ -18,10 +18,12 @@
 */
 package com.bwsw.cloudstack.entities.events.user
 
+import java.time.OffsetDateTime
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.events.CloudStackEvent
 
 final case class UserCreateEvent(status: String,
-                                 entityuuid: UUID)
+                                 entityuuid: UUID,
+                                 eventDateTime: OffsetDateTime)
   extends CloudStackEvent

@@ -18,6 +18,7 @@
 */
 package com.bwsw.cloudstack.entities.events
 
+import java.time.OffsetDateTime
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.TestEntities
@@ -26,9 +27,15 @@ import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.RootAd
 import com.bwsw.cloudstack.entities.requests.account.{AccountCreateRequest, AccountDeleteRequest}
 import com.bwsw.cloudstack.entities.util.events.RecordToEventDeserializer
 import com.bwsw.cloudstack.entities.util.kafka.Consumer
-import org.scalatest.{BeforeAndAfterAll, FlatSpec}
+import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}
 
-class AccountEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAfterAll {
+class AccountEventsRetrievingTest
+  extends FlatSpec
+    with TestEntities
+    with BeforeAndAfterAll
+    with Matchers {
+
+  private val eventDateTime = OffsetDateTime.now()
   val accountId: UUID = UUID.randomUUID()
   val sleepInterval = 10000
   val pollTimeout = 1000
@@ -48,7 +55,9 @@ class AccountEventsRetrievingTest extends FlatSpec with TestEntities with Before
   val consumer = new Consumer(kafkaEndpoint, kafkaTopic)
   consumer.assignToEnd()
 
+  private val beforeCreation = OffsetDateTime.now().minusSeconds(1)
   executor.executeRequest(accountCreateRequest.getRequest)
+  private val beforeDeletion = OffsetDateTime.now().minusSeconds(1)
   executor.executeRequest(accountDeleteRequest.getRequest)
 
   Thread.sleep(sleepInterval)
@@ -56,25 +65,25 @@ class AccountEventsRetrievingTest extends FlatSpec with TestEntities with Before
   val records: List[String] = consumer.poll(pollTimeout)
 
   it should "retrieve AccountCreateEvent with status 'Completed' from Kafka records" in {
-    val expectedAccountCreateEvents = List(AccountCreateEvent(Constants.Statuses.COMPLETED, accountId))
-
+    val afterCreation = OffsetDateTime.now()
     val actualAccountCreateEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
-      case AccountCreateEvent(Constants.Statuses.COMPLETED, `accountId`) => true
+      case AccountCreateEvent(Constants.Statuses.COMPLETED, `accountId`, dateTime) =>
+        dateTime.isAfter(beforeCreation) && dateTime.isBefore(afterCreation)
       case _ => false
     }
 
-    assert(actualAccountCreateEvents == expectedAccountCreateEvents, s"records count: ${records.size}")
+    actualAccountCreateEvents.length shouldBe 1
   }
 
   it should "retrieve AccountDeleteEvent with status 'Completed' from Kafka records" in {
-    val expectedAccountDeleteEvents = List(AccountDeleteEvent(Constants.Statuses.COMPLETED, accountId))
-
+    val afterDeletion = OffsetDateTime.now()
     val actualAccountDeleteEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
-      case AccountDeleteEvent(Constants.Statuses.COMPLETED, `accountId`) => true
+      case AccountDeleteEvent(Constants.Statuses.COMPLETED, `accountId`, dateTime) =>
+        dateTime.isAfter(beforeDeletion) && dateTime.isBefore(afterDeletion)
       case _ => false
     }
 
-    assert(expectedAccountDeleteEvents == actualAccountDeleteEvents, s"records count: ${records.size}")
+    actualAccountDeleteEvents.length shouldBe 1
   }
 
   override def afterAll(): Unit = {

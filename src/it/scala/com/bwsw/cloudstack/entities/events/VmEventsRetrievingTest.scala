@@ -18,6 +18,7 @@
 */
 package com.bwsw.cloudstack.entities.events
 
+import java.time.OffsetDateTime
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.TestEntities
@@ -26,12 +27,13 @@ import com.bwsw.cloudstack.entities.requests.vm.{VmCreateRequest, VmDeleteReques
 import com.bwsw.cloudstack.entities.responses.vm.VirtualMachineCreateResponse
 import com.bwsw.cloudstack.entities.util.events.RecordToEventDeserializer
 import com.bwsw.cloudstack.entities.util.kafka.Consumer
-import org.scalatest.{BeforeAndAfterAll, FlatSpec}
+import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}
 
 class VmEventsRetrievingTest
   extends FlatSpec
     with TestEntities
-    with BeforeAndAfterAll {
+    with BeforeAndAfterAll
+    with Matchers {
 
   val serviceOfferingId: UUID = retrievedServiceOfferingId
   val templateId: UUID = retrievedTemplateId
@@ -45,8 +47,11 @@ class VmEventsRetrievingTest
   val consumer = new Consumer(kafkaEndpoint, kafkaTopic)
   consumer.assignToEnd()
 
+  private val beforeCreation = OffsetDateTime.now().minusSeconds(1)
   val vmId: UUID = mapper.deserialize[VirtualMachineCreateResponse](executor.executeRequest(vmCreateRequest.getRequest)).vm.id
+
   val vmDeleteRequest = new VmDeleteRequest(vmId)
+  private val beforeDeletion = OffsetDateTime.now().minusSeconds(1)
   executor.executeRequest(vmDeleteRequest.getRequest)
 
   Thread.sleep(sleepInterval)
@@ -54,25 +59,25 @@ class VmEventsRetrievingTest
   val records: List[String] = consumer.poll(pollTimeout)
 
   it should "retrieve VirtualMachineCreateEvent with status 'Completed' from Kafka records" in {
-    val expectedVmCreateEvents = List(VirtualMachineCreateEvent(Constants.Statuses.COMPLETED, vmId))
-
+    val afterCreation = OffsetDateTime.now()
     val actualVmCreateEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
-      case VirtualMachineCreateEvent(Constants.Statuses.COMPLETED, `vmId`) => true
+      case VirtualMachineCreateEvent(Constants.Statuses.COMPLETED, `vmId`, dateTime) =>
+        dateTime.isAfter(beforeCreation) && dateTime.isBefore(afterCreation)
       case _ => false
     }
 
-    assert(actualVmCreateEvents == expectedVmCreateEvents, s"records count: ${records.size}")
+    actualVmCreateEvents.length shouldBe 1
   }
 
   it should "retrieve VirtualMachineDestroyEvent with status 'Completed' from Kafka records" in {
-    val expectedVmDestroyEvents = List(VirtualMachineDestroyEvent(Constants.Statuses.COMPLETED, vmId))
-
+    val afterDeletion = OffsetDateTime.now()
     val actualVmDestroyEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
-      case VirtualMachineDestroyEvent(Constants.Statuses.COMPLETED, `vmId`) => true
+      case VirtualMachineDestroyEvent(Constants.Statuses.COMPLETED, `vmId`, dateTime) =>
+        dateTime.isAfter(beforeDeletion) && dateTime.isBefore(afterDeletion)
       case _ => false
     }
 
-    assert(actualVmDestroyEvents == expectedVmDestroyEvents, s"records count: ${records.size}")
+    actualVmDestroyEvents.length shouldBe 1
   }
 
   override def afterAll(): Unit = {

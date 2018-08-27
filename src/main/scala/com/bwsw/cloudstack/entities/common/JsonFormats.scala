@@ -18,13 +18,16 @@
 */
 package com.bwsw.cloudstack.entities.common
 
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
-import com.bwsw.cloudstack.entities.events.Constants.Events
+import com.bwsw.cloudstack.entities.events.Constants.{Events, FieldNames}
 import com.bwsw.cloudstack.entities.events.account.{AccountCreateEvent, AccountDeleteEvent}
 import com.bwsw.cloudstack.entities.events.user.UserCreateEvent
 import com.bwsw.cloudstack.entities.events.vm.{VirtualMachineCreateEvent, VirtualMachineDestroyEvent}
 import com.bwsw.cloudstack.entities.events.{CloudStackEvent, UnknownEvent}
+import org.slf4j.LoggerFactory
 import spray.json.DefaultJsonProtocol._
 import spray.json._
 
@@ -32,38 +35,63 @@ import scala.util.{Failure, Success, Try}
 
 trait JsonFormats {
 
-  implicit val uuidJsonFormat: JsonFormat[UUID] = new JsonFormat[UUID] {
-    override def read(json: JsValue): UUID =
-      UUID.fromString(StringJsonFormat.read(json))
+  private val logger = LoggerFactory.getLogger(classOf[JsonFormats])
+  val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd['T'][ ]HH:mm:ss[ ]X")
 
-    override def write(obj: UUID): JsValue =
-      StringJsonFormat.write(obj.toString)
+  implicit val uuidJsonFormat: JsonFormat[UUID] = new JsonFormat[UUID] {
+    override def read(json: JsValue): UUID = {
+      json match {
+        case JsString(x) => UUID.fromString(x)
+        case x => deserializationError("Expected UUID as JsString, but got " + x)
+      }
+    }
+
+    override def write(obj: UUID): JsValue = JsString(obj.toString)
   }
+
+  implicit val offsetDateTimeJsonFormat: JsonFormat[OffsetDateTime] = new JsonFormat[OffsetDateTime] {
+    override def read(json: JsValue): OffsetDateTime = {
+      json match {
+        case JsString(x) => OffsetDateTime.parse(x, dateTimeFormatter)
+        case x => deserializationError("Expected OffsetDateTime as JsString, but got " + x)
+      }
+    }
+
+    override def write(obj: OffsetDateTime): JsValue =
+      JsString(obj.format(dateTimeFormatter))
+  }
+
   implicit val accountCreateEventJsonFormat: RootJsonFormat[AccountCreateEvent] =
-    jsonFormat2(AccountCreateEvent)
+    jsonFormat3(AccountCreateEvent)
   implicit val accountDeleteEventJsonFormat: RootJsonFormat[AccountDeleteEvent] =
-    jsonFormat2(AccountDeleteEvent)
+    jsonFormat3(AccountDeleteEvent)
   implicit val userCreateEventJsonFormat: RootJsonFormat[UserCreateEvent] =
-    jsonFormat2(UserCreateEvent)
+    jsonFormat3(UserCreateEvent)
   implicit val virtualMachineCreateEventJsonFormat: RootJsonFormat[VirtualMachineCreateEvent] =
-    jsonFormat2(VirtualMachineCreateEvent)
+    jsonFormat3(VirtualMachineCreateEvent)
   implicit val virtualMachineDestroyEventJsonFormat: RootJsonFormat[VirtualMachineDestroyEvent] =
-    jsonFormat2(VirtualMachineDestroyEvent)
+    jsonFormat3(VirtualMachineDestroyEvent)
 
   implicit val cloudStackEventJsonFormat: RootJsonFormat[CloudStackEvent] = new RootJsonFormat[CloudStackEvent] {
     override def read(json: JsValue): CloudStackEvent = {
       Try {
-        json.asJsObject.fields("event") match {
-          case JsString(Events.ACCOUNT_CREATE) => json.convertTo[AccountCreateEvent]
-          case JsString(Events.ACCOUNT_DELETE) => json.convertTo[AccountDeleteEvent]
-          case JsString(Events.USER_CREATE) => json.convertTo[UserCreateEvent]
-          case JsString(Events.VM_CREATE) => json.convertTo[VirtualMachineCreateEvent]
-          case JsString(Events.VM_DESTROY) => json.convertTo[VirtualMachineDestroyEvent]
+        val fields = json.asJsObject.fields
+        val eventField = fields.get(FieldNames.Event)
+        val eventDateTimeField = fields.get(FieldNames.EventDateTime)
+
+        (eventField, eventDateTimeField) match {
+          case (Some(JsString(Events.ACCOUNT_CREATE)), Some(_)) => json.convertTo[AccountCreateEvent]
+          case (Some(JsString(Events.ACCOUNT_DELETE)), Some(_)) => json.convertTo[AccountDeleteEvent]
+          case (Some(JsString(Events.USER_CREATE)), Some(_)) => json.convertTo[UserCreateEvent]
+          case (Some(JsString(Events.VM_CREATE)), Some(_)) => json.convertTo[VirtualMachineCreateEvent]
+          case (Some(JsString(Events.VM_DESTROY)), Some(_)) => json.convertTo[VirtualMachineDestroyEvent]
           case _ => UnknownEvent(json)
         }
       } match {
         case Success(event) => event
-        case Failure(_) => UnknownEvent(json)
+        case Failure(exception) =>
+          logger.warn(s"Cannot parse event: $json", exception)
+          UnknownEvent(json)
       }
     }
 

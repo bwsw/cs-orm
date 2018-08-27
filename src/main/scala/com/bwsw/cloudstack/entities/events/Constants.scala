@@ -31,4 +31,10 @@ object Constants {
   object Statuses {
     val COMPLETED = "Completed"
   }
+
+  object FieldNames {
+    val Event: String = "event"
+    val EventDateTime: String = "eventDateTime"
+  }
+
 }

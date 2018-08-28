@@ -60,6 +60,7 @@ class CloudStackEventTestSuite extends FlatSpec with Matchers {
 
   it should s"be deserialized to the AccoutCreateEvent if event is ${Events.ACCOUNT_CREATE}" in {
     val accountId = UUID.randomUUID()
+    val domainId = UUID.randomUUID()
     //scalastyle:off
     val eventDateTime = OffsetDateTime.MIN
       .withYear(2018)
@@ -75,10 +76,11 @@ class CloudStackEventTestSuite extends FlatSpec with Matchers {
          |  "status": "$status",
          |  "event": "${Events.ACCOUNT_CREATE}",
          |  "entityuuid": "$accountId",
-         |  "eventDateTime": "2018-03-23T09:04:01 -0400"
+         |  "eventDateTime": "2018-03-23T09:04:01 -0400",
+         |  "Domain": "$domainId"
          |}""".stripMargin
 
-    val expectedEvent = AccountCreateEvent(Some(status), accountId, Some(eventDateTime))
+    val expectedEvent = AccountCreateEvent(Some(status), accountId, Some(eventDateTime), Some(domainId))
 
     accountCreateEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }

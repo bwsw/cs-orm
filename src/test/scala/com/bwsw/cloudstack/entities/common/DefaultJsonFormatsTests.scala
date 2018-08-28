@@ -57,7 +57,8 @@ class DefaultJsonFormatsTests
         AccountCreateEvent(
           status = Some(Statuses.COMPLETED),
           entityuuid = UUID.fromString("162b26e6-052a-43bb-9116-acb7555b6d7d"),
-          eventDateTime = Some(OffsetDateTime.of(2017, 11, 12, 12, 44, 33, 0, ZoneOffset.ofHours(7))) //scalastyle:ignore
+          eventDateTime = Some(OffsetDateTime.of(2017, 11, 12, 12, 44, 33, 0, ZoneOffset.ofHours(7))), //scalastyle:ignore
+          domain = Some(UUID.fromString("16d7977e-43fd-47ad-9fff-6ef8d463516f"))
         )
       ),
       (

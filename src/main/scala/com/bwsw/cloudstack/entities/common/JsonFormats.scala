@@ -59,7 +59,13 @@ trait JsonFormats {
   }
 
   implicit val accountCreateEventJsonFormat: RootJsonFormat[AccountCreateEvent] =
-    jsonFormat3(AccountCreateEvent)
+    jsonFormat(
+      AccountCreateEvent,
+      "status",
+      "entityuuid",
+      "eventDateTime",
+      "Domain"
+    )
   implicit val accountDeleteEventJsonFormat: RootJsonFormat[AccountDeleteEvent] =
     jsonFormat3(AccountDeleteEvent)
   implicit val userCreateEventJsonFormat: RootJsonFormat[UserCreateEvent] =

@@ -22,6 +22,7 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.TestEntities
+import com.bwsw.cloudstack.entities.common.DefaultJsonFormats._
 import com.bwsw.cloudstack.entities.events.vm.{VirtualMachineCreateEvent, VirtualMachineDestroyEvent}
 import com.bwsw.cloudstack.entities.requests.vm.{VmCreateRequest, VmDeleteRequest}
 import com.bwsw.cloudstack.entities.responses.vm.VirtualMachineCreateResponse
@@ -61,7 +62,7 @@ class VmEventsRetrievingTest
   it should "retrieve VirtualMachineCreateEvent with status 'Completed' from Kafka records" in {
     val afterCreation = OffsetDateTime.now()
     val actualVmCreateEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
-      case VirtualMachineCreateEvent(Constants.Statuses.COMPLETED, `vmId`, dateTime) =>
+      case VirtualMachineCreateEvent(Some(Constants.Statuses.COMPLETED), `vmId`, Some(dateTime)) =>
         dateTime.isAfter(beforeCreation) && dateTime.isBefore(afterCreation)
       case _ => false
     }
@@ -72,7 +73,7 @@ class VmEventsRetrievingTest
   it should "retrieve VirtualMachineDestroyEvent with status 'Completed' from Kafka records" in {
     val afterDeletion = OffsetDateTime.now()
     val actualVmDestroyEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
-      case VirtualMachineDestroyEvent(Constants.Statuses.COMPLETED, `vmId`, dateTime) =>
+      case VirtualMachineDestroyEvent(Some(Constants.Statuses.COMPLETED), `vmId`, Some(dateTime)) =>
         dateTime.isAfter(beforeDeletion) && dateTime.isBefore(afterDeletion)
       case _ => false
     }

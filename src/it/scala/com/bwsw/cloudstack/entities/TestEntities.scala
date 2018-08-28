@@ -21,7 +21,7 @@ package com.bwsw.cloudstack.entities
 import java.util.UUID
 
 import com.bwsw.cloudstack.PasswordAuthenticationClientCreator
-import com.bwsw.cloudstack.entities.common.{JsonFormats, JsonMapper}
+import com.bwsw.cloudstack.entities.common.JsonMapper
 import com.bwsw.cloudstack.entities.requests.domain.DomainFindRequest
 import com.bwsw.cloudstack.entities.requests.serviceoffering.ServiceOfferingFindRequest
 import com.bwsw.cloudstack.entities.requests.template.TemplateFindRequest
@@ -29,8 +29,7 @@ import com.bwsw.cloudstack.entities.requests.template.filters.Featured
 import com.bwsw.cloudstack.entities.requests.zone.ZoneFindRequest
 import com.bwsw.cloudstack.entities.util.dao.{DomainDao, ServiceOfferingDao, TemplateDao, ZoneDao}
 
-trait TestEntities
-  extends JsonFormats {
+trait TestEntities {
 
   private val csHost = ApplicationConfig.getRequiredString("app.cloudstack.host")
   private val csPort = ApplicationConfig.getRequiredString("app.cloudstack.port")

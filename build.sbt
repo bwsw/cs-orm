@@ -34,6 +34,7 @@ lazy val csEntities = (project in file("."))
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.8",
       "com.fasterxml.jackson.module" % "jackson-module-scala_2.12" % "2.8.8",
       "io.spray" %% "spray-json" % "1.3.4",
+      "org.slf4j" % "slf4j-log4j12" % "1.7.25" % "it,test",
     ),
     addCompilerPlugin("org.psywerx.hairyfotr" %% "linter" % "0.1.17"),
     pomIncludeRepository := { _ => false },

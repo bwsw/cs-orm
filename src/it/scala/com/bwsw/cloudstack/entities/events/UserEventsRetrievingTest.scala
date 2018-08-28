@@ -22,6 +22,7 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.TestEntities
+import com.bwsw.cloudstack.entities.common.DefaultJsonFormats._
 import com.bwsw.cloudstack.entities.events.user.UserCreateEvent
 import com.bwsw.cloudstack.entities.requests.user.UserCreateRequest
 import com.bwsw.cloudstack.entities.util.events.RecordToEventDeserializer
@@ -61,7 +62,7 @@ class UserEventsRetrievingTest
   it should "retrieve UserCreateEvent with status 'Completed' from Kafka records" in {
     val afterCreation = OffsetDateTime.now()
     val actualUserCreateEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
-      case UserCreateEvent(Constants.Statuses.COMPLETED, `userId`, dateTime) =>
+      case UserCreateEvent(Some(Constants.Statuses.COMPLETED), `userId`, Some(dateTime)) =>
         dateTime.isAfter(beforeCreation) && dateTime.isBefore(afterCreation)
       case _ => false
     }

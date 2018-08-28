@@ -21,7 +21,7 @@ package com.bwsw.cloudstack.entities.events
 import java.time.{OffsetDateTime, ZoneOffset}
 import java.util.UUID
 
-import com.bwsw.cloudstack.entities.common.JsonFormats._
+import com.bwsw.cloudstack.entities.common.DefaultJsonFormats._
 import com.bwsw.cloudstack.entities.events.Constants._
 import com.bwsw.cloudstack.entities.events.account.{AccountCreateEvent, AccountDeleteEvent}
 import com.bwsw.cloudstack.entities.events.user.UserCreateEvent
@@ -53,7 +53,7 @@ class CloudStackEventTestSuite extends FlatSpec with Matchers {
          |  "eventDateTime": "2011-01-01 01:01:01Z"
          |}""".stripMargin
 
-    val expectedEvent = UserCreateEvent(status, userId, eventDateTime)
+    val expectedEvent = UserCreateEvent(Some(status), userId, Some(eventDateTime))
 
     userCreateEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
@@ -78,7 +78,7 @@ class CloudStackEventTestSuite extends FlatSpec with Matchers {
          |  "eventDateTime": "2018-03-23T09:04:01 -0400"
          |}""".stripMargin
 
-    val expectedEvent = AccountCreateEvent(status, accountId, eventDateTime)
+    val expectedEvent = AccountCreateEvent(Some(status), accountId, Some(eventDateTime))
 
     accountCreateEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
@@ -103,7 +103,7 @@ class CloudStackEventTestSuite extends FlatSpec with Matchers {
          |  "eventDateTime": "2017-11-12 13:36:23 +0700"
          |}""".stripMargin
 
-    val expectedEvent = AccountDeleteEvent(status, accountId, eventDateTime)
+    val expectedEvent = AccountDeleteEvent(Some(status), accountId, Some(eventDateTime))
 
     accountDeleteEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
@@ -128,7 +128,7 @@ class CloudStackEventTestSuite extends FlatSpec with Matchers {
          |  "eventDateTime": "2017-11-12 13:36:23 +0700"
          |}""".stripMargin
 
-    val expectedEvent = VirtualMachineCreateEvent(status, vmId, eventDateTime)
+    val expectedEvent = VirtualMachineCreateEvent(Some(status), vmId, Some(eventDateTime))
 
     vmCreateEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
@@ -153,7 +153,7 @@ class CloudStackEventTestSuite extends FlatSpec with Matchers {
          |  "eventDateTime": "2017-11-12 13:36:23 +0700"
          |}""".stripMargin
 
-    val expectedEvent = VirtualMachineDestroyEvent(status, vmId, eventDateTime)
+    val expectedEvent = VirtualMachineDestroyEvent(Some(status), vmId, Some(eventDateTime))
 
     vmDestroyEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }

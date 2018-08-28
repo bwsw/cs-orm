@@ -22,20 +22,17 @@ import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
+import com.bwsw.cloudstack.entities.common.JsonFormats._
 import com.bwsw.cloudstack.entities.events.Constants.{Events, FieldNames}
 import com.bwsw.cloudstack.entities.events.account.{AccountCreateEvent, AccountDeleteEvent}
 import com.bwsw.cloudstack.entities.events.user.UserCreateEvent
 import com.bwsw.cloudstack.entities.events.vm.{VirtualMachineCreateEvent, VirtualMachineDestroyEvent}
 import com.bwsw.cloudstack.entities.events.{CloudStackEvent, UnknownEvent}
-import org.slf4j.LoggerFactory
 import spray.json.DefaultJsonProtocol._
 import spray.json._
 
-import scala.util.{Failure, Success, Try}
-
 trait JsonFormats {
 
-  private val logger = LoggerFactory.getLogger(classOf[JsonFormats])
   val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd['T'][ ]HH:mm:ss[ ]X")
 
   implicit val uuidJsonFormat: JsonFormat[UUID] = new JsonFormat[UUID] {
@@ -72,41 +69,77 @@ trait JsonFormats {
   implicit val virtualMachineDestroyEventJsonFormat: RootJsonFormat[VirtualMachineDestroyEvent] =
     jsonFormat3(VirtualMachineDestroyEvent)
 
-  implicit val cloudStackEventJsonFormat: RootJsonFormat[CloudStackEvent] = new RootJsonFormat[CloudStackEvent] {
-    override def read(json: JsValue): CloudStackEvent = {
-      Try {
-        val fields = json.asJsObject.fields
-        val eventField = fields.get(FieldNames.Event)
-        val eventDateTimeField = fields.get(FieldNames.EventDateTime)
+  implicit val unknownEventJsonReader: RootJsonReader[UnknownEvent] = (json: JsValue) => UnknownEvent(json)
 
-        (eventField, eventDateTimeField) match {
-          case (Some(JsString(Events.ACCOUNT_CREATE)), Some(_)) => json.convertTo[AccountCreateEvent]
-          case (Some(JsString(Events.ACCOUNT_DELETE)), Some(_)) => json.convertTo[AccountDeleteEvent]
-          case (Some(JsString(Events.USER_CREATE)), Some(_)) => json.convertTo[UserCreateEvent]
-          case (Some(JsString(Events.VM_CREATE)), Some(_)) => json.convertTo[VirtualMachineCreateEvent]
-          case (Some(JsString(Events.VM_DESTROY)), Some(_)) => json.convertTo[VirtualMachineDestroyEvent]
-          case _ => UnknownEvent(json)
+  protected val basicEvents: TypedEventParser = {
+    case (Events.ACCOUNT_CREATE, JsObject(fields))
+      if fields.isDefinedAt(FieldNames.EntityUuid) =>
+      implicitly[JsonReader[AccountCreateEvent]]
+
+    case (Events.ACCOUNT_DELETE, JsObject(fields))
+      if fields.isDefinedAt(FieldNames.EntityUuid) =>
+      implicitly[JsonReader[AccountDeleteEvent]]
+
+    case (Events.USER_CREATE, JsObject(fields))
+      if fields.isDefinedAt(FieldNames.EntityUuid) =>
+      implicitly[JsonReader[UserCreateEvent]]
+
+    case (Events.VM_CREATE, JsObject(fields))
+      if fields.isDefinedAt(FieldNames.EntityUuid) =>
+      implicitly[JsonReader[VirtualMachineCreateEvent]]
+
+    case (Events.VM_DESTROY, JsObject(fields))
+      if fields.isDefinedAt(FieldNames.EntityUuid) =>
+      implicitly[JsonReader[VirtualMachineDestroyEvent]]
+  }
+
+
+  /**
+    * Returns parser for [[CloudStackEvent]]
+    *
+    * @param jsObjectParser partial function to parse [[JsObject]] to [[CloudStackEvent]]
+    * @param otherParsers   partial functions to parse [[JsValue]] to [[CloudStackEvent]]
+    * @return parser for [[CloudStackEvent]]
+    */
+  def jsonToCloudStackEvent(jsObjectParser: PartialFunction[JsValue, CloudStackEvent] = jsObjectToCloudStackEvent(),
+                            otherParsers: Seq[PartialFunction[JsValue, CloudStackEvent]] = Seq.empty
+                           ): RootJsonReader[CloudStackEvent] = {
+    val parser = otherParsers.foldLeft(jsObjectParser)(_ orElse _)
+
+    json: JsValue => parser.applyOrElse(json, unknownEventJsonReader.read)
+  }
+
+  /**
+    * Returns partial function to parse [[JsObject]] to [[CloudStackEvent]]
+    *
+    * @param typedEvents   partial function to parse events with field `event`
+    * @param untypedEvents partial function to parse events without field `event`
+    * @return partial function to parse [[JsObject]] to [[CloudStackEvent]]
+    */
+  def jsObjectToCloudStackEvent(typedEvents: TypedEventParser = PartialFunction.empty,
+                                untypedEvents: UntypedEventParser = PartialFunction.empty
+                               ): PartialFunction[JsValue, CloudStackEvent] = {
+    case jsObject: JsObject =>
+      val reader =
+        jsObject.fields.get(FieldNames.Event) match {
+          case Some(JsString(eventType)) =>
+            basicEvents
+              .orElse(typedEvents)
+              .lift((eventType, jsObject))
+              .getOrElse(unknownEventJsonReader)
+
+          case _ =>
+            untypedEvents
+              .lift(jsObject)
+              .getOrElse(unknownEventJsonReader)
         }
-      } match {
-        case Success(event) => event
-        case Failure(exception) =>
-          logger.warn(s"Cannot parse event: $json", exception)
-          UnknownEvent(json)
-      }
-    }
 
-    override def write(obj: CloudStackEvent): JsValue = {
-      obj match {
-        case event: AccountCreateEvent => event.toJson
-        case event: AccountDeleteEvent => event.toJson
-        case event: UserCreateEvent => event.toJson
-        case event: VirtualMachineCreateEvent => event.toJson
-        case event: VirtualMachineDestroyEvent => event.toJson
-        case UnknownEvent(json) => json
-      }
-    }
+      reader.read(jsObject)
   }
 }
 
 
-object JsonFormats extends JsonFormats
+object JsonFormats {
+  type TypedEventParser = PartialFunction[(String, JsObject), JsonReader[_ <: CloudStackEvent]]
+  type UntypedEventParser = PartialFunction[JsObject, JsonReader[_ <: CloudStackEvent]]
+}

@@ -18,18 +18,27 @@
 */
 package com.bwsw.cloudstack.entities.events
 
+import java.time.OffsetDateTime
+import java.util.UUID
+
 import com.bwsw.cloudstack.entities.TestEntities
+import com.bwsw.cloudstack.entities.common.DefaultJsonFormats._
 import com.bwsw.cloudstack.entities.events.vm.{VirtualMachineCreateEvent, VirtualMachineDestroyEvent}
 import com.bwsw.cloudstack.entities.requests.vm.{VmCreateRequest, VmDeleteRequest}
 import com.bwsw.cloudstack.entities.responses.vm.VirtualMachineCreateResponse
 import com.bwsw.cloudstack.entities.util.events.RecordToEventDeserializer
 import com.bwsw.cloudstack.entities.util.kafka.Consumer
-import org.scalatest.{BeforeAndAfterAll, FlatSpec}
+import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}
 
-class VmEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAfterAll {
-  val serviceOfferingId = retrievedServiceOfferingId
-  val templateId = retrievedTemplateId
-  val zoneId = retrievedZoneId
+class VmEventsRetrievingTest
+  extends FlatSpec
+    with TestEntities
+    with BeforeAndAfterAll
+    with Matchers {
+
+  val serviceOfferingId: UUID = retrievedServiceOfferingId
+  val templateId: UUID = retrievedTemplateId
+  val zoneId: UUID = retrievedZoneId
 
   val sleepInterval = 15000
   val pollTimeout = 1000
@@ -39,36 +48,37 @@ class VmEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAf
   val consumer = new Consumer(kafkaEndpoint, kafkaTopic)
   consumer.assignToEnd()
 
-  val vmId = mapper.deserialize[VirtualMachineCreateResponse](executor.executeRequest(vmCreateRequest.getRequest)).vm.id
+  private val beforeCreation = OffsetDateTime.now().minusSeconds(1)
+  val vmId: UUID = mapper.deserialize[VirtualMachineCreateResponse](executor.executeRequest(vmCreateRequest.getRequest)).vm.id
+
   val vmDeleteRequest = new VmDeleteRequest(vmId)
+  private val beforeDeletion = OffsetDateTime.now().minusSeconds(1)
   executor.executeRequest(vmDeleteRequest.getRequest)
 
   Thread.sleep(sleepInterval)
 
-  val records = consumer.poll(pollTimeout)
+  val records: List[String] = consumer.poll(pollTimeout)
 
   it should "retrieve VirtualMachineCreateEvent with status 'Completed' from Kafka records" in {
-    val expectedVmCreateEvents = List(VirtualMachineCreateEvent(Some(Constants.Statuses.COMPLETED), Some(vmId)))
-
-    val actualVmCreateEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {
-      case VirtualMachineCreateEvent(Some(status), Some(entityId))
-        if status == Constants.Statuses.COMPLETED && entityId == vmId => true
+    val afterCreation = OffsetDateTime.now()
+    val actualVmCreateEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
+      case VirtualMachineCreateEvent(Some(Constants.Statuses.COMPLETED), `vmId`, Some(dateTime)) =>
+        dateTime.isAfter(beforeCreation) && dateTime.isBefore(afterCreation)
       case _ => false
     }
 
-    assert(actualVmCreateEvents == expectedVmCreateEvents, s"records count: ${records.size}")
+    actualVmCreateEvents.length shouldBe 1
   }
 
   it should "retrieve VirtualMachineDestroyEvent with status 'Completed' from Kafka records" in {
-    val expectedVmDestroyEvents = List(VirtualMachineDestroyEvent(Some(Constants.Statuses.COMPLETED), Some(vmId)))
-
-    val actualVmDestroyEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {
-      case VirtualMachineDestroyEvent(Some(status), Some(entityId))
-        if status == Constants.Statuses.COMPLETED && entityId == vmId => true
+    val afterDeletion = OffsetDateTime.now()
+    val actualVmDestroyEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
+      case VirtualMachineDestroyEvent(Some(Constants.Statuses.COMPLETED), `vmId`, Some(dateTime)) =>
+        dateTime.isAfter(beforeDeletion) && dateTime.isBefore(afterDeletion)
       case _ => false
     }
 
-    assert(actualVmDestroyEvents == expectedVmDestroyEvents, s"records count: ${records.size}")
+    actualVmDestroyEvents.length shouldBe 1
   }
 
   override def afterAll(): Unit = {

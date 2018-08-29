@@ -16,14 +16,11 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.util.events
+package com.bwsw.cloudstack.entities.common
 
 import com.bwsw.cloudstack.entities.events.CloudStackEvent
-import spray.json._
+import spray.json.RootJsonReader
 
-object RecordToEventDeserializer {
-
-  def deserializeRecord(record: String)
-                       (implicit jsonReader: JsonReader[CloudStackEvent]): CloudStackEvent =
-    record.parseJson.convertTo[CloudStackEvent]
+object DefaultJsonFormats extends JsonFormats {
+  implicit val cloudStackEventJsonReader: RootJsonReader[CloudStackEvent] = jsonToCloudStackEvent()
 }

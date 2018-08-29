@@ -16,14 +16,9 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.util.events
+package com.bwsw.cloudstack.entities.events
 
-import com.bwsw.cloudstack.entities.events.CloudStackEvent
-import spray.json._
+import spray.json.JsValue
 
-object RecordToEventDeserializer {
-
-  def deserializeRecord(record: String)
-                       (implicit jsonReader: JsonReader[CloudStackEvent]): CloudStackEvent =
-    record.parseJson.convertTo[CloudStackEvent]
-}
+final case class UnknownEvent(json: JsValue)
+  extends CloudStackEvent

@@ -18,77 +18,145 @@
 */
 package com.bwsw.cloudstack.entities.events
 
+import java.time.{OffsetDateTime, ZoneOffset}
 import java.util.UUID
 
-import com.bwsw.cloudstack.entities.common.JsonMapper
+import com.bwsw.cloudstack.entities.common.DefaultJsonFormats._
 import com.bwsw.cloudstack.entities.events.Constants._
 import com.bwsw.cloudstack.entities.events.account.{AccountCreateEvent, AccountDeleteEvent}
 import com.bwsw.cloudstack.entities.events.user.UserCreateEvent
 import com.bwsw.cloudstack.entities.events.vm.{VirtualMachineCreateEvent, VirtualMachineDestroyEvent}
-import org.scalatest.FlatSpec
+import org.scalatest.{FlatSpec, Matchers}
+import spray.json._
 
-class CloudStackEventTestSuite extends FlatSpec {
-  val status = Statuses.COMPLETED
+class CloudStackEventTestSuite extends FlatSpec with Matchers {
+
+  val status: String = Statuses.COMPLETED
 
   it should s"be deserialized to the UserCreateEvent if event is ${Events.USER_CREATE}" in {
     val userId = UUID.randomUUID()
-    val userCreateEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.USER_CREATE}" + "\",\"entityuuid\":\"" + s"$userId" + "\"}"
+    //scalastyle:off
+    val eventDateTime = OffsetDateTime.MIN
+      .withYear(2011)
+      .withMonth(1)
+      .withDayOfMonth(1)
+      .withHour(1)
+      .withMinute(1)
+      .withSecond(1)
+      .withOffsetSameLocal(ZoneOffset.UTC)
+    //scalastyle:on
+    val userCreateEventJson =
+      s"""{
+         |  "status": "$status",
+         |  "event": "${Events.USER_CREATE}",
+         |  "entityuuid": "$userId",
+         |  "eventDateTime": "2011-01-01 01:01:01Z"
+         |}""".stripMargin
 
-    val expectedEvent = UserCreateEvent(Some(status), Some(userId))
-    val mapper = new JsonMapper(true)
+    val expectedEvent = UserCreateEvent(Some(status), userId, Some(eventDateTime))
 
-    assert(mapper.deserialize[CloudStackEvent](userCreateEventJson) == expectedEvent)
+    userCreateEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
 
   it should s"be deserialized to the AccoutCreateEvent if event is ${Events.ACCOUNT_CREATE}" in {
     val accountId = UUID.randomUUID()
-    val accountCreateEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.ACCOUNT_CREATE}" + "\",\"entityuuid\":\"" + s"$accountId" + "\"}"
+    val domainId = UUID.randomUUID()
+    //scalastyle:off
+    val eventDateTime = OffsetDateTime.MIN
+      .withYear(2018)
+      .withMonth(3)
+      .withDayOfMonth(23)
+      .withHour(9)
+      .withMinute(4)
+      .withSecond(1)
+      .withOffsetSameLocal(ZoneOffset.ofHours(-4))
+    //scalastyle:on
+    val accountCreateEventJson =
+      s"""{
+         |  "status": "$status",
+         |  "event": "${Events.ACCOUNT_CREATE}",
+         |  "entityuuid": "$accountId",
+         |  "eventDateTime": "2018-03-23T09:04:01 -0400",
+         |  "Domain": "$domainId"
+         |}""".stripMargin
 
-    val expectedEvent = AccountCreateEvent(Some(status), Some(accountId))
-    val mapper = new JsonMapper(true)
+    val expectedEvent = AccountCreateEvent(Some(status), accountId, Some(eventDateTime), Some(domainId))
 
-    assert(mapper.deserialize[CloudStackEvent](accountCreateEventJson) == expectedEvent)
+    accountCreateEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
 
   it should s"be deserialized to the AccoutDeleteEvent if event is ${Events.ACCOUNT_DELETE}" in {
     val accountId = UUID.randomUUID()
-    val accountDeleteEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.ACCOUNT_DELETE}" + "\",\"entityuuid\":\"" + s"$accountId" + "\"}"
+    //scalastyle:off
+    val eventDateTime = OffsetDateTime.MIN
+      .withYear(2017)
+      .withMonth(11)
+      .withDayOfMonth(12)
+      .withHour(13)
+      .withMinute(36)
+      .withSecond(23)
+      .withOffsetSameLocal(ZoneOffset.ofHours(7))
+    //scalastyle:on
+    val accountDeleteEventJson =
+      s"""{
+         |  "status": "$status",
+         |  "event": "${Events.ACCOUNT_DELETE}",
+         |  "entityuuid": "$accountId",
+         |  "eventDateTime": "2017-11-12 13:36:23 +0700"
+         |}""".stripMargin
 
-    val expectedEvent = AccountDeleteEvent(Some(status), Some(accountId))
-    val mapper = new JsonMapper(true)
+    val expectedEvent = AccountDeleteEvent(Some(status), accountId, Some(eventDateTime))
 
-    assert(mapper.deserialize[CloudStackEvent](accountDeleteEventJson) == expectedEvent)
+    accountDeleteEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
 
   it should s"be deserialized to the VirtualMachineCreateEvent if event is ${Events.VM_CREATE}" in {
     val vmId = UUID.randomUUID()
-    val vmCreateEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.VM_CREATE}" + "\",\"entityuuid\":\"" + s"$vmId" + "\"}"
+    //scalastyle:off
+    val eventDateTime = OffsetDateTime.MIN
+      .withYear(2017)
+      .withMonth(11)
+      .withDayOfMonth(12)
+      .withHour(13)
+      .withMinute(36)
+      .withSecond(23)
+      .withOffsetSameLocal(ZoneOffset.ofHours(7))
+    //scalastyle:on
+    val vmCreateEventJson =
+      s"""{
+         |  "status": "$status",
+         |  "event": "${Events.VM_CREATE}",
+         |  "entityuuid": "$vmId",
+         |  "eventDateTime": "2017-11-12 13:36:23 +0700"
+         |}""".stripMargin
 
-    val expectedEvent = VirtualMachineCreateEvent(Some(status), Some(vmId))
-    val mapper = new JsonMapper(true)
+    val expectedEvent = VirtualMachineCreateEvent(Some(status), vmId, Some(eventDateTime))
 
-    assert(mapper.deserialize[CloudStackEvent](vmCreateEventJson) == expectedEvent)
+    vmCreateEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
 
   it should s"be deserialized to the VirtualMachineDestroyEvent if event is ${Events.VM_DESTROY}" in {
     val vmId = UUID.randomUUID()
-    val vmDestroyEventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"${Events.VM_DESTROY}" + "\",\"entityuuid\":\"" + s"$vmId" + "\"}"
+    //scalastyle:off
+    val eventDateTime = OffsetDateTime.MIN
+      .withYear(2017)
+      .withMonth(11)
+      .withDayOfMonth(12)
+      .withHour(13)
+      .withMinute(36)
+      .withSecond(23)
+      .withOffsetSameLocal(ZoneOffset.ofHours(7))
+    //scalastyle:on
+    val vmDestroyEventJson =
+      s"""{
+         |  "status": "$status",
+         |  "event": "${Events.VM_DESTROY}",
+         |  "entityuuid": "$vmId",
+         |  "eventDateTime": "2017-11-12 13:36:23 +0700"
+         |}""".stripMargin
 
-    val expectedEvent = VirtualMachineDestroyEvent(Some(status), Some(vmId))
-    val mapper = new JsonMapper(true)
+    val expectedEvent = VirtualMachineDestroyEvent(Some(status), vmId, Some(eventDateTime))
 
-    assert(mapper.deserialize[CloudStackEvent](vmDestroyEventJson) == expectedEvent)
-  }
-
-
-  it should "be deserialized to the CloudStackEvent if event value is not described in JsonSubTypes annotation" in {
-    val entityId = UUID.randomUUID()
-    val event = UUID.randomUUID().toString
-    val eventJson = "{\"status\":\"" + status + "\",\"event\":\"" + s"$event" + "\",\"entityuuid\":\"" + s"$entityId" + "\"}"
-
-    val expectedEvent = new CloudStackEvent(Some(status), Some(entityId), Some(event))
-    val mapper = new JsonMapper(true)
-
-    assert(mapper.deserialize[CloudStackEvent](eventJson).getClass == expectedEvent.getClass)
+    vmDestroyEventJson.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
   }
 }

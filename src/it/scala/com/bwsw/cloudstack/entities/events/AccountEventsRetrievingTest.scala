@@ -18,22 +18,38 @@
 */
 package com.bwsw.cloudstack.entities.events
 
+import java.time.OffsetDateTime
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.TestEntities
+import com.bwsw.cloudstack.entities.common.DefaultJsonFormats._
 import com.bwsw.cloudstack.entities.events.account.{AccountCreateEvent, AccountDeleteEvent}
+import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.User
 import com.bwsw.cloudstack.entities.requests.account.{AccountCreateRequest, AccountDeleteRequest}
-import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.RootAdmin
+import com.bwsw.cloudstack.entities.requests.domain.DomainCreateRequest
+import com.bwsw.cloudstack.entities.responses.domain.DomainCreateResponse
 import com.bwsw.cloudstack.entities.util.events.RecordToEventDeserializer
 import com.bwsw.cloudstack.entities.util.kafka.Consumer
-import org.scalatest.{BeforeAndAfterAll, FlatSpec}
+import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}
 
-class AccountEventsRetrievingTest extends FlatSpec with TestEntities with BeforeAndAfterAll {
-  val accountId = UUID.randomUUID()
+import scala.util.Random
+
+class AccountEventsRetrievingTest
+  extends FlatSpec
+    with TestEntities
+    with BeforeAndAfterAll
+    with Matchers {
+
+  val accountId: UUID = UUID.randomUUID()
   val sleepInterval = 10000
   val pollTimeout = 1000
+  private val domainCreateRequest = new DomainCreateRequest(s"AccountEventsRetrievingTest (${Random.nextInt()})")
+  private val domainCreateResponse =
+    mapper.deserialize[DomainCreateResponse](executor.executeRequest(domainCreateRequest.getRequest))
+  private val domainId = domainCreateResponse.domainEntity.domain.id
+
   val accountCreationSettings = AccountCreateRequest.Settings(
-    _type = RootAdmin,
+    _type = User,
     email = "e@e",
     firstName = "first",
     lastName = "last",
@@ -43,40 +59,41 @@ class AccountEventsRetrievingTest extends FlatSpec with TestEntities with Before
 
   val accountCreateRequest = new AccountCreateRequest(accountCreationSettings)
   accountCreateRequest.withId(accountId)
+  accountCreateRequest.withDomain(domainId)
   val accountDeleteRequest = new AccountDeleteRequest(accountId)
 
   val consumer = new Consumer(kafkaEndpoint, kafkaTopic)
   consumer.assignToEnd()
 
+  private val beforeCreation = OffsetDateTime.now().minusSeconds(1)
   executor.executeRequest(accountCreateRequest.getRequest)
+  private val beforeDeletion = OffsetDateTime.now().minusSeconds(1)
   executor.executeRequest(accountDeleteRequest.getRequest)
 
   Thread.sleep(sleepInterval)
 
-  val records = consumer.poll(pollTimeout)
+  val records: List[String] = consumer.poll(pollTimeout)
 
   it should "retrieve AccountCreateEvent with status 'Completed' from Kafka records" in {
-    val expectedAccountCreateEvents = List(AccountCreateEvent(Some(Constants.Statuses.COMPLETED), Some(accountId)))
-
-    val actualAccountCreateEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {
-      case AccountCreateEvent(Some(status), Some(entityId))
-        if status == Constants.Statuses.COMPLETED && entityId == accountId => true
+    val afterCreation = OffsetDateTime.now()
+    val actualAccountCreateEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
+      case AccountCreateEvent(Some(Constants.Statuses.COMPLETED), `accountId`, Some(dateTime), Some(`domainId`)) =>
+        dateTime.isAfter(beforeCreation) && dateTime.isBefore(afterCreation)
       case _ => false
     }
 
-    assert(actualAccountCreateEvents == expectedAccountCreateEvents, s"records count: ${records.size}")
+    actualAccountCreateEvents.length shouldBe 1
   }
 
   it should "retrieve AccountDeleteEvent with status 'Completed' from Kafka records" in {
-    val expectedAccountDeleteEvents = List(AccountDeleteEvent(Some(Constants.Statuses.COMPLETED), Some(accountId)))
-
-    val actualAccountDeleteEvents = records.map(x => RecordToEventDeserializer.deserializeRecord(x, mapper)).filter {
-      case AccountDeleteEvent(Some(status), Some(entityId))
-        if status == Constants.Statuses.COMPLETED && entityId == accountId => true
+    val afterDeletion = OffsetDateTime.now()
+    val actualAccountDeleteEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
+      case AccountDeleteEvent(Some(Constants.Statuses.COMPLETED), `accountId`, Some(dateTime)) =>
+        dateTime.isAfter(beforeDeletion) && dateTime.isBefore(afterDeletion)
       case _ => false
     }
 
-    assert(expectedAccountDeleteEvents == actualAccountDeleteEvents, s"records count: ${records.size}")
+    actualAccountDeleteEvents.length shouldBe 1
   }
 
   override def afterAll(): Unit = {

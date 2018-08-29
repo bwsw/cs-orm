@@ -22,7 +22,7 @@ lazy val csEntities = (project in file("."))
   .settings(
     name := "cs-entities",
     organization := "com.bwsw",
-    version := "1.410np.0",
+    version := "1.410np.1",
     scalaVersion := "2.12.6",
     libraryDependencies ++= Seq(
       "br.com.autonomiccs" % "apache-cloudstack-java-client" % "1.0.5",
@@ -32,7 +32,9 @@ lazy val csEntities = (project in file("."))
       "org.scalatest" %% "scalatest" % "3.0.1" % "it,test",
       "com.google.guava" % "guava" % "23.0",
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.8",
-      "com.fasterxml.jackson.module" % "jackson-module-scala_2.12" % "2.8.8"
+      "com.fasterxml.jackson.module" % "jackson-module-scala_2.12" % "2.8.8",
+      "io.spray" %% "spray-json" % "1.3.4",
+      "org.slf4j" % "slf4j-log4j12" % "1.7.25" % "it,test",
     ),
     addCompilerPlugin("org.psywerx.hairyfotr" %% "linter" % "0.1.17"),
     pomIncludeRepository := { _ => false },
@@ -71,5 +73,11 @@ lazy val csEntities = (project in file("."))
         scalastyleFailOnError in IntegrationTest := (scalastyleFailOnError in scalastyle).value,
         (scalastyleFailOnWarning in IntegrationTest) := (scalastyleFailOnWarning in scalastyle).value,
         scalastyleSources in IntegrationTest := (unmanagedSourceDirectories in IntegrationTest).value
-      )
+      ),
+
+    testOptions += Tests.Argument(
+      TestFrameworks.ScalaTest,
+      "-oFD", // to show full stack traces and durations
+      "-W", "120", "60" // to notify when some test is running longer than a specified amount of time
+    ),
   )

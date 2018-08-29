@@ -24,11 +24,15 @@ import java.util.UUID
 import com.bwsw.cloudstack.entities.TestEntities
 import com.bwsw.cloudstack.entities.common.DefaultJsonFormats._
 import com.bwsw.cloudstack.entities.events.account.{AccountCreateEvent, AccountDeleteEvent}
-import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.RootAdmin
+import com.bwsw.cloudstack.entities.requests.account.AccountCreateRequest.User
 import com.bwsw.cloudstack.entities.requests.account.{AccountCreateRequest, AccountDeleteRequest}
+import com.bwsw.cloudstack.entities.requests.domain.DomainCreateRequest
+import com.bwsw.cloudstack.entities.responses.domain.DomainCreateResponse
 import com.bwsw.cloudstack.entities.util.events.RecordToEventDeserializer
 import com.bwsw.cloudstack.entities.util.kafka.Consumer
 import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}
+
+import scala.util.Random
 
 class AccountEventsRetrievingTest
   extends FlatSpec
@@ -39,8 +43,13 @@ class AccountEventsRetrievingTest
   val accountId: UUID = UUID.randomUUID()
   val sleepInterval = 10000
   val pollTimeout = 1000
+  private val domainCreateRequest = new DomainCreateRequest(s"AccountEventsRetrievingTest (${Random.nextInt()})")
+  private val domainCreateResponse =
+    mapper.deserialize[DomainCreateResponse](executor.executeRequest(domainCreateRequest.getRequest))
+  private val domainId = domainCreateResponse.domainEntity.domain.id
+
   val accountCreationSettings = AccountCreateRequest.Settings(
-    _type = RootAdmin,
+    _type = User,
     email = "e@e",
     firstName = "first",
     lastName = "last",
@@ -50,6 +59,7 @@ class AccountEventsRetrievingTest
 
   val accountCreateRequest = new AccountCreateRequest(accountCreationSettings)
   accountCreateRequest.withId(accountId)
+  accountCreateRequest.withDomain(domainId)
   val accountDeleteRequest = new AccountDeleteRequest(accountId)
 
   val consumer = new Consumer(kafkaEndpoint, kafkaTopic)
@@ -67,7 +77,7 @@ class AccountEventsRetrievingTest
   it should "retrieve AccountCreateEvent with status 'Completed' from Kafka records" in {
     val afterCreation = OffsetDateTime.now()
     val actualAccountCreateEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
-      case AccountCreateEvent(Some(Constants.Statuses.COMPLETED), `accountId`, Some(dateTime), _) =>
+      case AccountCreateEvent(Some(Constants.Statuses.COMPLETED), `accountId`, Some(dateTime), Some(`domainId`)) =>
         dateTime.isAfter(beforeCreation) && dateTime.isBefore(afterCreation)
       case _ => false
     }

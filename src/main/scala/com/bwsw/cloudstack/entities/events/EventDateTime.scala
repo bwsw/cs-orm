@@ -16,14 +16,15 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.events.vm
+package com.bwsw.cloudstack.entities.events
 
 import java.time.OffsetDateTime
-import java.util.UUID
 
-import com.bwsw.cloudstack.entities.events.{CloudStackEvent, EventDateTime}
+/**
+  * Should be mixed to events with event timestamp
+  */
+trait EventDateTime {
+  this: CloudStackEvent =>
 
-final case class VirtualMachineDestroyEvent(status: Option[String],
-                                            entityuuid: UUID,
-                                            eventDateTime: Option[OffsetDateTime])
-  extends CloudStackEvent with EventDateTime
+  val eventDateTime: Option[OffsetDateTime]
+}

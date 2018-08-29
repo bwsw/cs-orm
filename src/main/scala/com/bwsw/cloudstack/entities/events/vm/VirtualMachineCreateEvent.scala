@@ -21,9 +21,9 @@ package com.bwsw.cloudstack.entities.events.vm
 import java.time.OffsetDateTime
 import java.util.UUID
 
-import com.bwsw.cloudstack.entities.events.CloudStackEvent
+import com.bwsw.cloudstack.entities.events.{CloudStackEvent, EventDateTime}
 
 final case class VirtualMachineCreateEvent(status: Option[String],
                                            entityuuid: UUID,
                                            eventDateTime: Option[OffsetDateTime])
-  extends CloudStackEvent
+  extends CloudStackEvent with EventDateTime

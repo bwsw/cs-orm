@@ -37,6 +37,8 @@ object Constants {
     val Event: String = "event"
     val EventDateTime: String = "eventDateTime"
     val EntityUuid: String = "entityuuid"
+    val Description: String = "description"
+    val Status: String = "status"
   }
 
 }

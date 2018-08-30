@@ -18,65 +18,15 @@
 */
 package com.bwsw.cloudstack.entities.common
 
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
-import java.util.UUID
-
 import com.bwsw.cloudstack.entities.common.JsonFormats._
 import com.bwsw.cloudstack.entities.events.Constants.{Events, FieldNames}
 import com.bwsw.cloudstack.entities.events.account.{AccountCreateEvent, AccountDeleteEvent}
 import com.bwsw.cloudstack.entities.events.user.UserCreateEvent
 import com.bwsw.cloudstack.entities.events.vm.{VirtualMachineCreateEvent, VirtualMachineDestroyEvent}
 import com.bwsw.cloudstack.entities.events.{CloudStackEvent, UnknownEvent}
-import spray.json.DefaultJsonProtocol._
 import spray.json._
 
 trait JsonFormats {
-
-  val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd['T'][ ]HH:mm:ss[ ]X")
-
-  implicit val uuidJsonFormat: JsonFormat[UUID] = new JsonFormat[UUID] {
-    override def read(json: JsValue): UUID = {
-      json match {
-        case JsString(x) => UUID.fromString(x)
-        case x => deserializationError("Expected UUID as JsString, but got " + x)
-      }
-    }
-
-    override def write(obj: UUID): JsValue = JsString(obj.toString)
-  }
-
-  implicit val offsetDateTimeJsonFormat: JsonFormat[OffsetDateTime] = new JsonFormat[OffsetDateTime] {
-    override def read(json: JsValue): OffsetDateTime = {
-      json match {
-        case JsString(x) => OffsetDateTime.parse(x, dateTimeFormatter)
-        case x => deserializationError("Expected OffsetDateTime as JsString, but got " + x)
-      }
-    }
-
-    override def write(obj: OffsetDateTime): JsValue =
-      JsString(obj.format(dateTimeFormatter))
-  }
-
-  implicit val accountCreateEventJsonFormat: RootJsonFormat[AccountCreateEvent] =
-    jsonFormat(
-      AccountCreateEvent,
-      "status",
-      "entityuuid",
-      "eventDateTime",
-      "Domain",
-      "description"
-    )
-  implicit val accountDeleteEventJsonFormat: RootJsonFormat[AccountDeleteEvent] =
-    jsonFormat4(AccountDeleteEvent)
-  implicit val userCreateEventJsonFormat: RootJsonFormat[UserCreateEvent] =
-    jsonFormat4(UserCreateEvent)
-  implicit val virtualMachineCreateEventJsonFormat: RootJsonFormat[VirtualMachineCreateEvent] =
-    jsonFormat4(VirtualMachineCreateEvent)
-  implicit val virtualMachineDestroyEventJsonFormat: RootJsonFormat[VirtualMachineDestroyEvent] =
-    jsonFormat4(VirtualMachineDestroyEvent)
-
-  implicit val unknownEventJsonReader: RootJsonReader[UnknownEvent] = (json: JsValue) => UnknownEvent(json)
 
   protected val basicEvents: TypedEventParser = {
     case (Events.ACCOUNT_CREATE, _) => implicitly[JsonReader[AccountCreateEvent]]
@@ -99,7 +49,7 @@ trait JsonFormats {
                            ): RootJsonReader[CloudStackEvent] = {
     val parser = otherParsers.foldLeft(jsObjectParser)(_ orElse _)
 
-    json: JsValue => parser.applyOrElse(json, unknownEventJsonReader.read)
+    json: JsValue => parser.applyOrElse(json, implicitly[RootJsonReader[UnknownEvent]].read)
   }
 
   /**
@@ -119,12 +69,12 @@ trait JsonFormats {
             basicEvents
               .orElse(typedEvents)
               .lift((eventType, jsObject))
-              .getOrElse(unknownEventJsonReader)
+              .getOrElse(implicitly[RootJsonReader[UnknownEvent]])
 
           case _ =>
             untypedEvents
               .lift(jsObject)
-              .getOrElse(unknownEventJsonReader)
+              .getOrElse(implicitly[RootJsonReader[UnknownEvent]])
         }
 
       reader.read(jsObject)

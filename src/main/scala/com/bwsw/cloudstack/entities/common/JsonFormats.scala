@@ -64,39 +64,26 @@ trait JsonFormats {
       "status",
       "entityuuid",
       "eventDateTime",
-      "Domain"
+      "Domain",
+      "description"
     )
   implicit val accountDeleteEventJsonFormat: RootJsonFormat[AccountDeleteEvent] =
-    jsonFormat3(AccountDeleteEvent)
+    jsonFormat4(AccountDeleteEvent)
   implicit val userCreateEventJsonFormat: RootJsonFormat[UserCreateEvent] =
-    jsonFormat3(UserCreateEvent)
+    jsonFormat4(UserCreateEvent)
   implicit val virtualMachineCreateEventJsonFormat: RootJsonFormat[VirtualMachineCreateEvent] =
-    jsonFormat3(VirtualMachineCreateEvent)
+    jsonFormat4(VirtualMachineCreateEvent)
   implicit val virtualMachineDestroyEventJsonFormat: RootJsonFormat[VirtualMachineDestroyEvent] =
-    jsonFormat3(VirtualMachineDestroyEvent)
+    jsonFormat4(VirtualMachineDestroyEvent)
 
   implicit val unknownEventJsonReader: RootJsonReader[UnknownEvent] = (json: JsValue) => UnknownEvent(json)
 
   protected val basicEvents: TypedEventParser = {
-    case (Events.ACCOUNT_CREATE, JsObject(fields))
-      if fields.isDefinedAt(FieldNames.EntityUuid) =>
-      implicitly[JsonReader[AccountCreateEvent]]
-
-    case (Events.ACCOUNT_DELETE, JsObject(fields))
-      if fields.isDefinedAt(FieldNames.EntityUuid) =>
-      implicitly[JsonReader[AccountDeleteEvent]]
-
-    case (Events.USER_CREATE, JsObject(fields))
-      if fields.isDefinedAt(FieldNames.EntityUuid) =>
-      implicitly[JsonReader[UserCreateEvent]]
-
-    case (Events.VM_CREATE, JsObject(fields))
-      if fields.isDefinedAt(FieldNames.EntityUuid) =>
-      implicitly[JsonReader[VirtualMachineCreateEvent]]
-
-    case (Events.VM_DESTROY, JsObject(fields))
-      if fields.isDefinedAt(FieldNames.EntityUuid) =>
-      implicitly[JsonReader[VirtualMachineDestroyEvent]]
+    case (Events.ACCOUNT_CREATE, _) => implicitly[JsonReader[AccountCreateEvent]]
+    case (Events.ACCOUNT_DELETE, _) => implicitly[JsonReader[AccountDeleteEvent]]
+    case (Events.USER_CREATE, _) => implicitly[JsonReader[UserCreateEvent]]
+    case (Events.VM_CREATE, _) => implicitly[JsonReader[VirtualMachineCreateEvent]]
+    case (Events.VM_DESTROY, _) => implicitly[JsonReader[VirtualMachineDestroyEvent]]
   }
 
 

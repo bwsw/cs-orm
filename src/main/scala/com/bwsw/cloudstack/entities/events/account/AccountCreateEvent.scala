@@ -24,7 +24,8 @@ import java.util.UUID
 import com.bwsw.cloudstack.entities.events.{CloudStackEvent, EventDateTime}
 
 final case class AccountCreateEvent(status: Option[String],
-                                    entityuuid: UUID,
+                                    entityuuid: Option[UUID],
                                     eventDateTime: Option[OffsetDateTime],
-                                    domain: Option[UUID])
+                                    domain: Option[UUID],
+                                    description: Option[String])
   extends CloudStackEvent with EventDateTime

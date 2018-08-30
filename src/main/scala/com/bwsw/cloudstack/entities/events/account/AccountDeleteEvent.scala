@@ -24,6 +24,7 @@ import java.util.UUID
 import com.bwsw.cloudstack.entities.events.{CloudStackEvent, EventDateTime}
 
 final case class AccountDeleteEvent(status: Option[String],
-                                    entityuuid: UUID,
-                                    eventDateTime: Option[OffsetDateTime])
+                                    entityuuid: Option[UUID],
+                                    eventDateTime: Option[OffsetDateTime],
+                                    description: Option[String])
   extends CloudStackEvent with EventDateTime

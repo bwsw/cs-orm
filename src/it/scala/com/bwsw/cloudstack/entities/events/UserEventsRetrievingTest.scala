@@ -62,7 +62,7 @@ class UserEventsRetrievingTest
   it should "retrieve UserCreateEvent with status 'Completed' from Kafka records" in {
     val afterCreation = OffsetDateTime.now()
     val actualUserCreateEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
-      case UserCreateEvent(Some(Constants.Statuses.COMPLETED), `userId`, Some(dateTime)) =>
+      case UserCreateEvent(Some(Constants.Statuses.COMPLETED), Some(`userId`), Some(dateTime), _) =>
         dateTime.isAfter(beforeCreation) && dateTime.isBefore(afterCreation)
       case _ => false
     }

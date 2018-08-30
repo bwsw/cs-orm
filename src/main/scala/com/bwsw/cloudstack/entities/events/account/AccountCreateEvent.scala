@@ -21,10 +21,29 @@ package com.bwsw.cloudstack.entities.events.account
 import java.time.OffsetDateTime
 import java.util.UUID
 
+import com.bwsw.cloudstack.entities.common.CommonJsonFormats._
+import com.bwsw.cloudstack.entities.events.Constants.FieldNames
 import com.bwsw.cloudstack.entities.events.{CloudStackEvent, EventDateTime}
+import spray.json.DefaultJsonProtocol._
+import spray.json.RootJsonFormat
 
 final case class AccountCreateEvent(status: Option[String],
-                                    entityuuid: UUID,
+                                    entityuuid: Option[UUID],
                                     eventDateTime: Option[OffsetDateTime],
-                                    domain: Option[UUID])
+                                    domain: Option[UUID],
+                                    description: Option[String])
   extends CloudStackEvent with EventDateTime
+
+
+object AccountCreateEvent {
+
+  implicit val accountCreateEventJsonFormat: RootJsonFormat[AccountCreateEvent] =
+    jsonFormat(
+      AccountCreateEvent.apply,
+      FieldNames.Status,
+      FieldNames.EntityUuid,
+      FieldNames.EventDateTime,
+      "Domain",
+      FieldNames.Description
+    )
+}

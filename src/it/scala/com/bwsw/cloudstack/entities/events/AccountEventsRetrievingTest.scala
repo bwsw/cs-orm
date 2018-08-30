@@ -77,7 +77,7 @@ class AccountEventsRetrievingTest
   it should "retrieve AccountCreateEvent with status 'Completed' from Kafka records" in {
     val afterCreation = OffsetDateTime.now()
     val actualAccountCreateEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
-      case AccountCreateEvent(Some(Constants.Statuses.COMPLETED), `accountId`, Some(dateTime), Some(`domainId`)) =>
+      case AccountCreateEvent(Some(Constants.Statuses.COMPLETED), Some(`accountId`), Some(dateTime), Some(`domainId`), _) =>
         dateTime.isAfter(beforeCreation) && dateTime.isBefore(afterCreation)
       case _ => false
     }
@@ -88,7 +88,7 @@ class AccountEventsRetrievingTest
   it should "retrieve AccountDeleteEvent with status 'Completed' from Kafka records" in {
     val afterDeletion = OffsetDateTime.now()
     val actualAccountDeleteEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
-      case AccountDeleteEvent(Some(Constants.Statuses.COMPLETED), `accountId`, Some(dateTime)) =>
+      case AccountDeleteEvent(Some(Constants.Statuses.COMPLETED), Some(`accountId`), Some(dateTime), _) =>
         dateTime.isAfter(beforeDeletion) && dateTime.isBefore(afterDeletion)
       case _ => false
     }

@@ -18,7 +18,12 @@
 */
 package com.bwsw.cloudstack.entities.events
 
-import spray.json.JsValue
+import spray.json.{JsValue, RootJsonReader}
 
 final case class UnknownEvent(json: JsValue)
   extends CloudStackEvent
+
+
+object UnknownEvent {
+  implicit val unknownEventJsonReader: RootJsonReader[UnknownEvent] = (json: JsValue) => UnknownEvent(json)
+}

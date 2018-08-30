@@ -100,8 +100,9 @@ class JsonFormatsTests
           |}""".stripMargin,
         VirtualMachineCreateEvent(
           status = Some(Statuses.SCHEDULED),
-          entityuuid = UUID.fromString("63f55cf9-2d1b-42f0-9202-a784af1d39ed"),
-          eventDateTime = Some(OffsetDateTime.of(2017, 11, 12, 13, 36, 23, 0, ZoneOffset.ofHours(7))) //scalastyle:ignore
+          entityuuid = Some(UUID.fromString("63f55cf9-2d1b-42f0-9202-a784af1d39ed")),
+          eventDateTime = Some(OffsetDateTime.of(2017, 11, 12, 13, 36, 23, 0, ZoneOffset.ofHours(7))), //scalastyle:ignore
+          description = Some("starting Vm. Vm Id: 12")
         )
       ),
       ("""{"event": "custom"}""", CustomEvent),

@@ -21,9 +21,20 @@ package com.bwsw.cloudstack.entities.events.vm
 import java.time.OffsetDateTime
 import java.util.UUID
 
+import com.bwsw.cloudstack.entities.common.CommonJsonFormats._
 import com.bwsw.cloudstack.entities.events.{CloudStackEvent, EventDateTime}
+import spray.json.DefaultJsonProtocol._
+import spray.json.RootJsonFormat
 
 final case class VirtualMachineCreateEvent(status: Option[String],
-                                           entityuuid: UUID,
-                                           eventDateTime: Option[OffsetDateTime])
+                                           entityuuid: Option[UUID],
+                                           eventDateTime: Option[OffsetDateTime],
+                                           description: Option[String])
   extends CloudStackEvent with EventDateTime
+
+
+object VirtualMachineCreateEvent {
+
+  implicit val virtualMachineCreateEventJsonFormat: RootJsonFormat[VirtualMachineCreateEvent] =
+    jsonFormat4(VirtualMachineCreateEvent.apply)
+}

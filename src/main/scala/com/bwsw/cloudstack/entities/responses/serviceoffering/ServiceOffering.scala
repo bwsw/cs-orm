@@ -22,4 +22,6 @@ import java.util.UUID
 
 import com.bwsw.cloudstack.entities.responses.common.Entity
 
-case class ServiceOffering(id: UUID) extends Entity
+case class ServiceOffering(id: UUID,
+                           name: String)
+  extends Entity

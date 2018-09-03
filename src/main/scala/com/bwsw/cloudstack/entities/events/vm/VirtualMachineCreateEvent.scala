@@ -29,12 +29,22 @@ import spray.json.RootJsonFormat
 final case class VirtualMachineCreateEvent(status: Option[String],
                                            entityuuid: Option[UUID],
                                            eventDateTime: Option[OffsetDateTime],
-                                           description: Option[String])
+                                           description: Option[String],
+                                           serviceOffering: Option[UUID],
+                                           account: Option[UUID])
   extends CloudStackEvent with EventDateTime
 
 
 object VirtualMachineCreateEvent {
 
   implicit val virtualMachineCreateEventJsonFormat: RootJsonFormat[VirtualMachineCreateEvent] =
-    jsonFormat4(VirtualMachineCreateEvent.apply)
+    jsonFormat(
+      VirtualMachineCreateEvent.apply,
+      "status",
+      "entityuuid",
+      "eventDateTime",
+      "description",
+      "ServiceOffering",
+      "account"
+    )
 }

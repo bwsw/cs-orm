@@ -102,7 +102,9 @@ class JsonFormatsTests
           status = Some(Statuses.SCHEDULED),
           entityuuid = Some(UUID.fromString("63f55cf9-2d1b-42f0-9202-a784af1d39ed")),
           eventDateTime = Some(OffsetDateTime.of(2017, 11, 12, 13, 36, 23, 0, ZoneOffset.ofHours(7))), //scalastyle:ignore
-          description = Some("starting Vm. Vm Id: 12")
+          description = Some("starting Vm. Vm Id: 12"),
+          serviceOffering = Some(UUID.fromString("b1196c0e-0c1a-4416-bea8-f6a62309fac5")),
+          account = Some(UUID.fromString("c1ebdda3-c69b-11e7-bdcf-0242ac110004"))
         )
       ),
       ("""{"event": "custom"}""", CustomEvent),

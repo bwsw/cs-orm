@@ -127,6 +127,7 @@ class DefaultJsonFormatsTests
         |  "account": "c1ebdda3-c69b-11e7-bdcf-0242ac110004",
         |  "entity": "com.cloud.vm.VirtualMachine",
         |  "status": "Scheduled",
+        |  "cmdInfo": "{\"response\":\"json\",\"expunge\":\"true\"}",
         |  "VirtualMachine": "3a9c10f9-0474-4173-bdbd-3f2c29a75bff"
         |}""".stripMargin
 
@@ -134,7 +135,8 @@ class DefaultJsonFormatsTests
       status = Some(Statuses.SCHEDULED),
       entityuuid = Some(UUID.fromString("3a9c10f9-0474-4173-bdbd-3f2c29a75bff")),
       eventDateTime = Some(OffsetDateTime.of(2017, 11, 12, 19, 44, 29, 0, ZoneOffset.ofHours(7))), //scalastyle:ignore
-      description = Some("destroying vm: 14")
+      description = Some("destroying vm: 14"),
+      cmdInfo = Some(CmdInfo(Map("response" -> "json", "expunge" -> "true")))
     )
 
     jsonString.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent

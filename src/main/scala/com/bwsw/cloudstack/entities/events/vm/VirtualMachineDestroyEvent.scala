@@ -21,6 +21,7 @@ package com.bwsw.cloudstack.entities.events.vm
 import java.time.OffsetDateTime
 import java.util.UUID
 
+import com.bwsw.cloudstack.entities.common.CmdInfo
 import com.bwsw.cloudstack.entities.common.CommonJsonFormats._
 import com.bwsw.cloudstack.entities.events.{CloudStackEvent, EventDateTime}
 import spray.json.DefaultJsonProtocol._
@@ -29,12 +30,13 @@ import spray.json.RootJsonFormat
 final case class VirtualMachineDestroyEvent(status: Option[String],
                                             entityuuid: Option[UUID],
                                             eventDateTime: Option[OffsetDateTime],
-                                            description: Option[String])
+                                            description: Option[String],
+                                            cmdInfo: Option[CmdInfo])
   extends CloudStackEvent with EventDateTime
 
 
 object VirtualMachineDestroyEvent {
 
   implicit val virtualMachineDestroyEventJsonFormat: RootJsonFormat[VirtualMachineDestroyEvent] =
-    jsonFormat4(VirtualMachineDestroyEvent.apply)
+    jsonFormat5(VirtualMachineDestroyEvent.apply)
 }

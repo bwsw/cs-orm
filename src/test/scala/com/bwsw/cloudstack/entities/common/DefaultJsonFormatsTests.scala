@@ -116,7 +116,7 @@ class DefaultJsonFormatsTests
   }
 
 
-  it should "deserialize VirtualMachineDestroyEvent properly" in {
+  it should "deserialize VirtualMachineDestroyEvent with field 'event' properly" in {
     val jsonString =
       """{
         |  "eventDateTime": "2017-11-12 19:44:29 +0700",
@@ -127,7 +127,6 @@ class DefaultJsonFormatsTests
         |  "account": "c1ebdda3-c69b-11e7-bdcf-0242ac110004",
         |  "entity": "com.cloud.vm.VirtualMachine",
         |  "status": "Scheduled",
-        |  "cmdInfo": "{\"response\":\"json\",\"expunge\":\"true\"}",
         |  "VirtualMachine": "3a9c10f9-0474-4173-bdbd-3f2c29a75bff"
         |}""".stripMargin
 
@@ -136,7 +135,41 @@ class DefaultJsonFormatsTests
       entityuuid = Some(UUID.fromString("3a9c10f9-0474-4173-bdbd-3f2c29a75bff")),
       eventDateTime = Some(OffsetDateTime.of(2017, 11, 12, 19, 44, 29, 0, ZoneOffset.ofHours(7))), //scalastyle:ignore
       description = Some("destroying vm: 14"),
-      cmdInfo = Some(CmdInfo(Map("response" -> "json", "expunge" -> "true")))
+      cmdInfo = None
+    )
+
+    jsonString.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent
+  }
+
+
+  it should "deserialize VirtualMachineDestroyEvent with field 'commandEventType' properly" in {
+    val jsonString =
+      """{
+        |  "jobId": "794aa39e-fb85-464f-9683-312bcf3da894",
+        |  "commandEventType": "VM.DESTROY",
+        |  "processStatus": "0",
+        |  "cmdInfo": "{\"response\":\"json\",\"expunge\":\"true\",\"uuid\":\"aaf1457c-5f5e-4a34-a5bb-13677b71b932\"}",
+        |  "instanceType": "VirtualMachine",
+        |  "jobResult": "org.apache.cloudstack.api.response.UserVmResponse/null/{\"securitygroup\":[],\"nic\":[],\"affinitygroup\":[],\"tags\":[]}",
+        |  "resultCode": "0",
+        |  "instanceUuid": "aaf1457c-5f5e-4a34-a5bb-13677b71b932",
+        |  "user": "88c34c6b-f503-11e7-a402-0242ac110003",
+        |  "command": "org.apache.cloudstack.api.command.admin.vm.DestroyVMCmdByAdmin",
+        |  "account": "88c31833-f503-11e7-a402-0242ac110003",
+        |  "status": "SUCCEEDED"
+        |}
+      """.stripMargin
+
+    val expectedEvent = VirtualMachineDestroyEvent(
+      status = Some(Statuses.SUCCEEDED),
+      entityuuid = None,
+      eventDateTime = None,
+      description = None,
+      cmdInfo = Some(CmdInfo(Map(
+        "response" -> "json",
+        "expunge" -> "true",
+        "uuid" -> "aaf1457c-5f5e-4a34-a5bb-13677b71b932"
+      )))
     )
 
     jsonString.parseJson.convertTo[CloudStackEvent] shouldBe expectedEvent

@@ -63,8 +63,10 @@ trait JsonFormats {
                                 untypedEvents: UntypedEventParser = PartialFunction.empty
                                ): PartialFunction[JsValue, CloudStackEvent] = {
     case jsObject: JsObject =>
+      val maybeEventType =
+        jsObject.fields.get(FieldNames.Event) orElse jsObject.fields.get(FieldNames.CommandEventType)
       val reader =
-        jsObject.fields.get(FieldNames.Event) match {
+        maybeEventType match {
           case Some(JsString(eventType)) =>
             basicEvents
               .orElse(typedEvents)

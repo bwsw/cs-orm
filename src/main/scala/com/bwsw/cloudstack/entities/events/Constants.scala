@@ -29,12 +29,14 @@ object Constants {
   }
 
   object Statuses {
-    val COMPLETED = "Completed"
-    val SCHEDULED = "Scheduled"
+    val COMPLETED: String = "Completed"
+    val SCHEDULED: String = "Scheduled"
+    val SUCCEEDED: String = "SUCCEEDED"
   }
 
   object FieldNames {
     val Event: String = "event"
+    val CommandEventType: String = "commandEventType"
     val EventDateTime: String = "eventDateTime"
     val EntityUuid: String = "entityuuid"
     val Description: String = "description"

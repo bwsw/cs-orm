@@ -40,7 +40,7 @@ class VmEventsRetrievingTest
   val templateId: UUID = retrievedTemplateId
   val zoneId: UUID = retrievedZoneId
 
-  val sleepInterval = 15000
+  val sleepInterval = 10000
   val pollTimeout = 1000
 
   val vmCreateRequest = new VmCreateRequest(VmCreateRequest.Settings(serviceOfferingId, templateId, zoneId))
@@ -57,12 +57,13 @@ class VmEventsRetrievingTest
 
   Thread.sleep(sleepInterval)
 
-  val records: List[String] = consumer.poll(pollTimeout)
+  private val records = consumer.poll(pollTimeout)
+  private val events = records.map(RecordToEventDeserializer.deserializeRecord)
 
   it should "retrieve VirtualMachineCreateEvent with status 'Completed' from Kafka records" in {
     val afterCreation = OffsetDateTime.now()
-    val actualVmCreateEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
-      case VirtualMachineCreateEvent(Some(Constants.Statuses.COMPLETED), Some(`vmId`), Some(dateTime), _, Some(_), Some(_)) =>
+    val actualVmCreateEvents = events.filter {
+      case VirtualMachineCreateEvent(Some(Constants.Statuses.COMPLETED), Some(`vmId`), Some(dateTime), _, _, _) =>
         dateTime.isAfter(beforeCreation) && dateTime.isBefore(afterCreation)
       case _ => false
     }
@@ -72,7 +73,7 @@ class VmEventsRetrievingTest
 
   it should "retrieve VirtualMachineDestroyEvent with status 'Completed' from Kafka records" in {
     val afterDeletion = OffsetDateTime.now()
-    val actualVmDestroyEvents = records.map(RecordToEventDeserializer.deserializeRecord).filter {
+    val actualVmDestroyEvents = events.filter {
       case VirtualMachineDestroyEvent(Some(Constants.Statuses.COMPLETED), Some(`vmId`), Some(dateTime), _, _) =>
         dateTime.isAfter(beforeDeletion) && dateTime.isBefore(afterDeletion)
       case _ => false

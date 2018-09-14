@@ -22,7 +22,8 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.common.CommonJsonFormats._
-import com.bwsw.cloudstack.entities.events.{CloudStackEvent, EventDateTime}
+import com.bwsw.cloudstack.entities.events.jobresults.VirtualMachineCreateJobResult
+import com.bwsw.cloudstack.entities.events.{CloudStackEvent, EventDateTime, JobResult}
 import spray.json.DefaultJsonProtocol._
 import spray.json.RootJsonFormat
 
@@ -31,7 +32,7 @@ final case class VirtualMachineCreateEvent(status: Option[String],
                                            eventDateTime: Option[OffsetDateTime],
                                            description: Option[String],
                                            serviceOffering: Option[UUID],
-                                           account: Option[UUID])
+                                           jobResult: Option[JobResult[VirtualMachineCreateJobResult]])
   extends CloudStackEvent with EventDateTime
 
 
@@ -45,6 +46,6 @@ object VirtualMachineCreateEvent {
       "eventDateTime",
       "description",
       "ServiceOffering",
-      "account"
+      "jobResult"
     )
 }

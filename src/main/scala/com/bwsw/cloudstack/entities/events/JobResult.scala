@@ -24,7 +24,7 @@ import spray.json._
   * @author Pavel Tomskikh
   */
 final case class JobResult[T](path: String,
-                              result: T)
+                              result: Either[String, T])
 
 
 object JobResult {
@@ -35,12 +35,25 @@ object JobResult {
         case JsString(string) =>
           val (path, result) = string.span(_ != '{')
 
-          JobResult(path, result.parseJson.convertTo[T])
+          val maybeResult = try {
+            Right(result.parseJson.convertTo[T])
+          } catch {
+            case _: Exception => Left(result)
+          }
+
+          JobResult(path, maybeResult)
 
         case _ => deserializationError(s"Expected JobResult as JsString, but got $json")
       }
 
-      override def write(jobResult: JobResult[T]): JsValue =
-        JsString(s"${jobResult.path}${jobResult.result.toJson}")
+      override def write(jobResult: JobResult[T]): JsValue = {
+        val result = jobResult.result match {
+          case Right(validResult) => validResult.toJson
+          case Left(str) => JsString(str)
+        }
+
+        JsString(s"${jobResult.path}$result")
+      }
     }
 }
+

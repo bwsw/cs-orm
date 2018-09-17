@@ -98,16 +98,16 @@ class JsonFormatsTests
           |  "entity": "com.cloud.vm.VirtualMachine",
           |  "status": "Scheduled",
           |  "VirtualMachine": "63f55cf9-2d1b-42f0-9202-a784af1d39ed",
-          |  "jobResult": "org.apache.cloudstack.api.response.UserVmResponse/virtualmachine/{\"account\":\"Account Name\",\"domainid\":\"16d7977e-43fd-47ad-9fff-6ef8d463516f\"}"
+          |  "jobResult": "org.apache.cloudstack.api.response.UserVmResponse/virtualmachine/{\"id\":\"63f55cf9-2d1b-42f0-9202-a784af1d39ed\",\"account\":\"Account Name\",\"domainid\":\"16d7977e-43fd-47ad-9fff-6ef8d463516f\",\"serviceofferingid\":\"b1196c0e-0c1a-4416-bea8-f6a62309fac5\"}"
           |}""".stripMargin,
         VirtualMachineCreateEvent(
           status = Some(Statuses.SCHEDULED),
-          entityuuid = Some(UUID.fromString("63f55cf9-2d1b-42f0-9202-a784af1d39ed")),
           eventDateTime = Some(OffsetDateTime.of(2017, 11, 12, 13, 36, 23, 0, ZoneOffset.ofHours(7))), //scalastyle:ignore
-          description = Some("starting Vm. Vm Id: 12"),
-          serviceOffering = Some(UUID.fromString("b1196c0e-0c1a-4416-bea8-f6a62309fac5")),
           jobResult = Some(JobResult("org.apache.cloudstack.api.response.UserVmResponse/virtualmachine/",
-            VirtualMachineCreateJobResult("Account Name", UUID.fromString("16d7977e-43fd-47ad-9fff-6ef8d463516f"))))
+            Right(VirtualMachineCreateJobResult(UUID.fromString("63f55cf9-2d1b-42f0-9202-a784af1d39ed"),
+              "Account Name",
+              UUID.fromString("16d7977e-43fd-47ad-9fff-6ef8d463516f"),
+              UUID.fromString("b1196c0e-0c1a-4416-bea8-f6a62309fac5")))))
         )
       ),
       ("""{"event": "custom"}""", CustomEvent),

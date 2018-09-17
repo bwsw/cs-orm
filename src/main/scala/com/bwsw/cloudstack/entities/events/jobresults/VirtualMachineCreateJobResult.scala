@@ -24,8 +24,10 @@ import com.bwsw.cloudstack.entities.common.CommonJsonFormats.uuidJsonFormat
 import spray.json.DefaultJsonProtocol._
 import spray.json.RootJsonFormat
 
-final case class VirtualMachineCreateJobResult(account: String,
-                                               domainId: UUID)
+final case class VirtualMachineCreateJobResult(id: UUID,
+                                               account: String,
+                                               domainId: UUID,
+                                               serviceOfferingId: UUID)
 
 
 object VirtualMachineCreateJobResult {
@@ -33,7 +35,9 @@ object VirtualMachineCreateJobResult {
   implicit val virtualMachineCreateJobResultJsonFormat: RootJsonFormat[VirtualMachineCreateJobResult] =
     jsonFormat(
       VirtualMachineCreateJobResult.apply,
+      "id",
       "account",
-      "domainid"
+      "domainid",
+      "serviceofferingid"
     )
 }

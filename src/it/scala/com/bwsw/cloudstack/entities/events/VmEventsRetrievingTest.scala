@@ -63,12 +63,12 @@ class VmEventsRetrievingTest
   it should "retrieve VirtualMachineCreateEvent with status 'Completed' from Kafka records" in {
     val afterCreation = OffsetDateTime.now()
     val actualVmCreateEvents = events.filter {
-      case VirtualMachineCreateEvent(Some(Constants.Statuses.COMPLETED), Some(`vmId`), Some(dateTime), _, _, _) =>
+      case VirtualMachineCreateEvent(Some(Constants.Statuses.COMPLETED), Some(dateTime), _) =>
         dateTime.isAfter(beforeCreation) && dateTime.isBefore(afterCreation)
       case _ => false
     }
 
-    actualVmCreateEvents.length shouldBe 1
+    actualVmCreateEvents.length should be >= 1
   }
 
   it should "retrieve VirtualMachineDestroyEvent with status 'Completed' from Kafka records" in {

@@ -22,8 +22,9 @@ import java.time.{OffsetDateTime, ZoneOffset}
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.events.Constants.Statuses
+import com.bwsw.cloudstack.entities.events.jobresults.VirtualMachineCreateJobResult
 import com.bwsw.cloudstack.entities.events.vm.VirtualMachineCreateEvent
-import com.bwsw.cloudstack.entities.events.{CloudStackEvent, UnknownEvent}
+import com.bwsw.cloudstack.entities.events.{CloudStackEvent, JobResult, UnknownEvent}
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.{FlatSpec, Matchers}
 import spray.json._
@@ -96,7 +97,8 @@ class JsonFormatsTests
           |  "account": "c1ebdda3-c69b-11e7-bdcf-0242ac110004",
           |  "entity": "com.cloud.vm.VirtualMachine",
           |  "status": "Scheduled",
-          |  "VirtualMachine": "63f55cf9-2d1b-42f0-9202-a784af1d39ed"
+          |  "VirtualMachine": "63f55cf9-2d1b-42f0-9202-a784af1d39ed",
+          |  "jobResult": "org.apache.cloudstack.api.response.UserVmResponse/virtualmachine/{\"account\":\"Account Name\",\"domainid\":\"16d7977e-43fd-47ad-9fff-6ef8d463516f\"}"
           |}""".stripMargin,
         VirtualMachineCreateEvent(
           status = Some(Statuses.SCHEDULED),
@@ -104,7 +106,8 @@ class JsonFormatsTests
           eventDateTime = Some(OffsetDateTime.of(2017, 11, 12, 13, 36, 23, 0, ZoneOffset.ofHours(7))), //scalastyle:ignore
           description = Some("starting Vm. Vm Id: 12"),
           serviceOffering = Some(UUID.fromString("b1196c0e-0c1a-4416-bea8-f6a62309fac5")),
-          account = Some(UUID.fromString("c1ebdda3-c69b-11e7-bdcf-0242ac110004"))
+          jobResult = Some(JobResult("org.apache.cloudstack.api.response.UserVmResponse/virtualmachine/",
+            VirtualMachineCreateJobResult("Account Name", UUID.fromString("16d7977e-43fd-47ad-9fff-6ef8d463516f"))))
         )
       ),
       ("""{"event": "custom"}""", CustomEvent),

@@ -67,12 +67,19 @@ Run tests: `sbt test`
     
 2. Run Apache CloudStack simulator in docker container:
 ```bash
-    docker run -d --rm --name spotify-kafka --tty=true -p $ZK_PORT:2181 -p $KAFKA_PORT:9092 --env ADVERTISED_HOST=$KAFKA_HOST --env ADVERTISED_PORT=$KAFKA_PORT spotify/kafka
+    docker run --rm --name spotify-kafka -d --tty=true \
+                    -e ADVERTISED_HOST=$KAFKA_HOST \
+                    -e ADVERTISED_PORT=$KAFKA_PORT \
+                    -p $ZK_PORT:2181 \
+                    -p $KAFKA_PORT:9092 \
+                    spotify/kafka
     
-    docker run --rm -e KAFKA_HOST="${KAFKA_HOST}" \
+    docker run --rm --name cs-simulator-kafka -d \
+                    -e KAFKA_HOST="${KAFKA_HOST}" \
                     -e KAFKA_PORT="${KAFKA_PORT}" \
                     -e KAFKA_TOPIC="${KAFKA_TOPIC}" \
-                    --name cs-simulator-kafka -d -p $CS_PORT:8888 bwsw/cs-simulator-kafka:4.10.3-NP
+                    -p $CS_PORT:8888 \
+                    bwsw/cs-simulator-kafka:4.10.3-NP
 ```
 
 3. After the end of the cloudstack simulator deploying (you can check it like ![this](jenkins/run_cs_simulator.sh)) execute: `sbt it:test`

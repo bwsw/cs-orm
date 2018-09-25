@@ -16,29 +16,24 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.bwsw.cloudstack.entities.events.vm
+package com.bwsw.cloudstack.entities.events.jobresults
 
-import java.time.OffsetDateTime
+import java.util.UUID
 
-import com.bwsw.cloudstack.entities.common.CommonJsonFormats._
-import com.bwsw.cloudstack.entities.events.jobresults.VirtualMachineJobResult
-import com.bwsw.cloudstack.entities.events.{CloudStackEvent, EventDateTime, JobResult}
+import com.bwsw.cloudstack.entities.common.CommonJsonFormats.uuidJsonFormat
 import spray.json.DefaultJsonProtocol._
 import spray.json.RootJsonFormat
 
-final case class VirtualMachineCreateEvent(status: Option[String],
-                                           eventDateTime: Option[OffsetDateTime],
-                                           jobResult: Option[JobResult[VirtualMachineJobResult]])
-  extends CloudStackEvent with EventDateTime
+final case class SecondaryIp(id: UUID,
+                             ipAddress: String)
 
 
-object VirtualMachineCreateEvent {
+object SecondaryIp {
 
-  implicit val virtualMachineCreateEventJsonFormat: RootJsonFormat[VirtualMachineCreateEvent] =
+  implicit val secondaryIpJsonFormat: RootJsonFormat[SecondaryIp] =
     jsonFormat(
-      VirtualMachineCreateEvent.apply,
-      "status",
-      "eventDateTime",
-      "jobResult"
+      SecondaryIp.apply,
+      "id",
+      "ipaddress"
     )
 }

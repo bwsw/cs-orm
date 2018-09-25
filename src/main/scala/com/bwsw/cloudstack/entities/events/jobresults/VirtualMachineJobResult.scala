@@ -24,20 +24,22 @@ import com.bwsw.cloudstack.entities.common.CommonJsonFormats.uuidJsonFormat
 import spray.json.DefaultJsonProtocol._
 import spray.json.RootJsonFormat
 
-final case class VirtualMachineCreateJobResult(id: UUID,
-                                               account: String,
-                                               domainId: UUID,
-                                               serviceOfferingId: UUID)
+final case class VirtualMachineJobResult(id: UUID,
+                                         account: String,
+                                         domainId: UUID,
+                                         serviceOfferingId: UUID,
+                                         networkInterfaces: Seq[NetworkInterface])
 
 
-object VirtualMachineCreateJobResult {
+object VirtualMachineJobResult {
 
-  implicit val virtualMachineCreateJobResultJsonFormat: RootJsonFormat[VirtualMachineCreateJobResult] =
+  implicit val virtualMachineCreateJobResultJsonFormat: RootJsonFormat[VirtualMachineJobResult] =
     jsonFormat(
-      VirtualMachineCreateJobResult.apply,
+      VirtualMachineJobResult.apply,
       "id",
       "account",
       "domainid",
-      "serviceofferingid"
+      "serviceofferingid",
+      "nic"
     )
 }

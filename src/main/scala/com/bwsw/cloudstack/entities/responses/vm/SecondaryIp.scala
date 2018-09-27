@@ -21,13 +21,5 @@ package com.bwsw.cloudstack.entities.responses.vm
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.responses.common.Entity
-import com.fasterxml.jackson.annotation.JsonProperty
 
-case class VirtualMachine(id: UUID,
-                          @JsonProperty("zoneid") zoneId: UUID,
-                          @JsonProperty("templateid") templateId: UUID,
-                          @JsonProperty("serviceofferingid") serviceOfferingId: UUID,
-                          @JsonProperty("account") accountName: String,
-                          @JsonProperty("domainid") domainId: UUID,
-                          @JsonProperty("nic") networkInterfaces: Seq[NetworkInterface])
-  extends Entity
+final case class SecondaryIp(id: UUID) extends Entity

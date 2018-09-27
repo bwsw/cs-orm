@@ -23,8 +23,8 @@ import java.util.UUID
 import com.bwsw.cloudstack.KeyAuthenticationClientCreator
 import com.bwsw.cloudstack.entities.Executor
 import com.bwsw.cloudstack.entities.common.JsonMapper
-import com.bwsw.cloudstack.entities.responses.account.{Account, AccountFindResponse, AccountList}
-import com.bwsw.cloudstack.entities.responses.user.{User, UserFindResponse, UserList}
+import com.bwsw.cloudstack.entities.responses.account.Account
+import com.bwsw.cloudstack.entities.responses.user.User
 import com.bwsw.cloudstack.entities.responses.vm.VirtualMachine
 
 trait TestData {
@@ -88,6 +88,7 @@ trait TestData {
     templateId = UUID.randomUUID(),
     serviceOfferingId = UUID.randomUUID(),
     accountName = accountName,
-    domainId = domainId
+    domainId = domainId,
+    networkInterfaces = Seq.empty
   )
 }

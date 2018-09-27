@@ -22,6 +22,8 @@ import java.util.UUID
 
 import br.com.autonomiccs.apacheCloudStack.client.ApacheCloudStackRequest
 import com.bwsw.cloudstack.entities.TestEntities
+import com.bwsw.cloudstack.entities.requests.Constants
+import com.bwsw.cloudstack.entities.requests.Constants.ParameterKeys
 import com.bwsw.cloudstack.entities.requests.account.AccountFindRequest
 import com.bwsw.cloudstack.entities.responses.account.AccountFindResponse
 import com.bwsw.cloudstack.entities.responses.vm.{VirtualMachine, VirtualMachineCreateResponse, VirtualMachineFindResponse}
@@ -73,6 +75,7 @@ class VmCreateRequestIntegrationTestSuite
 
     val addIpRequest = new ApacheCloudStackRequest("addIpToNic")
       .addParameter("nicid", networkInterface.id)
+      .addParameter(ParameterKeys.RESPONSE, Constants.ParameterValues.JSON)
 
     executor.executeRequest(addIpRequest)
 

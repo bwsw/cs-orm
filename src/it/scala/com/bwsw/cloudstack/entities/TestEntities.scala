@@ -61,6 +61,7 @@ trait TestEntities {
     val zoneDao = new ZoneDao(executor, mapper)
     val zoneFindRequest = new ZoneFindRequest()
     zoneFindRequest.withAvailableFlag(true)
+    zoneFindRequest.addParameter("networktype", "Advanced")
 
     zoneDao.find(zoneFindRequest).head.id
   }

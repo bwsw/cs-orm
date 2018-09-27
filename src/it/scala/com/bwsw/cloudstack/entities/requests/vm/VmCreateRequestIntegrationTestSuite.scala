@@ -26,12 +26,16 @@ import com.bwsw.cloudstack.entities.requests.account.AccountFindRequest
 import com.bwsw.cloudstack.entities.responses.account.AccountFindResponse
 import com.bwsw.cloudstack.entities.responses.vm.{VirtualMachine, VirtualMachineCreateResponse, VirtualMachineFindResponse}
 import com.bwsw.cloudstack.entities.util.requests.IntegrationTestConstants.ParameterValues
-import org.scalatest.FlatSpec
+import org.scalatest.{FlatSpec, Matchers}
 
-class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
-  val serviceOfferingId = retrievedServiceOfferingId
-  val templateId = retrievedTemplateId
-  val zoneId = retrievedZoneId
+class VmCreateRequestIntegrationTestSuite
+  extends FlatSpec
+    with TestEntities
+    with Matchers {
+
+  val serviceOfferingId: UUID = retrievedServiceOfferingId
+  val templateId: UUID = retrievedTemplateId
+  val zoneId: UUID = retrievedZoneId
 
   it should "create a vm using a request which contains only required parameters" in {
     val vmCreateRequest = new VmCreateRequest(VmCreateRequest.Settings(serviceOfferingId, templateId, zoneId))
@@ -60,9 +64,27 @@ class VmCreateRequestIntegrationTestSuite extends FlatSpec with TestEntities {
 
     val actualVm = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(vmFindRequest.getRequest))
       .entityList.entities.get.head
-    val expectedVm = VirtualMachine(vmId, zoneId, templateId, serviceOfferingId, accountName, domainId)
+    val expectedVm = VirtualMachine(vmId, zoneId, templateId, serviceOfferingId, accountName, domainId, Seq.empty)
 
-    assert(actualVm == expectedVm)
+    actualVm.copy(networkInterfaces = Seq.empty) shouldBe expectedVm
+    actualVm.networkInterfaces.size should be > 0
+
+    val networkInterface = actualVm.networkInterfaces.head
+
+    val addIpRequest = new ApacheCloudStackRequest("addIpToNic")
+      .addParameter("nicid", networkInterface.id)
+
+    executor.executeRequest(addIpRequest)
+
+    val actualVmWithSecondaryIps = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(vmFindRequest.getRequest))
+      .entityList.entities.get.head
+
+    actualVmWithSecondaryIps.networkInterfaces.map(_.id) should contain(networkInterface.id)
+    val networkInterfaceWithSecondaryIps = actualVmWithSecondaryIps.networkInterfaces.find(_.id == networkInterface.id).get
+    networkInterfaceWithSecondaryIps.secondaryIps.length should be >= 1
+    networkInterfaceWithSecondaryIps.secondaryIps.foreach { secondaryIp =>
+      Some(secondaryIp.id) shouldBe defined
+    }
   }
 
   it should "create a vm using a request which contains only required parameters and a parameter with incorrect key" in {

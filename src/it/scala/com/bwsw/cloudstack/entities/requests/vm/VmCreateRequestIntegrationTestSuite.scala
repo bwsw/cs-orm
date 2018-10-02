@@ -35,7 +35,8 @@ class VmCreateRequestIntegrationTestSuite
     with TestEntities
     with Matchers {
 
-  val serviceOfferingId: UUID = retrievedServiceOfferingId
+  val serviceOfferingId: UUID = retrievedServiceOffering.id
+  val memory: Long = retrievedServiceOffering.memory
   val templateId: UUID = retrievedTemplateId
   val zoneId: UUID = retrievedZoneId
 
@@ -66,7 +67,16 @@ class VmCreateRequestIntegrationTestSuite
 
     val actualVm = mapper.deserialize[VirtualMachineFindResponse](executor.executeRequest(vmFindRequest.getRequest))
       .entityList.entities.get.head
-    val expectedVm = VirtualMachine(vmId, zoneId, templateId, serviceOfferingId, accountName, domainId, Seq.empty)
+    val expectedVm = VirtualMachine(
+      vmId,
+      zoneId,
+      templateId,
+      serviceOfferingId,
+      accountName,
+      domainId,
+      Seq.empty,
+      memory
+    )
 
     actualVm.copy(networkInterfaces = Seq.empty) shouldBe expectedVm
     actualVm.networkInterfaces.size should be > 0

@@ -27,6 +27,8 @@ import com.bwsw.cloudstack.entities.responses.account.Account
 import com.bwsw.cloudstack.entities.responses.user.User
 import com.bwsw.cloudstack.entities.responses.vm.VirtualMachine
 
+import scala.util.Random
+
 trait TestData {
   private val retryDelay = 1000
   val executorSettings = Executor.Settings(Array("localhost:9000"), retryDelay)
@@ -89,6 +91,7 @@ trait TestData {
     serviceOfferingId = UUID.randomUUID(),
     accountName = accountName,
     domainId = domainId,
-    networkInterfaces = Seq.empty
+    networkInterfaces = Seq.empty,
+    memory = Random.nextInt(Int.MaxValue).toLong
   )
 }

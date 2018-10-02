@@ -156,7 +156,8 @@ class DefaultJsonFormatsTests
                   id = UUID.fromString("ace7cb25-6b7a-4315-b519-59d1fde5666f"),
                   secondaryIps = Seq.empty
                 )
-              )
+              ),
+              memory = 512 //scalastyle:ignore
             )
           )
         )

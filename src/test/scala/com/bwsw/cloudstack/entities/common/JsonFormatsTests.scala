@@ -18,11 +18,10 @@
 */
 package com.bwsw.cloudstack.entities.common
 
-import java.time.{OffsetDateTime, ZoneOffset}
 import java.util.UUID
 
 import com.bwsw.cloudstack.entities.events.Constants.Statuses
-import com.bwsw.cloudstack.entities.events.jobresults.VirtualMachineJobResult
+import com.bwsw.cloudstack.entities.events.jobresults.{NetworkInterface, VirtualMachineJobResult}
 import com.bwsw.cloudstack.entities.events.vm.VirtualMachineCreateEvent
 import com.bwsw.cloudstack.entities.events.{CloudStackEvent, JobResult, UnknownEvent}
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -85,32 +84,41 @@ class JsonFormatsTests
       ("json", "event"),
       (
         """{
-          |  "eventDateTime": "2017-11-12 13:36:23 +0700",
-          |  "VirtualMachineTemplate": "aaa5faf7-7680-4393-aee5-c9997b3420cd",
-          |  "ServiceOffering": "b1196c0e-0c1a-4416-bea8-f6a62309fac5",
-          |  "description": "starting Vm. Vm Id: 12",
-          |  "SecurityGroup": "86036515-1f1c-4a48-92ac-519ef0e22912",
-          |  "DataCenter": "d477bb3f-3592-4503-8f2a-da3d878dd476",
-          |  "entityuuid": "63f55cf9-2d1b-42f0-9202-a784af1d39ed",
-          |  "event": "VM.CREATE",
-          |  "user": "c1ebed36-c69b-11e7-bdcf-0242ac110004",
-          |  "account": "c1ebdda3-c69b-11e7-bdcf-0242ac110004",
-          |  "entity": "com.cloud.vm.VirtualMachine",
-          |  "status": "Scheduled",
-          |  "VirtualMachine": "63f55cf9-2d1b-42f0-9202-a784af1d39ed",
-          |  "jobResult": "org.apache.cloudstack.api.response.UserVmResponse/virtualmachine/{\"id\":\"63f55cf9-2d1b-42f0-9202-a784af1d39ed\",\"account\":\"Account Name\",\"domainid\":\"16d7977e-43fd-47ad-9fff-6ef8d463516f\",\"serviceofferingid\":\"b1196c0e-0c1a-4416-bea8-f6a62309fac5\",\"nic\":[]}"
-          |}""".stripMargin,
+          |  "jobId": "2c9bd9c7-11e1-4354-abb5-2c619fbb4589",
+          |  "commandEventType": "VM.CREATE",
+          |  "processStatus": "0",
+          |  "cmdInfo": "{\"iptonetworklist[0].networkid\":\"95b8b9cf-fd93-4601-b037-915b2bf5d5a2\",\"httpmethod\":\"GET\",\"templateid\":\"9b5a23d5-f503-11e7-a402-0242ac110003\",\"ctxAccountId\":\"37\",\"uuid\":\"991558d9-5dfe-4272-85aa-98cbf7c10830\",\"cmdEventType\":\"VM.CREATE\",\"serviceofferingid\":\"891b5344-83c6-453a-8521-1cdfa17f920b\",\"response\":\"json\",\"ctxUserId\":\"37\",\"hypervisor\":\"Simulator\",\"iptonetworklist[1].networkid\":\"a72d1fb8-c754-42f2-8bad-295084c4f981\",\"zoneid\":\"9f5c2d2a-05ac-476d-b274-f58cc211b007\",\"ctxStartEventId\":\"1873\",\"id\":\"36\",\"ctxDetails\":\"{\\\"interface com.cloud.vm.VirtualMachine\\\":\\\"991558d9-5dfe-4272-85aa-98cbf7c10830\\\",\\\"interface com.cloud.template.VirtualMachineTemplate\\\":\\\"9b5a23d5-f503-11e7-a402-0242ac110003\\\",\\\"interface com.cloud.dc.DataCenter\\\":\\\"9f5c2d2a-05ac-476d-b274-f58cc211b007\\\",\\\"interface com.cloud.offering.ServiceOffering\\\":\\\"891b5344-83c6-453a-8521-1cdfa17f920b\\\"}\",\"_\":\"1537859651513\"}",
+          |  "instanceType": "VirtualMachine",
+          |  "jobResult": "org.apache.cloudstack.api.response.UserVmResponse/virtualmachine/{\"id\":\"991558d9-5dfe-4272-85aa-98cbf7c10830\",\"name\":\"VM-991558d9-5dfe-4272-85aa-98cbf7c10830\",\"displayname\":\"VM-991558d9-5dfe-4272-85aa-98cbf7c10830\",\"account\":\"aaa\",\"userid\":\"9e476079-af42-4a55-9880-e9811595a104\",\"username\":\"aaa\",\"domainid\":\"bcaf64de-56ff-44ef-9f4a-d5959cb3d63b\",\"domain\":\"aaa\",\"created\":\"2018-09-25T07:14:11+0000\",\"state\":\"Running\",\"haenable\":false,\"zoneid\":\"9f5c2d2a-05ac-476d-b274-f58cc211b007\",\"zonename\":\"Sandbox-simulator-advanced\",\"templateid\":\"9b5a23d5-f503-11e7-a402-0242ac110003\",\"templatename\":\"CentOS 5.6 (64-bit) no GUI (Simulator)\",\"templatedisplaytext\":\"CentOS 5.6 (64-bit) no GUI (Simulator)\",\"passwordenabled\":false,\"serviceofferingid\":\"891b5344-83c6-453a-8521-1cdfa17f920b\",\"serviceofferingname\":\"Small Instance\",\"cpunumber\":1,\"cpuspeed\":500,\"memory\":512,\"guestosid\":\"88acb71a-f503-11e7-a402-0242ac110003\",\"rootdeviceid\":0,\"rootdevicetype\":\"ROOT\",\"securitygroup\":[],\"nic\":[{\"id\":\"674aeb81-c153-4b39-b462-85d47c304efc\",\"networkid\":\"95b8b9cf-fd93-4601-b037-915b2bf5d5a2\",\"networkname\":\"ggg\",\"netmask\":\"255.255.255.0\",\"gateway\":\"10.1.1.1\",\"ipaddress\":\"10.1.1.19\",\"isolationuri\":\"vlan://103\",\"broadcasturi\":\"vlan://103\",\"traffictype\":\"Guest\",\"type\":\"Isolated\",\"isdefault\":true,\"macaddress\":\"02:00:0f:71:00:01\",\"secondaryip\":[]},{\"id\":\"ace7cb25-6b7a-4315-b519-59d1fde5666f\",\"networkid\":\"a72d1fb8-c754-42f2-8bad-295084c4f981\",\"networkname\":\"hhhh\",\"netmask\":\"255.255.255.0\",\"gateway\":\"10.1.1.1\",\"ipaddress\":\"10.1.1.109\",\"isolationuri\":\"vlan://197\",\"broadcasturi\":\"vlan://197\",\"traffictype\":\"Guest\",\"type\":\"Isolated\",\"isdefault\":false,\"macaddress\":\"02:00:45:47:00:01\",\"secondaryip\":[]}],\"hypervisor\":\"Simulator\",\"details\":{},\"affinitygroup\":[],\"displayvm\":true,\"isdynamicallyscalable\":false,\"ostypeid\":142,\"tags\":[],\"jobid\":\"2c9bd9c7-11e1-4354-abb5-2c619fbb4589\",\"jobstatus\":0}",
+          |  "resultCode": "0",
+          |  "instanceUuid": "991558d9-5dfe-4272-85aa-98cbf7c10830",
+          |  "user": "9e476079-af42-4a55-9880-e9811595a104",
+          |  "command": "org.apache.cloudstack.api.command.user.vm.DeployVMCmd",
+          |  "account": "67d724b9-d104-4f5c-ba1c-a2aa3d39632f",
+          |  "status": "SUCCEEDED"
+          |}
+        """.stripMargin,
         VirtualMachineCreateEvent(
-          status = Some(Statuses.SCHEDULED),
-          eventDateTime = Some(OffsetDateTime.of(2017, 11, 12, 13, 36, 23, 0, ZoneOffset.ofHours(7))), //scalastyle:ignore
+          status = Some(Statuses.SUCCEEDED),
+          eventDateTime = None,
           jobResult = Some(JobResult("org.apache.cloudstack.api.response.UserVmResponse/virtualmachine/",
             Right(
               VirtualMachineJobResult(
-                id = UUID.fromString("63f55cf9-2d1b-42f0-9202-a784af1d39ed"),
-                account = "Account Name",
-                domainId = UUID.fromString("16d7977e-43fd-47ad-9fff-6ef8d463516f"),
-                serviceOfferingId = UUID.fromString("b1196c0e-0c1a-4416-bea8-f6a62309fac5"),
-                networkInterfaces = Seq.empty
+                id = UUID.fromString("991558d9-5dfe-4272-85aa-98cbf7c10830"),
+                account = "aaa",
+                domainId = UUID.fromString("bcaf64de-56ff-44ef-9f4a-d5959cb3d63b"),
+                serviceOfferingId = UUID.fromString("891b5344-83c6-453a-8521-1cdfa17f920b"),
+                networkInterfaces = Seq(
+                  NetworkInterface(
+                    id = UUID.fromString("674aeb81-c153-4b39-b462-85d47c304efc"),
+                    secondaryIps = Seq.empty
+                  ),
+                  NetworkInterface(
+                    id = UUID.fromString("ace7cb25-6b7a-4315-b519-59d1fde5666f"),
+                    secondaryIps = Seq.empty
+                  )
+                ),
+                memory = 512 //scalastyle:ignore
               ))))
         )
       ),

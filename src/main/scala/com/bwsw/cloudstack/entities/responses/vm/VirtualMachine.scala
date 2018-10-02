@@ -29,5 +29,6 @@ case class VirtualMachine(id: UUID,
                           @JsonProperty("serviceofferingid") serviceOfferingId: UUID,
                           @JsonProperty("account") accountName: String,
                           @JsonProperty("domainid") domainId: UUID,
-                          @JsonProperty("nic") networkInterfaces: Seq[NetworkInterface])
+                          @JsonProperty("nic") networkInterfaces: Seq[NetworkInterface],
+                          memory: Long)
   extends Entity

@@ -28,7 +28,8 @@ final case class VirtualMachineJobResult(id: UUID,
                                          account: String,
                                          domainId: UUID,
                                          serviceOfferingId: UUID,
-                                         networkInterfaces: Seq[NetworkInterface])
+                                         networkInterfaces: Seq[NetworkInterface],
+                                         memory: Long)
 
 
 object VirtualMachineJobResult {
@@ -40,6 +41,7 @@ object VirtualMachineJobResult {
       "account",
       "domainid",
       "serviceofferingid",
-      "nic"
+      "nic",
+      "memory"
     )
 }

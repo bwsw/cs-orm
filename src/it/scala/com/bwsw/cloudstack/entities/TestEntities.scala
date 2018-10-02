@@ -27,6 +27,7 @@ import com.bwsw.cloudstack.entities.requests.serviceoffering.ServiceOfferingFind
 import com.bwsw.cloudstack.entities.requests.template.TemplateFindRequest
 import com.bwsw.cloudstack.entities.requests.template.filters.Featured
 import com.bwsw.cloudstack.entities.requests.zone.ZoneFindRequest
+import com.bwsw.cloudstack.entities.responses.serviceoffering.ServiceOffering
 import com.bwsw.cloudstack.entities.util.dao.{DomainDao, ServiceOfferingDao, TemplateDao, ZoneDao}
 
 trait TestEntities {
@@ -45,10 +46,10 @@ trait TestEntities {
   val executor = new Executor(executorSettings, creator, true)
   val mapper = new JsonMapper(true)
 
-  val retrievedServiceOfferingId: UUID = {
+  val retrievedServiceOffering: ServiceOffering = {
     val serviceOfferingDao = new ServiceOfferingDao(executor, mapper)
     val serviceOfferingFindRequest = new ServiceOfferingFindRequest
-    serviceOfferingDao.find(serviceOfferingFindRequest).head.id
+    serviceOfferingDao.find(serviceOfferingFindRequest).head
   }
 
   val retrievedTemplateId: UUID = {

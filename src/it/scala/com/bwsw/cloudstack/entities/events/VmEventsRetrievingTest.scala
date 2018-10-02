@@ -36,7 +36,7 @@ class VmEventsRetrievingTest
     with BeforeAndAfterAll
     with Matchers {
 
-  val serviceOfferingId: UUID = retrievedServiceOfferingId
+  val serviceOfferingId: UUID = retrievedServiceOffering.id
   val templateId: UUID = retrievedTemplateId
   val zoneId: UUID = retrievedZoneId
 

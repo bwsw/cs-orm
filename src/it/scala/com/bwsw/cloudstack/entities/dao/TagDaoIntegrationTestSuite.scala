@@ -100,7 +100,7 @@ class TagDaoIntegrationTestSuite extends FlatSpec with TestEntities {
 
     createAccount(accountId, firstAccountName, Some(domainId))
 
-    val serviceOfferingId = retrievedServiceOfferingId
+    val serviceOfferingId = retrievedServiceOffering.id
     val templateId = retrievedTemplateId
     val zoneId = retrievedZoneId
 

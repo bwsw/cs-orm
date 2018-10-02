@@ -43,7 +43,7 @@ class VmDaoIntegrationTestSuite extends FlatSpec with TestEntities {
 
     assert(vmDao.find(findByAccountNameRequest).isEmpty)
 
-    val serviceOfferingId = retrievedServiceOfferingId
+    val serviceOfferingId = retrievedServiceOffering.id
     val templateId = retrievedTemplateId
     val zoneId = retrievedZoneId
 

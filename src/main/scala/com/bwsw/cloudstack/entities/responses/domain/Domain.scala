@@ -22,4 +22,7 @@ import java.util.UUID
 
 import com.bwsw.cloudstack.entities.responses.common.Entity
 
-case class Domain(id: UUID, name: String) extends Entity
+final case class Domain(id: UUID,
+                        name: String,
+                        path: String)
+  extends Entity

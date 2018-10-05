@@ -24,5 +24,6 @@ import com.bwsw.cloudstack.entities.responses.common.Entity
 import com.fasterxml.jackson.annotation.JsonProperty
 
 final case class NetworkInterface(id: UUID,
+                                  @JsonProperty("networkid") networkId: UUID,
                                   @JsonProperty("secondaryip") secondaryIps: Seq[SecondaryIp])
   extends Entity

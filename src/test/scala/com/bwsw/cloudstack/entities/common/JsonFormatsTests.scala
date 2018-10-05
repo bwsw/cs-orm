@@ -111,10 +111,12 @@ class JsonFormatsTests
                 networkInterfaces = Seq(
                   NetworkInterface(
                     id = UUID.fromString("674aeb81-c153-4b39-b462-85d47c304efc"),
+                    networkId = UUID.fromString("95b8b9cf-fd93-4601-b037-915b2bf5d5a2"),
                     secondaryIps = Seq.empty
                   ),
                   NetworkInterface(
                     id = UUID.fromString("ace7cb25-6b7a-4315-b519-59d1fde5666f"),
+                    networkId = UUID.fromString("a72d1fb8-c754-42f2-8bad-295084c4f981"),
                     secondaryIps = Seq.empty
                   )
                 ),

@@ -25,6 +25,7 @@ import spray.json.DefaultJsonProtocol._
 import spray.json.RootJsonFormat
 
 final case class NetworkInterface(id: UUID,
+                                  networkId: UUID,
                                   secondaryIps: Seq[SecondaryIp])
 
 
@@ -34,6 +35,7 @@ object NetworkInterface {
     jsonFormat(
       NetworkInterface.apply,
       "id",
+      "networkid",
       "secondaryip"
     )
 }
